@@ -1,13 +1,13 @@
 "use client";
 
 import { useTheme } from "@/hooks/useTheme";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export function Features() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -18,7 +18,7 @@ export function Features() {
     }
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 50, scale: 0.95 },
     show: { 
       opacity: 1, 
