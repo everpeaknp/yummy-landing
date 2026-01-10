@@ -4,14 +4,14 @@ import { Navbar, Footer } from "@/components/layout";
 import Image from "next/image";
 import { useTheme } from "@/hooks/useTheme";
 import { FiUsers, FiTarget, FiHeart } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 
 export default function TeamPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -19,7 +19,7 @@ export default function TeamPage() {
     }
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 20 } }
   };

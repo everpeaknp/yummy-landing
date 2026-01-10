@@ -6,14 +6,14 @@ import { FiSearch, FiArrowRight } from "react-icons/fi";
 import Link from "next/link";
 import { useState } from "react";
 import { faqCategories, helpLinks } from "@/lib/data";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 export default function HelpCenterPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [query, setQuery] = useState("");
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -21,7 +21,7 @@ export default function HelpCenterPage() {
     }
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 }
   };

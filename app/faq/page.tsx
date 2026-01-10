@@ -2,7 +2,7 @@
 
 import { Navbar, Footer } from "@/components/layout";
 import { useTheme } from "@/hooks/useTheme";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useState } from "react";
 import { FiChevronDown, FiPlus, FiMinus } from "react-icons/fi";
 import { faqCategories } from "@/lib/data";
@@ -52,7 +52,7 @@ export default function FAQPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -60,7 +60,7 @@ export default function FAQPage() {
     }
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 }
   };
