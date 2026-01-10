@@ -3,6 +3,13 @@
 import { motion, useTransform, useScroll } from "framer-motion";
 import { useRef } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Mousewheel } from 'swiper/modules';
+import { cn } from "@/lib/utils"; 
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const cards = [
   {
@@ -50,11 +57,11 @@ export function Testimonials() {
   return (
     <section 
       ref={targetRef} 
-      className="relative h-[300vh]" 
+      className="relative h-auto md:h-[300vh]" 
       style={{ backgroundColor: isDark ? '#0a0a0a' : '#f8fafc' }}
     >
-      <div className="sticky top-0 flex h-screen flex-col items-start justify-center overflow-hidden">
-        {/* Header - Centered */}
+      {/* Desktop View */}
+      <div className="hidden md:flex sticky top-0 h-screen flex-col items-start justify-center overflow-hidden">
         <div className="w-full text-center mb-12 relative z-10 px-6">
            <h2 
             className="text-4xl sm:text-5xl font-black font-display mb-4"
@@ -67,25 +74,66 @@ export function Testimonials() {
           </p>
         </div>
         
-        {/* Cards - Centered Horizontal Scroll */}
         <motion.div style={{ x }} className="flex gap-8 pl-[10vw]">
           {cards.map((card) => {
             return <Card card={card} key={card.id} isDark={isDark} />;
           })}
         </motion.div>
       </div>
+
+      {/* Mobile View */}
+      <div className="md:hidden py-16 flex flex-col items-center">
+        <div className="w-full text-center mb-8 px-6">
+           <h2 
+            className="text-3xl font-black font-display mb-2"
+            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+          >
+            Trusted by the Best
+          </h2>
+          <p className="text-base" style={{ color: '#64748b' }}>
+            Join 500+ restaurants growing with Yummy.
+          </p>
+        </div>
+
+        <Swiper
+          slidesPerView={'auto'}
+          spaceBetween={30}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Pagination, Mousewheel]}
+          mousewheel={true}
+          grabCursor={true}
+          className="mySwiper w-full"
+        >
+          {cards.map((card) => {
+            return (
+              <SwiperSlide key={card.id} style={{ width: '80%' }} className="flex justify-center items-center py-8">
+                <Card 
+                  card={card} 
+                  isDark={isDark} 
+                  className="w-full h-auto aspect-[7/8]"
+                />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
     </section>
   );
 }
 
-const Card = ({ card, isDark }: { card: typeof cards[0], isDark: boolean }) => {
+const Card = ({ card, isDark, className }: { card: typeof cards[0], isDark: boolean, className?: string }) => {
   return (
     <div
       key={card.id}
-      className="group relative h-[400px] w-[350px] sm:h-[450px] sm:w-[450px] overflow-hidden rounded-3xl flex-shrink-0"
+      className={cn(
+        "group relative overflow-hidden rounded-3xl flex-shrink-0 h-[400px] w-[350px] sm:h-[450px] sm:w-[450px]",
+        className
+      )}
       style={{ 
-        backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'transparent', // Transparent in light mode to avoid overlay
-        border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none', // No border in light mode if not needed
+        backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'transparent',
+        border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
       }}
     >
@@ -95,13 +143,13 @@ const Card = ({ card, isDark }: { card: typeof cards[0], isDark: boolean }) => {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-        className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110 opacity-100" 
+        className="absolute inset-0 z-0 transition-transform duration-250 group-hover:scale-110 opacity-100" 
       ></div>
       <div className="absolute inset-0 z-10 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
         <p className="text-2xl sm:text-3xl font-bold font-display text-white mb-4 leading-tight">
           "{card.title}"
         </p>
-        <p className="text-primary font-bold uppercase tracking-wider text-sm">
+        <p className="text-light font-bold uppercase tracking-wider text-sm">
           {card.author}
         </p>
       </div>

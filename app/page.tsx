@@ -3,7 +3,9 @@ import {
   Hero,
   Process,
   Features,
-  AppPreview,
+  SpeedGrid,
+  ExpandableGallery,
+  ThreeSteps,
   Pricing,
   Testimonials,
   About,
@@ -19,7 +21,9 @@ export default function Home() {
         <Testimonials />
         <About />
         <Features />
-        <AppPreview />
+        {/* <SpeedGrid /> */}
+        <ExpandableGallery />
+        <ThreeSteps />
         <Pricing />
       </main>
       <Footer />

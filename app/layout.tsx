@@ -18,6 +18,7 @@ const outfit = Outfit({
 
 // SEO Metadata
 export const metadata: Metadata = {
+  metadataBase: new URL("http://localhost:3000"),
   title: "Yummy POS – Nepal's #1 Restaurant OS",
   description:
     "Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",

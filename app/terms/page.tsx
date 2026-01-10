@@ -5,7 +5,7 @@ export default function TermsPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-32 pb-20 max-w-4xl mx-auto px-6">
+      <main className="pt-32 pb-20 max-w-4xl mx-auto px-6 animate-pop-in">
         <h1 className="text-4xl font-black font-display mb-8">
           Terms and Conditions
         </h1>
