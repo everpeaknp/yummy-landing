@@ -43,7 +43,7 @@ export function Navbar() {
          {/* Logo */}
          <Link href="/" className="flex items-center gap-3 relative z-50">
            <Image
-             src={isDark ? "/images/yummy_logo.png" : "/images/yummy_logo.png"}
+             src={isDark ? "/images/yummy_logo.png" : "/images/yummy_logo_orange.png"}
              alt="Yummy Logo"
              width={50}
              height={50}
