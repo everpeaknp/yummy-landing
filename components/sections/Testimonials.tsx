@@ -145,11 +145,11 @@ const Card = ({ card, isDark, className }: { card: typeof cards[0], isDark: bool
         }}
         className="absolute inset-0 z-0 transition-transform duration-250 group-hover:scale-110 opacity-100" 
       ></div>
-      <div className="absolute inset-0 z-10 flex flex-col justify-end p-8 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-        <p className="text-2xl sm:text-3xl font-bold font-display text-white mb-4 leading-tight">
+      <div className="absolute inset-0 z-10 flex flex-col justify-end p-8 bg-gradient-to-t from-black via-black/40 to-transparent">
+        <p className="text-2xl sm:text-3xl font-bold font-display text-white mb-4 leading-tight drop-shadow-lg">
           "{card.title}"
         </p>
-        <p className="text-light font-bold uppercase tracking-wider text-sm">
+        <p className="text-white/90 font-bold uppercase tracking-wider text-sm drop-shadow-md">
           {card.author}
         </p>
       </div>

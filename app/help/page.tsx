@@ -13,6 +13,19 @@ export default function HelpCenterPage() {
   const isDark = theme === "dark";
   const [query, setQuery] = useState("");
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   // Flatten FAQs for search
   const allFaqs = faqCategories.flatMap(cat => 
     cat.questions.map(q => ({
@@ -62,8 +75,11 @@ export default function HelpCenterPage() {
   return (
     <>
       <Navbar />
-      <main 
-        className="min-h-screen pt-32 pb-20 px-6 animate-pop-in flex flex-col items-center"
+      <motion.main 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="min-h-screen pt-32 pb-20 px-6 flex flex-col items-center"
         style={{ 
             backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
             color: isDark ? '#f3f4f6' : '#1f2937'
@@ -72,10 +88,10 @@ export default function HelpCenterPage() {
         <section className="w-full max-w-6xl px-4 md:p-8">
             <div className="container flex flex-col items-center p-4 mx-auto md:p-8 rounded-3xl relative" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#f3f4f6' }}>
                 
-                <h1 className="text-3xl font-bold leading-none text-center sm:text-4xl mb-2">Help Center</h1>
-                <p className="mb-8 opacity-70">How can we help you today?</p>
+                <motion.h1 variants={item} className="text-3xl font-bold leading-none text-center sm:text-4xl mb-2">Help Center</motion.h1>
+                <motion.p variants={item} className="mb-8 opacity-70">How can we help you today?</motion.p>
                 
-                <div className="relative mt-2 mb-12 w-full max-w-lg z-50">
+                <motion.div variants={item} className="relative mt-2 mb-12 w-full max-w-lg z-50">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                         <FiSearch className="w-5 h-5 opacity-50" />
                     </span>
@@ -129,9 +145,9 @@ export default function HelpCenterPage() {
                             </motion.div>
                         )}
                     </AnimatePresence>
-                </div>
+                </motion.div>
 
-                <div className="flex flex-col w-full divide-y sm:flex-row sm:divide-y-0 sm:divide-x sm:px-8 lg:px-12 xl:px-32 relative z-10" style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db' }}>
+                <motion.div variants={item} className="flex flex-col w-full divide-y sm:flex-row sm:divide-y-0 sm:divide-x sm:px-8 lg:px-12 xl:px-32 relative z-10" style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db' }}>
                     <div className="flex flex-col w-full divide-y" style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db' }}>
                         {linkGroups[0].col1.map((link, i) => (
                             <Link key={i} href={link.href} className="flex items-center justify-center p-4 sm:py-8 lg:py-12 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
@@ -153,10 +169,10 @@ export default function HelpCenterPage() {
                             </Link>
                         ))}
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
-      </main>
+      </motion.main>
       <Footer />
     </>
   );

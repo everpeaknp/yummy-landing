@@ -52,15 +52,31 @@ export default function FAQPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
     <>
       <Navbar />
-      <main 
-        className="min-h-screen pt-32 pb-20 px-6 animate-pop-in"
+      <motion.main 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="min-h-screen pt-32 pb-20 px-6"
         style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
       >
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div variants={item} className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-black font-display mb-6" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
               Frequently Asked Questions
             </h1>
@@ -68,11 +84,11 @@ export default function FAQPage() {
               Everything you need to know about Yummy. Can't find the answer you're looking for? 
               <a href="/contact" className="text-primary font-bold hover:underline ml-2">Chat to our friendly team.</a>
             </p>
-          </div>
+          </motion.div>
 
           <div className="space-y-12">
             {faqCategories.map((category, idx) => (
-              <div key={idx} className="bg-opacity-50 rounded-3xl p-8 shadow-sm" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : '#f8fafc' }}>
+              <motion.div variants={item} key={idx} className="bg-opacity-50 rounded-3xl p-8 shadow-sm" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : '#f8fafc' }}>
                 <h2 className="text-2xl font-bold mb-6" style={{ color: isDark ? '#e2e8f0' : '#334155' }}>
                   {category.title}
                 </h2>
@@ -81,11 +97,11 @@ export default function FAQPage() {
                     <AccordionItem key={i} question={q.q} answer={q.a} />
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </main>
+      </motion.main>
       <Footer />
     </>
   );

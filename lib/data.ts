@@ -96,7 +96,7 @@ export const jobPositions = [
   },
   {
     id: 4,
-    title: "Backend Developer (Go/Node)",
+    title: "Backend Developer (FastAPI)",
     department: "Engineering",
     type: "Full-time",
     location: "Remote",
