@@ -266,6 +266,17 @@ const Content = ({
   dir: null | "l" | "r";
   isDark: boolean;
 }) => {
+  const [left, setLeft] = useState(0);
+
+  useEffect(() => {
+    if (selected) {
+      const el = document.getElementById(`shift-tab-${selected}`);
+      if (el) {
+        setLeft(el.offsetLeft + el.offsetWidth / 2);
+      }
+    }
+  }, [selected]);
+
   return (
     <motion.div
       id="overlay-content"
@@ -276,19 +287,20 @@ const Content = ({
       animate={{
         opacity: 1,
         y: 0,
+        left,
       }}
       exit={{
         opacity: 0,
         y: 8,
       }}
-       className="absolute left-1/2 -translate-x-1/2 top-[calc(100%_+_24px)] w-96 rounded-lg p-4 border shadow-xl"
+       className="absolute top-[calc(100%_+_24px)] w-96 rounded-lg p-4 border shadow-xl -translate-x-1/2"
       style={{
           backgroundColor: isDark ? '#171717' : '#ffffff',
           borderColor: isDark ? '#262626' : '#e2e8f0'
       }}
     >
       <Bridge />
-      <Nub selected={selected} isDark={isDark} />
+      <Nub isDark={isDark} />
 
       {TABS.map((t) => {
         if (!t.Component) return null;
@@ -317,38 +329,14 @@ const Bridge = () => (
   <div className="absolute -top-[24px] left-0 right-0 h-[24px]" />
 );
 
-const Nub = ({ selected, isDark }: { selected: number | null, isDark: boolean }) => {
-  const [left, setLeft] = useState(0);
-
-  useEffect(() => {
-    moveNub();
-  }, [selected]);
-
-  const moveNub = () => {
-    if (selected) {
-      const hoveredTab = document.getElementById(`shift-tab-${selected}`);
-      const overlayContent = document.getElementById("overlay-content");
-
-      if (!hoveredTab || !overlayContent) return;
-
-      const tabRect = hoveredTab.getBoundingClientRect();
-      const { left: contentLeft } = overlayContent.getBoundingClientRect();
-
-      const tabCenter = tabRect.left + tabRect.width / 2 - contentLeft;
-
-      setLeft(tabCenter);
-    }
-  };
-
+const Nub = ({ isDark }: { isDark: boolean }) => {
   return (
-    <motion.span
+    <span
       style={{
         clipPath: "polygon(0 0, 100% 0, 50% 50%, 0% 100%)",
         backgroundColor: isDark ? '#171717' : '#ffffff',
         borderColor: isDark ? '#262626' : '#e2e8f0',
       }}
-      animate={{ left }}
-      transition={{ duration: 0.25, ease: "easeInOut" }}
       className="absolute left-1/2 top-0 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-tl border-t border-l"
     />
   );

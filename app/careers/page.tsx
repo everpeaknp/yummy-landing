@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Navbar, Footer } from "@/components/layout";
 import { useTheme } from "@/hooks/useTheme";
@@ -84,10 +85,27 @@ export default function CareersPage() {
 
            {/* Job Grid */}
            {filteredJobs.length > 0 ? (
-               <div className="grid md:grid-cols-2 gap-6">
+               <motion.div 
+                 className="grid md:grid-cols-2 gap-6"
+                 initial="hidden"
+                 animate="show"
+                 variants={{
+                   hidden: { opacity: 0 },
+                   show: {
+                     opacity: 1,
+                     transition: {
+                       staggerChildren: 0.1
+                     }
+                   }
+                 }}
+               >
                   {filteredJobs.map((job) => (
-                      <div 
+                      <motion.div 
                         key={job.id}
+                        variants={{
+                          hidden: { opacity: 0, y: 20 },
+                          show: { opacity: 1, y: 0 }
+                        }}
                         className="p-8 rounded-3xl border transition-all hover:shadow-xl group relative overflow-hidden"
                         style={{ 
                             backgroundColor: isDark ? '#171717' : '#ffffff',
@@ -124,13 +142,16 @@ export default function CareersPage() {
                                 {job.description}
                             </p>
 
-                            <button className="flex items-center gap-2 text-primary font-bold group-hover:translate-x-1 transition-transform">
+                            <a 
+                                href={`mailto:yummyever.np@gmail.com?subject=Application for ${job.title}`} 
+                                className="flex items-center gap-2 text-primary font-bold group-hover:translate-x-1 transition-transform"
+                            >
                                 Apply Now <FiArrowRight />
-                            </button>
+                            </a>
                          </div>
-                      </div>
+                      </motion.div>
                   ))}
-               </div>
+               </motion.div>
            ) : (
                /* Empty State */
                <div className="text-center py-20">
