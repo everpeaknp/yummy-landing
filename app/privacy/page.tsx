@@ -5,7 +5,7 @@ export default function PrivacyPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-32 pb-20 max-w-4xl mx-auto px-6">
+      <main className="pt-32 pb-20 max-w-4xl mx-auto px-6 animate-pop-in">
         <h1 className="text-4xl font-black font-display mb-8">Privacy Policy</h1>
         <div className="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400">
           <p className="text-lg mb-6">

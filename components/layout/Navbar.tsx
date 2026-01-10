@@ -5,10 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   FiArrowRight,
-  FiBarChart2,
   FiChevronDown,
-  FiHome,
-  FiPieChart,
   FiMenu,
   FiX
 } from "react-icons/fi";
@@ -33,7 +30,7 @@ export function Navbar() {
   return (
     <>
     <nav 
-      className="fixed top-0 w-full z-50 backdrop-blur-md transition-colors duration-300"
+      className="fixed top-0 w-full z-[100] backdrop-blur-md transition-colors duration-300"
       style={{ 
         backgroundColor: isDark ? 'rgba(10, 10, 10, 0.8)' : 'rgba(255, 255, 255, 0.8)',
         borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : '#e2e8f0'}`
@@ -53,7 +50,7 @@ export function Navbar() {
              className="text-xl font-bold font-display tracking-tight leading-none"
              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
            >
-             Yummy
+             Yummy Ever
            </span>
          </Link>
 
@@ -126,7 +123,6 @@ export function Navbar() {
                    >
                      {t.title}
                    </Link>
-                   {/* Render simplified sub-links if needed, or just link to main sections */}
                 </div>
               ))}
               
@@ -184,6 +180,21 @@ const Tabs = ({ isDark }: { isDark: boolean }) => {
       className="relative flex h-fit gap-2"
     >
       {TABS.map((t) => {
+        if (!t.Component) {
+             return (
+                 <Link 
+                    key={t.id} 
+                    href={t.href}
+                    className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors"
+                    style={{
+                        color: isDark ? '#94a3b8' : '#64748b'
+                    }}
+                    onMouseEnter={() => handleSetSelected(null)}
+                 >
+                    {t.title}
+                 </Link>
+             )
+        }
         return (
           <Tab
             key={t.id}
@@ -225,7 +236,7 @@ const Tab = ({
       href={href}
       id={`shift-tab-${tab}`}
       onMouseEnter={() => handleSetSelected(tab)}
-      onClick={() => handleSetSelected(null)} // Close dropdown on click
+      onClick={() => handleSetSelected(null)}
       className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors`}
       style={{
           backgroundColor: selected === tab 
@@ -270,7 +281,7 @@ const Content = ({
         opacity: 0,
         y: 8,
       }}
-      className="absolute left-0 top-[calc(100%_+_24px)] w-96 rounded-lg p-4 border shadow-xl"
+       className="absolute left-1/2 -translate-x-1/2 top-[calc(100%_+_24px)] w-96 rounded-lg p-4 border shadow-xl"
       style={{
           backgroundColor: isDark ? '#171717' : '#ffffff',
           borderColor: isDark ? '#262626' : '#e2e8f0'
@@ -280,6 +291,7 @@ const Content = ({
       <Nub selected={selected} isDark={isDark} />
 
       {TABS.map((t) => {
+        if (!t.Component) return null;
         return (
           <div className="overflow-hidden" key={t.id}>
             {selected === t.id && (
@@ -342,61 +354,34 @@ const Nub = ({ selected, isDark }: { selected: number | null, isDark: boolean })
   );
 };
 
-const Products = ({ isDark }: { isDark: boolean }) => {
+const FeaturesMenu = ({ isDark }: { isDark: boolean }) => {
+  const items = [
+      { name: "Smart Inventory", href: "/features/smart-inventory", icon: "inventory_2" },
+      { name: "IRD Billing", href: "/features/ird-billing", icon: "receipt_long" },
+      { name: "Digital QR Menu", href: "/features/qr-menu", icon: "qr_code_2" },
+      { name: "Real-time Reports", href: "/features/reports", icon: "bar_chart" },
+  ];
+
   return (
     <div>
-      <div className="flex gap-4">
-        <div>
-          <h3 className="mb-2 text-sm font-medium" style={{ color: isDark ? '#fff' : '#0f172a' }}>Core</h3>
-          <Link href="/features/smart-inventory" className="mb-1 block text-sm transition-colors hover:text-primary" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-            Smart Inventory
-          </Link>
-          <Link href="/features/ird-billing" className="block text-sm transition-colors hover:text-primary" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-            IRD Approved Billing
-          </Link>
-        </div>
-        <div>
-          <h3 className="mb-2 text-sm font-medium" style={{ color: isDark ? '#fff' : '#0f172a' }}>Growth</h3>
-          <Link href="/features/qr-menu" className="mb-1 block text-sm transition-colors hover:text-primary" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-            Digital QR Menu
-          </Link>
-          <Link href="/features/reports" className="mb-1 block text-sm transition-colors hover:text-primary" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-            Real-time Reports
-          </Link>
-        </div>
+      <div className="grid grid-cols-2 gap-4">
+          {items.map((item) => (
+              <Link 
+                key={item.href} 
+                href={item.href} 
+                className="group flex flex-col gap-1 p-2 rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-white/5"
+              >
+                  <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors text-lg">{item.icon}</span>
+                      <span className="text-sm font-medium" style={{ color: isDark ? '#e5e5e5' : '#1e293b' }}>{item.name}</span>
+                  </div>
+              </Link>
+          ))}
       </div>
 
-      <Link href="/features" className="ml-auto mt-4 flex items-center gap-1 text-sm text-primary w-fit hover:underline">
+      <Link href="/features" className="ml-auto mt-4 flex items-center gap-1 text-sm text-primary w-fit hover:underline pt-2 border-t border-dashed border-gray-200 dark:border-gray-800">
         <span>View all features</span>
         <FiArrowRight />
-      </Link>
-    </div>
-  );
-};
-
-const Pricing = ({ isDark }: { isDark: boolean }) => {
-  return (
-    <div className={`grid grid-cols-3 gap-4 divide-x ${isDark ? 'divide-neutral-700' : 'divide-slate-200'}`}>
-      <Link
-        href="/pricing"
-        className={`flex w-full flex-col items-center justify-center py-2 transition-colors ${isDark ? 'text-neutral-400 hover:text-neutral-50' : 'text-slate-500 hover:text-slate-900'}`}
-      >
-        <FiHome className="mb-2 text-xl text-primary" />
-        <span className="text-xs">Startup</span>
-      </Link>
-      <Link
-        href="/pricing"
-        className={`flex w-full flex-col items-center justify-center py-2 transition-colors ${isDark ? 'text-neutral-400 hover:text-neutral-50' : 'text-slate-500 hover:text-slate-900'}`}
-      >
-        <FiBarChart2 className="mb-2 text-xl text-primary" />
-        <span className="text-xs">Scaleup</span>
-      </Link>
-      <Link
-        href="/pricing"
-        className={`flex w-full flex-col items-center justify-center py-2 transition-colors ${isDark ? 'text-neutral-400 hover:text-neutral-50' : 'text-slate-500 hover:text-slate-900'}`}
-      >
-        <FiPieChart className="mb-2 text-xl text-primary" />
-        <span className="text-xs">Enterprise</span>
       </Link>
     </div>
   );
@@ -443,16 +428,61 @@ const Blog = ({ isDark }: { isDark: boolean }) => {
   );
 };
 
+const CompanyMenu = ({ isDark }: { isDark: boolean }) => {
+  const items = [
+      { name: "Team", href: "/team", icon: "group", desc: "Meet the people behind Yummy" },
+      { name: "Help Center", href: "/help", icon: "help", desc: "Get support and assistance" },
+      { name: "FAQ", href: "/faq", icon: "quiz", desc: "Common questions answered" },
+  ];
+
+  return (
+    <div className="w-[340px]">
+      <div className="grid gap-2">
+          {items.map((item) => (
+              <Link 
+                key={item.href} 
+                href={item.href} 
+                className="group flex items-start gap-3 p-3 rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-white/5"
+              >
+                  <div className="mt-1 flex items-center justify-center h-8 w-8 rounded-full bg-slate-50 dark:bg-white/5 group-hover:bg-white dark:group-hover:bg-white/10 shrink-0">
+                       <span className="material-symbols-outlined text-gray-500 group-hover:text-primary transition-colors text-[20px]">{item.icon}</span>
+                  </div>
+                  <div>
+                      <span className="block text-sm font-semibold mb-0.5" style={{ color: isDark ? '#e5e5e5' : '#1e293b' }}>{item.name}</span>
+                      <span className="block text-xs" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>{item.desc}</span>
+                  </div>
+              </Link>
+          ))}
+      </div>
+
+      <div className="mt-4 pt-3 flex items-center gap-6 border-t border-dashed" style={{ borderColor: isDark ? '#262626' : '#e2e8f0' }}>
+        <Link href="/privacy" className="text-xs hover:text-primary transition-colors" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Privacy Policy</Link>
+        <Link href="/terms" className="text-xs hover:text-primary transition-colors" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Terms of Service</Link>
+      </div>
+    </div>
+  );
+};
+
 const TABS = [
   {
     title: "Features",
     href: "/features",
-    Component: Products,
+    Component: FeaturesMenu,
   },
   {
     title: "Pricing",
     href: "/pricing",
-    Component: Pricing,
+    Component: null, // Direct link, no mega menu
+  },
+  {
+    title: "Company",
+    href: "/team",
+    Component: CompanyMenu,
+  },
+  {
+    title: "Careers",
+    href: "/careers",
+    Component: null,
   },
   {
     title: "Blog",
