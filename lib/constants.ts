@@ -8,7 +8,7 @@ export const siteConfig = {
   url: "https://yummypos.com",
   ogImage: "/images/og-image.png",
   links: {
-    app: "https://yummyever.netlify.app/",
+    app: "https://app.yummyever.com/",
   },
 } as const;
 
