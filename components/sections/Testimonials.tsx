@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useTransform, useScroll } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Mousewheel } from 'swiper/modules';
@@ -48,17 +48,54 @@ export function Testimonials() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const targetRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [scrollRange, setScrollRange] = useState(0);
+  const [totalHeight, setTotalHeight] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (contentRef.current && targetRef.current) {
+        const scrollWidth = contentRef.current.scrollWidth;
+        const viewportWidth = window.innerWidth;
+        const distance = scrollWidth - viewportWidth;
+        // Only scroll if content is wider than viewport
+        const finalDist = distance > 0 ? distance : 0;
+        
+        setScrollRange(finalDist);
+        // Set height to be viewport + distance (1:1 scroll feel)
+        // If content fits, height is just viewport (effectively no sticky scroll per se, just passes through)
+        // We add a small buffer if needed, but 1:1 is usually best.
+        if (window.innerWidth >= 768) { // Only apply for desktop logic
+           setTotalHeight(`${finalDist + window.innerHeight}px`);
+        } else {
+           setTotalHeight(undefined); // Let CSS handle mobile
+        }
+      }
+    };
+
+    // Initial calculation
+    updateDimensions();
+
+    // Recalculate on resize
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: targetRef,
+    offset: ["start start", "end end"]
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"]);
+  const x = useTransform(scrollYProgress, [0, 1], ["0px", `-${scrollRange}px`]);
 
   return (
     <section 
       ref={targetRef} 
       className="relative h-auto md:h-[300vh]" 
-      style={{ backgroundColor: isDark ? '#0a0a0a' : '#f8fafc' }}
+      style={{ 
+        backgroundColor: isDark ? '#0a0a0a' : '#f8fafc',
+        height: totalHeight 
+      }}
     >
       {/* Desktop View */}
       <div className="hidden md:flex sticky top-0 h-screen flex-col items-start justify-center overflow-hidden">
@@ -74,7 +111,7 @@ export function Testimonials() {
           </p>
         </div>
         
-        <motion.div style={{ x }} className="flex gap-8 pl-[10vw]">
+        <motion.div ref={contentRef} style={{ x }} className="flex gap-8 pl-[10vw] pr-[10vw]">
           {cards.map((card) => {
             return <Card card={card} key={card.id} isDark={isDark} />;
           })}

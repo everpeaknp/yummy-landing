@@ -54,7 +54,7 @@ export function Hero() {
         
         <Link
           href="#about"
-          className="group flex items-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-4 font-semibold text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-50 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800"
+          className="group flex items-center justify-center gap-2 rounded-[7px] border border-slate-200 bg-white px-6 py-3 min-w-[160px] font-semibold text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-50 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800"
         >
           <span>How it Works</span>
           <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
