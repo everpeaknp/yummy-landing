@@ -51,12 +51,12 @@ export const faqCategories = [
 export const helpLinks = [
     { label: "Billing", href: "/faq" },
     { label: "Support", href: "/contact" },
-    { label: "Terms", href: "/terms" },
+    { label: "Terms", href: "/terms-and-conditions" },
     { label: "Features", href: "/features/smart-inventory" },
     { label: "Contact us", href: "/contact" },
     { label: "Blog", href: "/blog" },
     { label: "Enterprise", href: "/pricing" },
-    { label: "Privacy", href: "/privacy" },
+    { label: "Privacy", href: "/privacy-policy" },
     { label: "Team", href: "/team" }
 ];
 

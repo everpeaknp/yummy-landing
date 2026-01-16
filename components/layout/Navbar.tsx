@@ -444,8 +444,8 @@ const CompanyMenu = ({ isDark }: { isDark: boolean }) => {
       </div>
 
       <div className="mt-4 pt-3 flex items-center gap-6 border-t border-dashed" style={{ borderColor: isDark ? '#262626' : '#e2e8f0' }}>
-        <Link href="/privacy" className="text-xs hover:text-primary transition-colors" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Privacy Policy</Link>
-        <Link href="/terms" className="text-xs hover:text-primary transition-colors" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Terms of Service</Link>
+        <Link href="/privacy-policy" className="text-xs hover:text-primary transition-colors" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Privacy Policy</Link>
+        <Link href="/terms-and-conditions" className="text-xs hover:text-primary transition-colors" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Terms of Service</Link>
       </div>
     </div>
   );

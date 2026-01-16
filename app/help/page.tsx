@@ -57,7 +57,7 @@ export default function HelpCenterPage() {
       col1: [
         { label: "Billing", href: "/faq" },
         { label: "Support", href: "/contact" },
-        { label: "Terms", href: "/terms" },
+        { label: "Terms", href: "/terms-and-conditions" },
       ],
       col2: [
         { label: "Features", href: "/features/smart-inventory" },
@@ -66,7 +66,7 @@ export default function HelpCenterPage() {
       ],
       col3: [
         { label: "Enterprise", href: "/pricing" },
-        { label: "Privacy", href: "/privacy" },
+        { label: "Privacy", href: "/privacy-policy" },
         { label: "Team", href: "/team" },
       ]
     }
