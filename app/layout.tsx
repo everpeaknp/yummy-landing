@@ -21,7 +21,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "https://yummyever.com"
   ),
-  title: "Yummy POS – Nepal's #1 Restaurant OS",
+  title: {
+    default: "Yummy POS – Nepal's #1 Restaurant POS",
+    template: "%s | Yummy POS",
+  },
+  applicationName: "Yummy POS",
   description:
     "Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
   keywords: [
@@ -31,14 +35,31 @@ export const metadata: Metadata = {
     "KOT",
     "inventory management",
     "restaurant software",
+    "restaurant billing software",
+    "best POS Nepal",
+    "restaurant management system",
   ],
   authors: [{ name: "Everacy" }],
   icons: {
     icon: "/images/yummy_logo.png",
     apple: "/images/yummy_logo.png",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: "Yummy POS – Nepal's #1 Restaurant OS",
+    title: {
+      default: "Yummy POS – Nepal's #1 Restaurant POS",
+      template: "%s | Yummy POS",
+    },
     description:
       "The best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
     type: "website",
@@ -55,7 +76,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yummy POS – Nepal's #1 Restaurant OS",
+    title: {
+      default: "Yummy POS – Nepal's #1 Restaurant POS",
+      template: "%s | Yummy POS",
+    },
     description:
       "The best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
     images: ["/images/og-image.png"],
@@ -99,6 +123,26 @@ const tailwindConfigScript = `
   };
 `;
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Yummy POS",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web, Android, iOS",
+  description:
+    "Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "NPR",
+  },
+  author: {
+    "@type": "Organization",
+    name: "Everacy",
+    url: "https://everacy.com",
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -110,10 +154,16 @@ export default function RootLayout({
         {/* Tailwind CSS CDN - Guaranteed to work like original HTML */}
         <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" />
         <script dangerouslySetInnerHTML={{ __html: tailwindConfigScript }} />
-        
+
         {/* Theme script */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+
         {/* Material Symbols for icons */}
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
