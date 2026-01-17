@@ -18,7 +18,9 @@ const outfit = Outfit({
 
 // SEO Metadata
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://yummyever.com"
+  ),
   title: "Yummy POS – Nepal's #1 Restaurant OS",
   description:
     "Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
@@ -42,14 +44,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Yummy POS",
-    images: ["/images/yummy_logo.png"],
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Yummy POS Banner",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Yummy POS – Nepal's #1 Restaurant OS",
     description:
       "The best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
-    images: ["/images/yummy_logo.png"],
+    images: ["/images/og-image.png"],
+  },
+  alternates: {
+    canonical: "/",
   },
 };
 
