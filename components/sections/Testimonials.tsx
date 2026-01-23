@@ -6,43 +6,50 @@ import { useTheme } from "@/hooks/useTheme";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Mousewheel } from 'swiper/modules';
 import { cn } from "@/lib/utils"; 
+import { useTestimonialsData, type TestimonialsData, type TestimonialCard } from "@/lib/api";
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-const cards = [
+const fallbackCards: TestimonialCard[] = [
   {
-    url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop",
-    title: "Revolutionized our inventory management.",
+    imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop",
+    quote: "Revolutionized our inventory management.",
     author: "Baje Ko Sekuwa",
-    id: 1,
+    order: 1,
   },
   {
-    url: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1000&auto=format&fit=crop",
-    title: "Best POS system in Nepal, hands down.",
+    imageUrl: "https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1000&auto=format&fit=crop",
+    quote: "Best POS system in Nepal, hands down.",
     author: "Roadhouse Cafe",
-    id: 2,
+    order: 2,
   },
   {
-    url: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop",
-    title: "KOT printing is lightning fast.",
+    imageUrl: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop",
+    quote: "KOT printing is lightning fast.",
     author: "Trisara",
-    id: 3,
+    order: 3,
   },
   {
-    url: "https://images.unsplash.com/photo-1550966871-3ed3c6227b3c?q=80&w=1000&auto=format&fit=crop",
-    title: "Support team is always available.",
+    imageUrl: "https://images.unsplash.com/photo-1550966871-3ed3c6227b3c?q=80&w=1000&auto=format&fit=crop",
+    quote: "Support team is always available.",
     author: "Burger Shack",
-    id: 4,
+    order: 4,
   },
   {
-    url: "https://images.unsplash.com/photo-1466978913421-dad9375acb25?q=80&w=1000&auto=format&fit=crop",
-    title: "IRD billing made simple.",
+    imageUrl: "https://images.unsplash.com/photo-1466978913421-dad9375acb25?q=80&w=1000&auto=format&fit=crop",
+    quote: "IRD billing made simple.",
     author: "Himalayan Java",
-    id: 5,
+    order: 5,
   },
 ];
+
+const fallbackData: Partial<TestimonialsData> = {
+  title: "Trusted by the Best",
+  subtitle: "Join 500+ restaurants growing with Yummy.",
+  cards: fallbackCards,
+};
 
 export function Testimonials() {
   const { theme } = useTheme();
@@ -51,6 +58,9 @@ export function Testimonials() {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const [scrollRange, setScrollRange] = useState(0);
   const [totalHeight, setTotalHeight] = useState<string | undefined>(undefined);
+  
+  const { data } = useTestimonialsData(fallbackData);
+  const cards = data.cards || fallbackCards;
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -63,8 +73,6 @@ export function Testimonials() {
         
         setScrollRange(finalDist);
         // Set height to be viewport + distance (1:1 scroll feel)
-        // If content fits, height is just viewport (effectively no sticky scroll per se, just passes through)
-        // We add a small buffer if needed, but 1:1 is usually best.
         if (window.innerWidth >= 768) { // Only apply for desktop logic
            setTotalHeight(`${finalDist + window.innerHeight}px`);
         } else {
@@ -74,12 +82,13 @@ export function Testimonials() {
     };
 
     // Initial calculation
-    updateDimensions();
+    // Need a slight delay to ensure content is rendered
+    setTimeout(updateDimensions, 100);
 
     // Recalculate on resize
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
+  }, [cards]); // Re-run when cards change
 
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -104,16 +113,16 @@ export function Testimonials() {
             className="text-4xl sm:text-5xl font-black font-display mb-4"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            Trusted by the Best
+            {data.title}
           </h2>
           <p className="text-lg" style={{ color: '#64748b' }}>
-            Join 500+ restaurants growing with Yummy.
+            {data.subtitle}
           </p>
         </div>
         
         <motion.div ref={contentRef} style={{ x }} className="flex gap-8 pl-[10vw] pr-[10vw]">
-          {cards.map((card) => {
-            return <Card card={card} key={card.id} isDark={isDark} />;
+          {cards.sort((a, b) => a.order - b.order).map((card, idx) => {
+            return <Card card={card} key={idx} isDark={isDark} />;
           })}
         </motion.div>
       </div>
@@ -125,10 +134,10 @@ export function Testimonials() {
             className="text-3xl font-black font-display mb-2"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            Trusted by the Best
+            {data.title}
           </h2>
           <p className="text-base" style={{ color: '#64748b' }}>
-            Join 500+ restaurants growing with Yummy.
+            {data.subtitle}
           </p>
         </div>
 
@@ -143,9 +152,9 @@ export function Testimonials() {
           grabCursor={true}
           className="mySwiper w-full"
         >
-          {cards.map((card) => {
+          {cards.sort((a, b) => a.order - b.order).map((card, idx) => {
             return (
-              <SwiperSlide key={card.id} style={{ width: '80%' }} className="flex justify-center items-center py-8">
+              <SwiperSlide key={idx} style={{ width: '80%' }} className="flex justify-center items-center py-8">
                 <Card 
                   card={card} 
                   isDark={isDark} 
@@ -160,10 +169,9 @@ export function Testimonials() {
   );
 }
 
-const Card = ({ card, isDark, className }: { card: typeof cards[0], isDark: boolean, className?: string }) => {
+const Card = ({ card, isDark, className }: { card: TestimonialCard, isDark: boolean, className?: string }) => {
   return (
     <div
-      key={card.id}
       className={cn(
         "group relative overflow-hidden rounded-3xl flex-shrink-0 h-[400px] w-[350px] sm:h-[450px] sm:w-[450px]",
         className
@@ -176,7 +184,7 @@ const Card = ({ card, isDark, className }: { card: typeof cards[0], isDark: bool
     >
       <div
         style={{
-          backgroundImage: `url(${card.url})`,
+          backgroundImage: `url(${card.imageUrl})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -184,7 +192,7 @@ const Card = ({ card, isDark, className }: { card: typeof cards[0], isDark: bool
       ></div>
       <div className="absolute inset-0 z-10 flex flex-col justify-end p-8 bg-gradient-to-t from-black via-black/40 to-transparent">
         <p className="text-2xl sm:text-3xl font-bold font-display text-white mb-4 leading-tight drop-shadow-lg">
-          "{card.title}"
+          "{card.quote}"
         </p>
         <p className="text-white/90 font-bold uppercase tracking-wider text-sm drop-shadow-md">
           {card.author}

@@ -4,53 +4,69 @@ import { useTheme } from "@/hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { useGalleryData, type GalleryData, type GalleryFeature } from "@/lib/api";
+import { InlineHTMLContent } from "@/components/ui/HTMLContent";
 
-const features = [
+const fallbackFeatures: GalleryFeature[] = [
   {
     id: "track",
     title: "Track Every Order in Real Time",
     description: "Gain complete visibility over your restaurant's operations. Monitor active orders, view history, and track performance metrics live as they happen.",
-    points: ["Active Orders Dashboard", "Order History Log", "Full Visibility"],
+    bulletPoints: ["Active Orders Dashboard", "Order History Log", "Full Visibility"],
     icon: "dashboard",
-    image: "/images/screen1.jpeg"
+    imageUrl: "/images/screen1.jpeg",
+    order: 1
   },
   {
     id: "billing",
     title: "Fast Orders, Instant Billing",
     description: "Streamline your checkout process. Tap to add items, automatically calculate totals, and process payments instantly for a smoother customer experience.",
-    points: ["Tap to Add", "Auto Total Calculation", "Smooth Checkout"],
+    bulletPoints: ["Tap to Add", "Auto Total Calculation", "Smooth Checkout"],
     icon: "flash_on",
-    image: "/images/screen2.jpeg"
+    imageUrl: "/images/screen2.jpeg",
+    order: 2
   },
   {
     id: "tables",
     title: "Smart Table Management",
     description: "Manage your floor plan efficiently. See real-time status of every table—available, occupied, or reserved—at a single glance.",
-    points: ["Available/Occupied Status", "Reserved Tables", "Floor Plan Overview"],
+    bulletPoints: ["Available/Occupied Status", "Reserved Tables", "Floor Plan Overview"],
     icon: "table_restaurant",
-    image: "/images/screen3.jpeg"
+    imageUrl: "/images/screen3.jpeg",
+    order: 3
   },
   {
     id: "pos",
     title: "Your Complete Restaurant POS",
     description: "A comprehensive solution for all your needs. Handle orders, kitchen communication, billing, and analytics from one unified platform.",
-    points: ["Order Management", "Kitchen Direct Sync", "Billing & Analytics"],
+    bulletPoints: ["Order Management", "Kitchen Direct Sync", "Billing & Analytics"],
     icon: "point_of_sale",
-    image: "/images/screen4.jpeg"
+    imageUrl: "/images/screen4.jpeg",
+    order: 4
   },
   {
     id: "kot",
     title: "Never Miss an Order",
     description: "Ensure perfect coordination with the kitchen. Live KOT displays keep pending and ready statuses synchronized for faster service.",
-    points: ["Live KOT Display", "Pending & Ready Status", "Faster Service Speed"],
+    bulletPoints: ["Live KOT Display", "Pending & Ready Status", "Faster Service Speed"],
     icon: "checklist",
-    image: "/images/screen5.jpeg"
+    imageUrl: "/images/screen5.jpeg",
+    order: 5
   }
 ];
+
+const fallbackData: Partial<GalleryData> = {
+  title: "What Yummy offers?",
+  subtitle: "A comprehensive suite of tools designed to modernize every aspect of your restaurant.",
+  features: fallbackFeatures,
+};
 
 export function ExpandableGallery() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const { data } = useGalleryData(fallbackData);
+  
+  const features = data.features || fallbackFeatures;
   const [activeIdx, setActiveIdx] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
 
@@ -60,7 +76,7 @@ export function ExpandableGallery() {
       setActiveIdx((prev) => (prev + 1) % features.length);
     }, 5000); 
     return () => clearInterval(interval);
-  }, [isHovering]);
+  }, [isHovering, features.length]);
 
   return (
     <section
@@ -76,10 +92,10 @@ export function ExpandableGallery() {
             className="text-4xl sm:text-6xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            What Yummy offers?
+            {data.title}
           </h2>
           <p className="text-xl max-w-2xl mx-auto" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
-            A comprehensive suite of tools designed to modernize every aspect of your restaurant.
+            {data.subtitle}
           </p>
         </div>
 
@@ -90,34 +106,38 @@ export function ExpandableGallery() {
           <div className="w-1/2 relative min-h-[600px] rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10 order-1">
              <AnimatePresence mode="wait">
                 <motion.div
-                  key={features[activeIdx].id}
+                  key={features[activeIdx]?.id || 'loading'}
                   initial={{ opacity: 0, scale: 1.05 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
                   className="absolute inset-0"
                 >
-                   <Image 
-                     src={features[activeIdx].image}
-                     alt={features[activeIdx].title}
-                     fill
-                     className="object-cover"
-                     priority
-                     unoptimized
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                   <div className="absolute bottom-0 left-0 p-12">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/10 text-white">
-                             <span className="material-symbols-outlined text-3xl">
-                               {features[activeIdx].icon}
-                             </span>
-                        </div>
-                        <h3 className="text-3xl font-bold text-white font-display">
-                            {features[activeIdx].title}
-                        </h3>
-                      </div>
-                   </div>
+                   {features[activeIdx] && (
+                     <>
+                       <Image 
+                         src={features[activeIdx].imageUrl}
+                         alt={features[activeIdx].title}
+                         fill
+                         className="object-cover"
+                         priority
+                         unoptimized
+                       />
+                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                       <div className="absolute bottom-0 left-0 p-12">
+                          <div className="flex items-center gap-4 mb-4">
+                            <div className="p-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/10 text-white">
+                                 <span className="material-symbols-outlined text-3xl">
+                                   {features[activeIdx].icon}
+                                 </span>
+                            </div>
+                            <h3 className="text-3xl font-bold text-white font-display">
+                                {features[activeIdx].title}
+                            </h3>
+                          </div>
+                       </div>
+                     </>
+                   )}
                 </motion.div>
              </AnimatePresence>
           </div>
@@ -171,10 +191,10 @@ export function ExpandableGallery() {
                                className="text-base leading-relaxed mb-4"
                                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
                              >
-                               {feature.description}
+                               <InlineHTMLContent html={feature.description} />
                              </p>
                              <div className="grid grid-cols-2 gap-2">
-                                {feature.points.map((point, pIdx) => (
+                                {(feature.bulletPoints || []).map((point, pIdx) => (
                                     <div key={pIdx} className="flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
                                         <span className="text-sm font-medium" style={{ color: isDark ? '#cbd5e1' : '#475569' }}>{point}</span>
@@ -200,7 +220,7 @@ export function ExpandableGallery() {
   );
 }
 
-function MobileAutoSlider({ features }: { features: any[] }) {
+function MobileAutoSlider({ features }: { features: GalleryFeature[] }) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -243,7 +263,7 @@ function MobileAutoSlider({ features }: { features: any[] }) {
     );
 }
 
-function MobileSlide({ feature, index, total }: { feature: any, index: number, total: number }) {
+function MobileSlide({ feature, index, total }: { feature: GalleryFeature, index: number, total: number }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
@@ -254,7 +274,7 @@ function MobileSlide({ feature, index, total }: { feature: any, index: number, t
              {/* Image: Cover to fill gaps */}
              <div className="absolute inset-0"> 
                 <Image 
-                    src={feature.image}
+                    src={feature.imageUrl}
                     alt={feature.title}
                     fill
                     className="object-cover object-top"
@@ -290,10 +310,10 @@ function MobileSlide({ feature, index, total }: { feature: any, index: number, t
                                 className="overflow-hidden"
                             >
                                 <p className="text-gray-300 leading-relaxed mb-4 text-sm mt-2">
-                                    {feature.description}
+                                    <InlineHTMLContent html={feature.description} />
                                 </p>
                                 <div className="grid grid-cols-1 gap-2 pb-4">
-                                    {feature.points.map((point: string, idx: number) => (
+                                    {(feature.bulletPoints || []).map((point: string, idx: number) => (
                                         <div key={idx} className="flex items-center gap-2">
                                             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
                                             <span className="text-xs font-medium text-gray-400">{point}</span>

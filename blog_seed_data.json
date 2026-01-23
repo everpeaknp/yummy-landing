@@ -1,0 +1,149 @@
+{
+  "title": "Yummyever Blogs",
+  "subtitle": "Latest insights, tips, and trends from the restaurant industry.",
+  "pageColors": {
+    "light": {
+      "titleColor": "#0f172a",
+      "subtitleColor": "#64748b"
+    },
+    "dark": {
+      "titleColor": "#ffffff",
+      "subtitleColor": "#94a3b8"
+    }
+  },
+  "categories": [
+    { "name": "All", "slug": "all" },
+    { "name": "Restaurant Tips", "slug": "restaurant-tips" },
+    { "name": "Technology", "slug": "technology" },
+    { "name": "Marketing", "slug": "marketing" },
+    { "name": "Operations", "slug": "operations" }
+  ],
+  "posts": [
+    {
+      "slug": "restaurant-trends-2024",
+      "title": "Top 5 Restaurant Trends in Nepal for 2024",
+      "excerpt": "The restaurant industry in Nepal is evolving rapidly. From AI-driven menus to sustainable sourcing, discover the future.",
+      "imageUrl": "https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=2600&auto=format&fit=crop",
+      "date": "Jan 10, 2024",
+      "author": { 
+        "name": "Yummy Team", 
+        "photoUrl": "https://i.pravatar.cc/150?u=yummy", 
+        "bio": "Experts in restaurant technology." 
+      },
+      "category": { "name": "Restaurant Tips", "slug": "restaurant-tips" },
+      "cardTextColor": "#ffffff",
+      "cardTextColorDark": "#ffffff",
+      "cardOverlayOpacity": 0.5,
+      "metaTitle": "Top 5 Restaurant Trends in Nepal 2024 | Yummy POS Blog",
+      "metaDescription": "Discover the latest restaurant industry trends in Nepal for 2024. From QR menus to cloud kitchens and sustainable sourcing, see what's shaping the future of dining in Kathmandu and beyond.",
+      "keywords": "Restaurant Trends Nepal, Digital Menu Nepal, Cloud Kitchen Kathmandu, Sustainable Dining Nepal, Restaurant Technology 2024",
+      "order": 1,
+      "content": "<p>The culinary landscape in Nepal is undergoing a massive transformation. As we move through 2024, restaurant owners from Kathmandu to Pokhara are adopting new technologies and shifting towards more sustainable practices. Competition is fierce, and staying ahead means evolving with customer expectations.</p><h2>1. Digital Menus & QR Ordering</h2><p>Gone are the days of bulky, physical menus that need constant reprinting. <strong>QR code menus</strong> are becoming the standard in cafes around Thamel, Jhamsikhel, and Lakeside. They offer a hygienic, fast, and interactive way for customers to order, fitting perfectly with the tech-savvy younger generation in Nepal.</p><h2>2. Cloud Kitchens</h2><p>With the rise of delivery apps like Pathao and Foodmandu, many eateries are opting for cloud kitchen models to reduce overhead and focus purely on food quality.</p>"
+    },
+    {
+      "slug": "reduce-food-waste",
+      "title": "How to Reduce Food Waste and Increase Profits",
+      "excerpt": "Food waste is the biggest profit killer in restaurants. Learn practical strategies to track inventory and minimize spoilage.",
+      "imageUrl": "https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=2600&auto=format&fit=crop",
+      "date": "Dec 28, 2023",
+      "author": { 
+        "name": "Yummy Team", 
+        "photoUrl": "https://i.pravatar.cc/150?u=yummy", 
+        "bio": "Experts in restaurant technology." 
+      },
+      "category": { "name": "Operations", "slug": "operations" },
+      "cardTextColor": "#ffffff",
+      "cardTextColorDark": "#ffffff",
+      "cardOverlayOpacity": 0.6,
+      "metaTitle": "Reduce Food Waste in Restaurants | Yummy POS Guide",
+      "metaDescription": "Learn effective strategies to cut food waste and boost restaurant profits. Tips on inventory management, portion control, and smart purchasing.",
+      "keywords": "Food Waste Reduction, Restaurant Inventory Management, Cost Control, Sustainable Restaurant, Kitchen Operations",
+      "order": 2,
+      "content": "<p>Food cost is typically one of the largest expenses for any restaurant, often accounting for 28-35% of total sales. However, a significant portion of this cost essentially goes into the bin.</p><p>Reducing waste isn't just about being eco-friendly; it's a direct way to improve your bottom line. By implementing smarter inventory tracking and portion control, restaurants can save thousands monthly.</p>"
+    },
+    {
+      "slug": "choosing-right-pos",
+      "title": "Why Moving to a Cloud POS is Essential for Growth",
+      "excerpt": "Legacy systems are holding you back. Discover how cloud POS systems offer real-time analytics, remote management, and better security.",
+      "imageUrl": "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2600&auto=format&fit=crop",
+      "date": "Dec 15, 2023",
+      "author": { 
+        "name": "Yummy Team", 
+        "photoUrl": "https://i.pravatar.cc/150?u=yummy", 
+        "bio": "Experts in restaurant technology." 
+      },
+      "category": { "name": "Technology", "slug": "technology" },
+      "cardTextColor": "#ffffff",
+      "cardTextColorDark": "#ffffff",
+      "cardOverlayOpacity": 0.4,
+      "metaTitle": "Benefits of Cloud POS for Restaurants | Yummy POS Blog",
+      "metaDescription": "Understand why switching to a cloud-based POS system is crucial for modern restaurant growth. Real-time data, remote access, and enhanced security features explained.",
+      "keywords": "Cloud POS System, Restaurant Management Software, POS Benefits, Restaurant Growth, Yummy POS Features",
+      "order": 3,
+      "content": "<p>In an increasingly digital world, relying on manual registers or outdated legacy systems is a recipe for stagnation. Cloud POS systems like Yummy POS empower owners to manage their business from anywhere in the world.</p><p>Key benefits include real-time sales tracking, automated inventory updates, and seamless integration with accounting software.</p>"
+    },
+    {
+      "slug": "social-media-marketing",
+      "title": "Social Media Marketing Guide for Nepalese Cafes",
+      "excerpt": "Instagram and TikTok are powerful tools for driving foot traffic. Learn how to create content that goes viral.",
+      "imageUrl": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2600&auto=format&fit=crop",
+      "date": "Dec 05, 2023",
+      "author": { 
+        "name": "Yummy Team", 
+        "photoUrl": "https://i.pravatar.cc/150?u=yummy", 
+        "bio": "Experts in restaurant technology." 
+      },
+      "category": { "name": "Marketing", "slug": "marketing" },
+      "cardTextColor": "#ffffff",
+      "cardTextColorDark": "#ffffff",
+      "cardOverlayOpacity": 0.5,
+      "metaTitle": "Social Media Marketing for Cafes | Yummy POS Guide",
+      "metaDescription": "A complete guide to social media marketing for cafes in Nepal. Learn to use Instagram and TikTok to attract customers and build a loyal community.",
+      "keywords": "Restaurant Marketing Nepal, Cafe Marketing Strategy, Instagram for Restaurants, Food Photography, Digital Marketing Tips",
+      "order": 4,
+      "content": "<p>Visual appeal is everything. For cafes in Kathmandu, having an 'Instagrammable' spot isn't just a bonus—it's a marketing strategy. User-generated content acts as free advertising.</p><p>We explore how to encourage customers to share their experiences and how to maintain an engaging social media presence that converts followers into diners.</p>"
+    },
+    {
+      "slug": "staff-training-tips",
+      "title": "Best Practices for Training Your Restaurant Staff",
+      "excerpt": "Great food needs great service. Here's how to onboard and train your staff to deliver exceptional customer experiences.",
+      "imageUrl": "https://images.unsplash.com/photo-1556742049-09379e9c8502?q=80&w=2600&auto=format&fit=crop",
+      "date": "Nov 20, 2023",
+      "author": { 
+        "name": "Yummy Team", 
+        "photoUrl": "https://i.pravatar.cc/150?u=yummy", 
+        "bio": "Experts in restaurant technology." 
+      },
+      "category": { "name": "Operations", "slug": "operations" },
+      "cardTextColor": "#ffffff",
+      "cardTextColorDark": "#ffffff",
+      "cardOverlayOpacity": 0.5,
+      "metaTitle": "Restaurant Staff Training Guide | Yummy POS Blog",
+      "metaDescription": "Effective strategies for training restaurant staff. Improve service quality, reduce turnover, and boost team morale with these best practices.",
+      "keywords": "Staff Training, Restaurant Service, Hospitality Training, Team Management, Customer Service Excellence",
+      "order": 5,
+      "content": "<p>Your staff are the face of your brand. Even the best food can't save a dining experience ruined by poor service. Training shouldn't be a one-time event but an ongoing process.</p><p>We discuss structured onboarding programs, role-playing scenarios, and the importance of empowering your team to make decisions.</p>"
+    },
+    {
+      "slug": "menu-engineering",
+      "title": "Menu Engineering: Designing for Profitability",
+      "excerpt": "Is your menu designed to sell your most profitable items? Learn the psychology behind efficient menu design.",
+      "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2600&auto=format&fit=crop",
+      "date": "Nov 01, 2023",
+      "author": { 
+        "name": "Yummy Team", 
+        "photoUrl": "https://i.pravatar.cc/150?u=yummy", 
+        "bio": "Experts in restaurant technology." 
+      },
+      "category": { "name": "Marketing", "slug": "marketing" },
+      "cardTextColor": "#ffffff",
+      "cardTextColorDark": "#ffffff",
+      "cardOverlayOpacity": 0.4,
+      "metaTitle": "Menu Design for Profitability | Yummy POS Guide",
+      "metaDescription": "Master the art of menu engineering. learn how to design your menu to highlight high-margin items and influence customer ordering behavior.",
+      "keywords": "Menu Engineering, Restaurant Profitability, Menu Design, Psychology of Selling, Restaurant Sales Tips",
+      "order": 6,
+      "content": "<p>Menu engineering is the study of the profitability and popularity of menu items and how these two factors influence the placement of these items on a menu. The goal is simple: to increase profitability per guest.</p>"
+    }
+  ]
+}

@@ -3,11 +3,13 @@
 import Link from "next/link";
 import { siteConfig } from "@/lib/constants";
 import { useTheme } from "@/hooks/useTheme";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FiCheck, FiHelpCircle, FiMinus, FiPlus, FiArrowRight } from "react-icons/fi";
+import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
+import { getPricingPage, type PricingPageData, type PricingPlan, type PricingFaq, useRefetchOnFocus } from "@/lib/api";
+import { InlineHTMLContent } from "@/components/ui/HTMLContent";
 
-const plans = [
+// Fallback plans data
+const fallbackPlans: Array<Omit<PricingPlan, 'features'> & { features: string[] }> = [
   {
     name: "Starter",
     priceMonthly: "Free",
@@ -21,9 +23,11 @@ const plans = [
       "5 Staff Accounts",
       "Email Support"
     ],
-    cta: "Get Started",
-    href: siteConfig.links.app,
-    popular: false,
+    ctaText: "Get Started",
+    ctaHref: siteConfig.links.app,
+    isPopular: false,
+    popularLabel: null,
+    order: 1,
   },
   {
     name: "Pro",
@@ -40,9 +44,11 @@ const plans = [
       "Waiter App Support",
       "Priority Email & Chat Support"
     ],
-    cta: "Start Free Trial",
-    href: siteConfig.links.app,
-    popular: true,
+    ctaText: "Start Free Trial",
+    ctaHref: siteConfig.links.app,
+    isPopular: true,
+    popularLabel: "Most Popular",
+    order: 2,
   },
   {
     name: "Enterprise",
@@ -59,35 +65,83 @@ const plans = [
       "SLA Support",
       "On-site Training"
     ],
-    cta: "Contact Sales",
-    href: "/contact",
-    popular: false,
+    ctaText: "Contact Sales",
+    ctaHref: "/contact",
+    isPopular: false,
+    popularLabel: null,
+    order: 3,
   },
 ];
 
-const faqs = [
+const fallbackFaqs: PricingFaq[] = [
   {
     question: "Can I switch plans later?",
-    answer: "Absolutely! You can upgrade or downgrade your plan at any time. If you upgrade, the prorated amount will be charged."
+    answer: "Absolutely! You can upgrade or downgrade your plan at any time. If you upgrade, the prorated amount will be charged.",
+    order: 1,
   },
   {
     question: "Is there a setup fee?",
-    answer: "No, there are no hidden setup fees. You can start with our Free plan and upgrade only when you need more features. Plus, installation is free if you subscribe before February!"
+    answer: "No, there are no hidden setup fees. You can start with our Free plan and upgrade only when you need more features. Plus, installation is free if you subscribe before February!",
+    order: 2,
   },
   {
     question: "Do I need to buy specific hardware?",
-    answer: "Not necessarily. Yummy works on any device with a browser – including iPads, Android tablets, and laptops. We do recommend thermal printers for KOTs."
+    answer: "Not necessarily. Yummy works on any device with a browser – including iPads, Android tablets, and laptops. We do recommend thermal printers for KOTs.",
+    order: 3,
   },
   {
     question: "Is my data secure?",
-    answer: "Yes, we use bank-grade encryption to protect your data. Your business information is backed up daily and stored securely on cloud servers."
+    answer: "Yes, we use bank-grade encryption to protect your data. Your business information is backed up daily and stored securely on cloud servers.",
+    order: 4,
   }
 ];
+
+const fallbackData: Partial<PricingPageData> = {
+  title: "Simple, Transparent Pricing",
+  subtitle: "Choose the plan that fits your business stage. No hidden fees, cancel anytime.",
+  toggle: { monthlyLabel: "Monthly", yearlyLabel: "Yearly", savingsLabel: "SAVE 33%" },
+  promotionBanner: { icon: "celebration", text: "Free Installation valid until", highlightText: "February!" },
+};
 
 export function Pricing() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [isAnnual, setIsAnnual] = useState(true);
+  const [data, setData] = useState<Partial<PricingPageData>>(fallbackData);
+  const [plans, setPlans] = useState(fallbackPlans);
+  const [faqs, setFaqs] = useState(fallbackFaqs);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const apiData = await getPricingPage();
+      setData(apiData);
+      
+      // Map API plans to component format
+      if (apiData.plans) {
+        const mappedPlans = apiData.plans.map(p => ({
+          ...p,
+          features: p.features.map(f => typeof f === 'string' ? f : f.text),
+        }));
+        setPlans(mappedPlans as typeof fallbackPlans);
+      }
+      
+      if (apiData.faqs) {
+        setFaqs(apiData.faqs);
+      }
+    } catch (error) {
+      console.error("Failed to fetch pricing data:", error);
+      // Keep fallback data
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useRefetchOnFocus(fetchData);
+
+  const toggle = data.toggle || fallbackData.toggle!;
+  const promo = data.promotionBanner || fallbackData.promotionBanner!;
 
   return (
     <section
@@ -111,16 +165,16 @@ export function Pricing() {
             className="text-4xl sm:text-5xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
             >
-            Simple, Transparent Pricing
+            {data.title || "Simple, Transparent Pricing"}
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: isDark? '#a3a3a3' : '#64748b' }}>
-                Choose the plan that fits your business stage. No hidden fees, cancel anytime.
+                {data.subtitle || "Choose the plan that fits your business stage. No hidden fees, cancel anytime."}
             </p>
 
             {/* Toggle */}
             <div className="flex flex-col items-center gap-6 mb-16">
                  <div className="flex items-center justify-center gap-4">
-                    <span className={`text-sm font-medium ${!isAnnual ? (isDark ? 'text-white' : 'text-slate-900') : (isDark ? 'text-neutral-500' : 'text-slate-500')}`}>Monthly</span>
+                    <span className={`text-sm font-medium ${!isAnnual ? (isDark ? 'text-white' : 'text-slate-900') : (isDark ? 'text-neutral-500' : 'text-slate-500')}`}>{toggle.monthlyLabel}</span>
                     <button
                         onClick={() => setIsAnnual(!isAnnual)}
                         className="relative w-16 h-8 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -134,9 +188,9 @@ export function Pricing() {
                         />
                     </button>
                     <div className="flex items-center gap-2">
-                        <span className={`text-sm font-medium ${isAnnual ? (isDark ? 'text-white' : 'text-slate-900') : (isDark ? 'text-neutral-500' : 'text-slate-500')}`}>Yearly</span>
+                        <span className={`text-sm font-medium ${isAnnual ? (isDark ? 'text-white' : 'text-slate-900') : (isDark ? 'text-neutral-500' : 'text-slate-500')}`}>{toggle.yearlyLabel}</span>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                            SAVE 33%
+                            {toggle.savingsLabel}
                         </span>
                     </div>
                 </div>
@@ -153,10 +207,10 @@ export function Pricing() {
                     {/* Badge Content */}
                     <div className="relative px-6 py-2.5 bg-white dark:bg-[#0a0a0a] ring-1 ring-gray-900/5 dark:ring-white/10 rounded-full flex items-center gap-3 shadow-sm">
                         <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
-                           <span className="material-symbols-outlined text-[16px]">celebration</span>
+                           <span className="material-symbols-outlined text-[16px]">{promo.icon}</span>
                         </span>
                         <span className="text-sm font-medium" style={{ color: isDark ? '#e5e5e5' : '#334155' }}>
-                            Free Installation valid until <span className="font-bold text-orange-600 dark:text-orange-500">February!</span>
+                            {promo.text} <span className="font-bold text-orange-600 dark:text-orange-500">{promo.highlightText}</span>
                         </span>
                     </div>
                 </motion.div>
@@ -165,11 +219,11 @@ export function Pricing() {
 
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto mb-32">
-          {plans.map((plan) => (
+          {plans.sort((a, b) => a.order - b.order).map((plan) => (
             <div
               key={plan.name}
-              className={`p-8 rounded-[2rem] relative flex flex-col transition-all duration-300 ${plan.popular ? 'shadow-2xl ring-2 ring-orange-500' : 'hover:shadow-xl'}`}
-              style={plan.popular 
+              className={`p-8 rounded-[2rem] relative flex flex-col transition-all duration-300 ${plan.isPopular ? 'shadow-2xl ring-2 ring-orange-500' : 'hover:shadow-xl'}`}
+              style={plan.isPopular 
                 ? { 
                     backgroundColor: isDark ? '#171717' : '#ffffff', 
                     borderColor: '#f97316',
@@ -182,7 +236,7 @@ export function Pricing() {
               }
             >
               {/* Popular Badge */}
-              {plan.popular && (
+              {plan.isPopular && (
                 <div className="absolute -top-5 inset-x-0 flex justify-center">
                   <span 
                     className="text-xs uppercase font-bold px-4 py-1.5 rounded-full shadow-lg"
@@ -191,7 +245,7 @@ export function Pricing() {
                         color: '#ffffff' 
                     }}
                   >
-                    Most Popular
+                    {plan.popularLabel || "Most Popular"}
                   </span>
                 </div>
               )}
@@ -199,12 +253,12 @@ export function Pricing() {
               <div className="mb-8">
                   <h3 
                     className="font-bold text-2xl mb-2"
-                    style={{ color: plan.popular ? '#f97316' : (isDark ? '#ffffff' : '#0f172a') }}
+                    style={{ color: plan.isPopular ? '#f97316' : (isDark ? '#ffffff' : '#0f172a') }}
                   >
                     {plan.name}
                   </h3>
                   <p className="text-sm min-h-[40px]" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-                      {plan.description}
+                      <InlineHTMLContent html={plan.description} />
                   </p>
               </div>
 
@@ -218,7 +272,6 @@ export function Pricing() {
                         className={`font-black tracking-tight ${plan.name === 'Pro' ? 'text-4xl' : 'text-3xl'}`}
                         style={{ color: isDark ? '#ffffff' : '#0f172a' }}
                       >
-                         {/* Remove "Rs. " from the string to style it if needed, but strings are simple enough */}
                         {isAnnual ? plan.priceYearly.replace('Rs. ', '') : plan.priceMonthly.replace('Rs. ', '')}
                       </span>
                       
@@ -239,26 +292,26 @@ export function Pricing() {
               <div className="flex-grow mb-8">
                   <p className="sr-only">Features:</p>
                   <ul className="space-y-4 text-sm text-left">
-                    {plan.features.map((feature) => (
-                    <li key={feature} className="flex gap-3 items-start">
+                    {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex gap-3 items-start">
                         <span
                         className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full mt-0.5"
-                        style={{ backgroundColor: plan.popular ? 'rgba(249, 115, 22, 0.1)' : (isDark ? 'rgba(255,255,255,0.1)' : '#e2e8f0') }}
+                        style={{ backgroundColor: plan.isPopular ? 'rgba(249, 115, 22, 0.1)' : (isDark ? 'rgba(255,255,255,0.1)' : '#e2e8f0') }}
                         >
-                            <FiCheck size={12} className={plan.popular ? "text-orange-500" : (isDark ? "text-white" : "text-slate-600")} />
+                            <span className={`material-symbols-outlined text-[16px] ${plan.isPopular ? "text-orange-500" : (isDark ? "text-white" : "text-slate-600")}`}>check</span>
                         </span>
-                        <span style={{ color: isDark ? '#d4d4d4' : '#475569' }}>{feature}</span>
+                        <span style={{ color: isDark ? '#d4d4d4' : '#475569' }}>{typeof feature === 'string' ? feature : feature}</span>
                     </li>
                     ))}
                 </ul>
               </div>
 
               {/* CTA Button */}
-              {plan.cta && plan.href && (
+              {plan.ctaText && plan.ctaHref && (
                 <Link
-                  href={plan.href}
-                  className={`block w-full py-4 rounded-xl font-bold transition-all duration-300 text-center ${plan.popular ? 'hover:shadow-lg hover:shadow-orange-500/20' : 'hover:opacity-90'}`}
-                  style={plan.popular 
+                  href={plan.ctaHref}
+                  className={`block w-full py-4 rounded-xl font-bold transition-all duration-300 text-center ${plan.isPopular ? 'hover:shadow-lg hover:shadow-orange-500/20' : 'hover:opacity-90'}`}
+                  style={plan.isPopular 
                     ? { 
                         background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', 
                         color: '#ffffff',
@@ -270,7 +323,7 @@ export function Pricing() {
                       }
                   }
                 >
-                  {plan.cta}
+                  {plan.ctaText}
                 </Link>
               )}
             </div>
@@ -284,15 +337,15 @@ export function Pricing() {
                      Frequently Asked Questions
                  </h2>
                  <p style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-                     Have questions? We're here to help.
+                     Have questions? We&apos;re here to help.
                  </p>
              </div>
              
              <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 text-left">
-                 {faqs.map((faq, i) => (
+                 {faqs.sort((a, b) => a.order - b.order).map((faq, i) => (
                      <div key={i} className="group">
                          <h4 className="flex items-start gap-3 text-lg font-bold mb-3" style={{ color: isDark ? '#e5e5e5' : '#1e293b' }}>
-                             <FiHelpCircle className="mt-1 text-primary opacity-60 group-hover:opacity-100 transition-opacity" />
+                             <span className="material-symbols-outlined text-[20px] mt-0.5 text-primary opacity-60 group-hover:opacity-100 transition-opacity cursor-help">help</span>
                              {faq.question}
                          </h4>
                          <p className="pl-8 text-base leading-relaxed" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
@@ -317,7 +370,7 @@ export function Pricing() {
                         className="group relative inline-flex items-center gap-2 px-8 py-3 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 hover:border-orange-500 dark:hover:border-orange-500 transition-colors shadow-sm"
                     >
                         <span className="font-bold text-gray-700 dark:text-gray-200">View more FAQs</span>
-                        <FiArrowRight className="text-orange-500 group-hover:translate-x-1 transition-transform" />
+                        <span className="material-symbols-outlined text-orange-500 group-hover:translate-x-1 transition-transform">arrow_forward</span>
                     </button>
                     
                     {/* Hidden Plane for Animation */}

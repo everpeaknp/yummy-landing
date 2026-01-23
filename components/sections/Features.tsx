@@ -2,10 +2,81 @@
 
 import { useTheme } from "@/hooks/useTheme";
 import { motion, Variants } from "framer-motion";
+import { useFeaturesData, type FeaturesData, type FeatureCard } from "@/lib/api";
+import { InlineHTMLContent } from "@/components/ui/HTMLContent";
+
+const fallbackCards: FeatureCard[] = [
+  {
+    id: "inventory",
+    title: "Smart Inventory",
+    description: "Ingredients are deducted automatically as you sell. Get real-time alerts before you run out.",
+    icon: "inventory_2",
+    iconColor: "#16a34a",
+    gridSpan: "md:col-span-8",
+    order: 1,
+    mockData: {
+      stockItems: [
+        { name: "Chicken Breast", qty: "12kg", status: "In Stock", barColor: "bg-green-500", width: "80%" },
+        { name: "Red Onions", qty: "2kg", status: "Low Stock", barColor: "bg-yellow-500", width: "20%" },
+        { name: "Cooking Oil", qty: "1.5L", status: "Critical", barColor: "bg-red-500", width: "10%" },
+        { name: "Basmati Rice", qty: "45kg", status: "In Stock", barColor: "bg-green-500", width: "95%" },
+      ]
+    }
+  },
+  {
+    id: "billing",
+    title: "IRD Billing",
+    description: "Fully compliant with Nepal Tax Rules. Print with confidence.",
+    icon: "receipt_long",
+    iconColor: "#ffffff",
+    gridSpan: "md:col-span-4",
+    order: 2,
+    mockData: {
+      invoiceItems: [
+        { name: "1. Momo Plater", price: "300" },
+        { name: "2. Coke 500ml", price: "100" },
+        { name: "3. Ch. Burger", price: "450" },
+      ],
+      subtotal: "850",
+      tax: "110.5",
+      total: "Rs. 960.5"
+    }
+  },
+  {
+    id: "menu",
+    title: "Digital QR Menu",
+    description: "Allow customers to order instantly from their phone.",
+    icon: "qr_code_2",
+    iconColor: "#9333ea",
+    gridSpan: "md:col-span-6",
+    order: 3,
+    mockData: {}
+  },
+  {
+    id: "analytics",
+    title: "Analytics",
+    description: "Track sales, staff performance, and peak hours.",
+    icon: "bar_chart",
+    iconColor: "#db2777",
+    gridSpan: "md:col-span-6",
+    order: 4,
+    mockData: {
+      chartData: [30, 45, 25, 60, 40, 75, 55]
+    }
+  }
+];
+
+const fallbackData: Partial<FeaturesData> = {
+  badge: { icon: "bolt", text: "Powerful Features" },
+  title: "Everything you need.",
+  subtitle: "Run your restaurant like a pro. We've combined the most essential tools into one seamless platform.",
+  cards: fallbackCards
+};
 
 export function Features() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const { data } = useFeaturesData(fallbackData);
 
   const container: Variants = {
     hidden: { opacity: 0 },
@@ -30,6 +101,60 @@ export function Features() {
     }
   };
 
+  const cards = data.cards || fallbackCards;
+
+  const inventory = cards.find(c => c.id === 'inventory') || fallbackCards[0];
+  const billing = cards.find(c => c.id === 'billing') || fallbackCards[1];
+  const menu = cards.find(c => c.id === 'menu' || c.id === 'qr-menu') || fallbackCards[2];
+  const analytics = cards.find(c => c.id === 'analytics' || c.id === 'reports') || fallbackCards[3];
+
+  // Helper to get bar color from percentage or status
+  interface StockItem {
+    name: string;
+    qty: string;
+    status: string;
+    barColor: string;
+    width: string;
+    percentage?: number;
+  }
+
+  const getBarStyle = (item: Record<string, unknown>) => {
+    if (item.barColor && item.width) return { barColor: item.barColor as string, width: item.width as string };
+    const pct = (item.percentage as number) || 50;
+    let barColor = 'bg-green-500';
+    if (pct <= 20) barColor = 'bg-red-500';
+    else if (pct <= 40) barColor = 'bg-yellow-500';
+    return { barColor, width: `${pct}%` };
+  };
+
+  // Handle API format (items) and fallback format (stockItems)
+  const rawStockData = inventory.mockData?.items || inventory.mockData?.stockItems;
+  const rawStockItems = Array.isArray(rawStockData) ? rawStockData : [];
+  const stockItems: StockItem[] = rawStockItems.map((item: Record<string, unknown>) => ({
+    name: String(item.name || ''),
+    qty: String(item.qty || ''),
+    status: String(item.status || 'In Stock'),
+    ...getBarStyle(item)
+  }));
+
+  // Handle API format (receiptItems) and fallback format (invoiceItems)
+  const rawInvoiceData = billing.mockData?.receiptItems || billing.mockData?.invoiceItems;
+  const rawInvoiceItems = Array.isArray(rawInvoiceData) ? rawInvoiceData : [];
+  const invoiceItems = rawInvoiceItems.map((item: Record<string, unknown>, idx: number) => ({
+    name: `${idx + 1}. ${String(item.name || '').replace(/^\d+\.\s*/, '')}`,
+    price: String(item.price || 0)
+  }));
+
+  // Calculate billing totals from API or fallback
+  const billingSubtotal = billing.mockData?.subtotal || 
+    rawInvoiceItems.reduce((sum: number, i: Record<string, unknown>) => sum + Number(i.price || 0), 0);
+  const vatPercent = (billing.mockData?.vatPercent as number) || 13;
+  const billingVat = billing.mockData?.tax || (Number(billingSubtotal) * vatPercent / 100).toFixed(1);
+  const billingTotal = billing.mockData?.total || `Rs. ${(Number(billingSubtotal) + Number(billingVat)).toFixed(1)}`;
+
+  const rawChartData = analytics.mockData?.chartData;
+  const chartData = Array.isArray(rawChartData) ? rawChartData : [30, 45, 25, 60, 40, 75, 55];
+
   return (
     <section
       id="features"
@@ -47,7 +172,7 @@ export function Features() {
           transition={{ duration: 0.6 }}
           className="text-center mb-24"
         >
-          <div 
+            <div 
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border"
             style={{ 
               backgroundColor: isDark ? 'rgba(30, 58, 138, 0.2)' : '#eff6ff', 
@@ -55,17 +180,17 @@ export function Features() {
               borderColor: isDark ? 'rgba(30, 58, 138, 0.3)' : '#bfdbfe'
             }}
           >
-            <span className="material-symbols-outlined text-sm">bolt</span>
-            <span>Powerful Features</span>
+            <span className="material-symbols-outlined text-sm">{(data.badge as any)?.icon || "bolt"}</span>
+            <span>{(data.badge as any)?.text || "Powerful Features"}</span>
           </div>
           <h2 
             className="text-4xl sm:text-5xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            Everything you need.
+            {data.title || "Everything you need."}
           </h2>
           <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
-            Run your restaurant like a pro. We've combined the most essential tools into one seamless platform.
+            {data.subtitle || "Run your restaurant like a pro. We've combined the most essential tools into one seamless platform."}
           </p>
         </motion.div>
 
@@ -98,13 +223,13 @@ export function Features() {
                    color: '#16a34a' 
                 }}
               >
-                <span className="material-symbols-outlined text-3xl">inventory_2</span>
+                <span className="material-symbols-outlined text-3xl">{inventory.icon}</span>
               </div>
               <h3 className="text-3xl font-bold font-display mb-3" style={{ color: isDark ? '#fff' : '#0f172a' }}>
-                Smart Inventory
+                {inventory.title}
               </h3>
               <p className="text-lg leading-relaxed" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-                Ingredients are deducted automatically as you sell. Get real-time alerts before you run out.
+                <InlineHTMLContent html={inventory.description} />
               </p>
             </div>
 
@@ -121,21 +246,29 @@ export function Features() {
                
                {/* List Items */}
                <div className="flex flex-col gap-3">
-                 {[
-                   { name: "Chicken Breast", qty: "12kg", status: "In Stock", bar: "w-[80%] bg-green-500" },
-                   { name: "Red Onions", qty: "2kg", status: "Low Stock", bar: "w-[20%] bg-yellow-500" },
-                   { name: "Cooking Oil", qty: "1.5L", status: "Critical", bar: "w-[10%] bg-red-500" },
-                   { name: "Basmati Rice", qty: "45kg", status: "In Stock", bar: "w-[95%] bg-green-500" },
-                 ].map((i, idx) => (
-                    <div key={idx} className="group/item">
+                 {stockItems.map((i, idx) => (
+                    <motion.div 
+                      key={idx} 
+                      className="group/item"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.1, duration: 0.4 }}
+                    >
                         <div className="flex justify-between mb-1">
                             <span className="text-sm font-medium dark:text-gray-300">{i.name}</span>
                             <span className={`text-xs font-bold ${i.status === 'Critical' ? 'text-red-500' : i.status === 'Low Stock' ? 'text-yellow-500' : 'text-green-600'}`}>{i.qty}</span>
                         </div>
                         <div className="h-1.5 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-                            <div className={`h-full rounded-full ${i.bar} transition-all duration-1000 group-hover:w-full opacity-80`}></div>
+                            <motion.div 
+                              className={`h-full rounded-full ${i.barColor} opacity-80`}
+                              initial={{ width: 0 }}
+                              whileInView={{ width: i.width }}
+                              viewport={{ once: true }}
+                              transition={{ delay: 0.3 + idx * 0.15, duration: 0.8, ease: "easeOut" }}
+                            />
                         </div>
-                    </div>
+                    </motion.div>
                  ))}
                </div>
             </div>
@@ -155,13 +288,13 @@ export function Features() {
               <div 
                 className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-white/10 backdrop-blur-md ring-1 ring-white/20"
               >
-                <span className="material-symbols-outlined text-3xl">receipt_long</span>
+                <span className="material-symbols-outlined text-3xl">{billing.icon}</span>
               </div>
               <h3 className="text-3xl font-bold font-display mb-3">
-                IRD Billing
+                {billing.title}
               </h3>
               <p className="text-lg text-slate-300 leading-relaxed">
-                 Fully compliant with Nepal Tax Rules. Print with confidence.
+                 <InlineHTMLContent html={billing.description} />
               </p>
             </div>
 
@@ -175,14 +308,14 @@ export function Features() {
                     </div>
                     <div className="w-full border-b border-dashed border-gray-300 mb-2"></div>
                     <div className="space-y-2 mb-2">
-                        <div className="flex justify-between"><span>1. Momo Plater</span><span>300</span></div>
-                        <div className="flex justify-between"><span>2. Coke 500ml</span><span>100</span></div>
-                        <div className="flex justify-between"><span>3. Ch. Burger</span><span>450</span></div>
+                        {invoiceItems.map((item, id) => (
+                           <div key={id} className="flex justify-between"><span>{item.name}</span><span>{item.price}</span></div>
+                        ))}
                     </div>
                     <div className="w-full border-b border-dashed border-gray-300 mb-2"></div>
-                    <div className="flex justify-between text-gray-500"><span>Subtotal</span><span>850</span></div>
-                    <div className="flex justify-between text-gray-500"><span>VAT (13%)</span><span>110.5</span></div>
-                    <div className="flex justify-between font-bold text-lg mt-2"><span>Total</span><span>Rs. 960.5</span></div>
+                    <div className="flex justify-between text-gray-500"><span>Subtotal</span><span>{(billing.mockData?.subtotal as string) || "850"}</span></div>
+                    <div className="flex justify-between text-gray-500"><span>VAT (13%)</span><span>{(billing.mockData?.tax as string) || "110.5"}</span></div>
+                    <div className="flex justify-between font-bold text-lg mt-2"><span>Total</span><span>{(billing.mockData?.total as string) || "Rs. 960.5"}</span></div>
                 </div>
             </div>
           </motion.div>
@@ -201,12 +334,12 @@ export function Features() {
 
              <div className="absolute top-0 left-0 p-10 z-20">
                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10" style={{ backgroundColor: isDark ? 'rgba(147, 51, 234, 0.1)' : '#faf5ff', color: '#9333ea' }}>
-                  <span className="material-symbols-outlined text-3xl">qr_code_2</span>
+                  <span className="material-symbols-outlined text-3xl">{menu.icon}</span>
                </div>
                <h3 className="text-2xl font-bold font-display mb-2" style={{ color: isDark ? '#fff' : '#0f172a' }}>
-                Digital QR Menu
+                {menu.title}
               </h3>
-               <p className="text-lg" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Allow customers to order instantly from their phone.</p>
+               <p className="text-lg" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}><InlineHTMLContent html={menu.description} /></p>
              </div>
 
              {/* Phone Card Peeking Up */}
@@ -254,19 +387,19 @@ export function Features() {
 
              <div className="absolute top-0 left-0 p-10 z-20">
                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10" style={{ backgroundColor: isDark ? 'rgba(219, 39, 119, 0.1)' : '#fce7f3', color: '#db2777' }}>
-                  <span className="material-symbols-outlined text-3xl">bar_chart</span>
+                  <span className="material-symbols-outlined text-3xl">{analytics.icon}</span>
                </div>
                <h3 className="text-2xl font-bold font-display mb-2" style={{ color: isDark ? '#fff' : '#0f172a' }}>
-                Analytics
+                {analytics.title}
               </h3>
-               <p className="text-lg" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>Track sales, staff performance, and peak hours.</p>
+               <p className="text-lg" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}><InlineHTMLContent html={analytics.description} /></p>
              </div>
 
              {/* Chart Card */}
              <div className="absolute bottom-0 right-0 w-[65%] h-[65%] bg-white dark:bg-zinc-900 border-t border-l border-gray-200 dark:border-zinc-800 rounded-tl-[2.5rem] shadow-lg transform translate-y-[20%] group-hover:translate-y-[5%] transition-transform duration-500 ease-out p-6 flex flex-col justify-end">
                  {/* Chart Visual */}
                  <div className="flex items-end justify-between gap-2 h-[80%] px-2 pb-2 border-b border-l border-gray-100 dark:border-zinc-800">
-                     {[30, 45, 25, 60, 40, 75, 55].map((h, i) => {
+                     {chartData.map((h, i) => {
                          const colors = [
                              { bg: 'bg-cyan-100 dark:bg-cyan-900/20', fill: 'bg-cyan-500' },
                              { bg: 'bg-blue-100 dark:bg-blue-900/20', fill: 'bg-blue-500' },

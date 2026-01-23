@@ -7,7 +7,8 @@ import { motion } from "framer-motion";
 import { TextParallaxContent } from "@/components/ui/TextParallaxContent";
 import Link from "next/link";
 import { FiArrowRight, FiCheck } from "react-icons/fi";
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { getFeatureDetail, type FeaturePageData, type FeatureSectionCta, useRefetchOnFocus } from "@/lib/api";
 
 // Type definition for a feature section
 type FeatureSection = {
@@ -28,12 +29,16 @@ const FeatureContent = ({
 }: { 
   title: string; 
   description: string; 
-  features?: string[]; 
-  cta?: boolean;
+  features: string[]; 
+  cta?: boolean | FeatureSectionCta;
   quote?: { text: string; author: string };
 }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+
+  const showCta = typeof cta === 'object' ? cta.visible : cta;
+  const ctaText = (typeof cta === 'object' && cta.text) ? cta.text : "Get Started";
+  const ctaHref = (typeof cta === 'object' && cta.href) ? cta.href : "/pricing";
 
   return (
     <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 px-4 pb-24 pt-12 md:grid-cols-12">
@@ -68,12 +73,12 @@ const FeatureContent = ({
            </blockquote>
         )}
 
-        {cta && (
+        {showCta && (
           <Link 
-            href="/pricing"
+            href={ctaHref}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-white hover:bg-orange-600 transition-colors font-bold shadow-lg shadow-orange-500/20"
           >
-            Get Started <FiArrowRight />
+            {ctaText} <FiArrowRight />
           </Link>
         )}
       </div>
@@ -251,9 +256,27 @@ export default function FeaturePage() {
   const isDark = theme === "dark";
   const params = useParams();
   const slug = params.slug as string;
-  const sections = featuresData[slug];
+  
+  const [apiData, setApiData] = useState<FeaturePageData | null>(null);
+  
+  const fetchData = useCallback(async () => {
+    try {
+      const data = await getFeatureDetail(slug);
+      setApiData(data);
+    } catch (error) {
+      console.error(`Failed to fetch feature detail for ${slug}:`, error);
+    }
+  }, [slug]);
 
-  if (!sections) {
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useRefetchOnFocus(fetchData);
+
+  const fallbackSections = featuresData[slug];
+
+  if (!apiData && !fallbackSections) {
     return (
        <>
       <Navbar />
@@ -274,16 +297,35 @@ export default function FeaturePage() {
     <>
       <Navbar />
       <main style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}>
-          {sections.map((section, idx) => (
-             <TextParallaxContent
-                key={idx}
-                heading={section.heading}
-                subheading={section.subheading}
-                imgUrl={section.image}
-             >
-                {section.content}
-             </TextParallaxContent>
-          ))}
+          {apiData ? (
+             apiData.sections.map((section, idx) => (
+              <TextParallaxContent
+                 key={idx}
+                 heading={section.heading}
+                 subheading={section.subheading}
+                 imgUrl={section.image || "https://images.unsplash.com/photo-1556740758-90de29cf1374?q=80&w=2500&auto=format&fit=crop"}
+              >
+                 <FeatureContent
+                    title={section.content.title}
+                    description={section.content.description}
+                    features={section.content.features}
+                    quote={section.quote || undefined}
+                    cta={section.content.cta}
+                 />
+              </TextParallaxContent>
+           ))
+          ) : (
+             fallbackSections.map((section, idx) => (
+              <TextParallaxContent
+                 key={idx}
+                 heading={section.heading}
+                 subheading={section.subheading}
+                 imgUrl={section.image}
+              >
+                 {section.content}
+              </TextParallaxContent>
+           ))
+          )}
       </main>
       <Footer />
     </>

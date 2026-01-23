@@ -1,0 +1,380 @@
+{
+  "themeColors": {
+    "primary": { "light": "#ff6929", "dark": "#ff6929", "description": "Brand primary color (orange)" },
+    "primaryHover": { "light": "#ea580c", "dark": "#ea580c", "description": "Primary button hover" },
+    "primaryLight": { "light": "#ffedd5", "dark": "rgba(124, 45, 18, 0.3)", "description": "Primary color light tint for badges" },
+    "primaryLightText": { "light": "#c2410c", "dark": "#fdba74", "description": "Text on primary light background" },
+    "background": { "light": "#ffffff", "dark": "#0a0a0a", "description": "Main page background" },
+    "backgroundAlt": { "light": "#f8fafc", "dark": "#050505", "description": "Alternate section background" },
+    "backgroundCard": { "light": "#ffffff", "dark": "#171717", "description": "Card/surface background" },
+    "backgroundCardHover": { "light": "#f8fafc", "dark": "#1a1a1a", "description": "Card hover background" },
+    "backgroundSubtle": { "light": "rgba(255,255,255,0.02)", "dark": "rgba(255,255,255,0.02)", "description": "Very subtle background" },
+    "backgroundOverlay": { "light": "rgba(255,255,255,0.9)", "dark": "rgba(10,10,10,0.9)", "description": "Glass/overlay background" },
+    "textPrimary": { "light": "#0f172a", "dark": "#ffffff", "description": "Main heading text" },
+    "textSecondary": { "light": "#475569", "dark": "#94a3b8", "description": "Body text, subtitles" },
+    "textMuted": { "light": "#64748b", "dark": "#a3a3a3", "description": "Muted/helper text" },
+    "textSubtle": { "light": "#94a3b8", "dark": "#737373", "description": "Very subtle text" },
+    "border": { "light": "#e2e8f0", "dark": "#262626", "description": "Default border color" },
+    "borderLight": { "light": "#f1f5f9", "dark": "#222222", "description": "Light border" },
+    "borderSubtle": { "light": "#e5e7eb", "dark": "rgba(255,255,255,0.1)", "description": "Subtle border" },
+    "navBackground": { "light": "rgba(255, 255, 255, 0.8)", "dark": "rgba(10, 10, 10, 0.8)", "description": "Navbar background with blur" },
+    "navBorder": { "light": "#e2e8f0", "dark": "rgba(255,255,255,0.05)", "description": "Navbar bottom border" },
+    "navText": { "light": "#64748b", "dark": "#94a3b8", "description": "Nav link text color" },
+    "navTextActive": { "light": "#0f172a", "dark": "#ffffff", "description": "Active nav link" },
+    "navTabHover": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.1)", "description": "Nav tab hover background" },
+    "footerBackground": { "light": "#ffffff", "dark": "#0a0a0a", "description": "Footer background" },
+    "footerBorder": { "light": "#e5e7eb", "dark": "#171717", "description": "Footer border" },
+    "footerText": { "light": "#4b5563", "dark": "#d4d4d4", "description": "Footer text" },
+    "footerHeading": { "light": "#0f172a", "dark": "#ffffff", "description": "Footer section headings" },
+    "footerLinkHover": { "light": "#ff6929", "dark": "#ff6929", "description": "Footer link hover color" }
+  },
+
+  "buttonStyles": {
+    "primary": {
+      "light": {
+        "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+        "backgroundHover": "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)",
+        "text": "#ffffff",
+        "shadow": "0 4px 14px 0 rgba(249, 115, 22, 0.39)",
+        "shadowHover": "0 6px 20px 0 rgba(249, 115, 22, 0.5)"
+      },
+      "dark": {
+        "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+        "backgroundHover": "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)",
+        "text": "#ffffff",
+        "shadow": "0 4px 14px 0 rgba(249, 115, 22, 0.39)",
+        "shadowHover": "0 6px 20px 0 rgba(249, 115, 22, 0.5)"
+      }
+    },
+    "secondary": {
+      "light": {
+        "background": "#ffffff",
+        "backgroundHover": "#f8fafc",
+        "text": "#475569",
+        "border": "#e2e8f0",
+        "borderHover": "#cbd5e1"
+      },
+      "dark": {
+        "background": "#171717",
+        "backgroundHover": "#1a1a1a",
+        "text": "#a3a3a3",
+        "border": "#262626",
+        "borderHover": "#404040"
+      }
+    },
+    "outline": {
+      "light": {
+        "background": "transparent",
+        "backgroundHover": "#f8fafc",
+        "text": "#64748b",
+        "border": "#e2e8f0",
+        "borderHover": "#ff6929"
+      },
+      "dark": {
+        "background": "transparent",
+        "backgroundHover": "rgba(255,255,255,0.05)",
+        "text": "#a3a3a3",
+        "border": "#404040",
+        "borderHover": "#ff6929"
+      }
+    },
+    "ghost": {
+      "light": {
+        "background": "transparent",
+        "backgroundHover": "#f1f5f9",
+        "text": "#64748b"
+      },
+      "dark": {
+        "background": "transparent",
+        "backgroundHover": "rgba(255,255,255,0.1)",
+        "text": "#94a3b8"
+      }
+    },
+    "login": {
+      "light": {
+        "background": "#0f172a",
+        "text": "#ffffff"
+      },
+      "dark": {
+        "background": "#ffffff",
+        "text": "#0f172a"
+      }
+    }
+  },
+
+  "featureIconColors": {
+    "inventory": {
+      "light": { "background": "#f0fdf4", "icon": "#16a34a" },
+      "dark": { "background": "rgba(34, 197, 94, 0.1)", "icon": "#16a34a" }
+    },
+    "billing": {
+      "light": { "background": "rgba(255,255,255,0.1)", "icon": "#ffffff" },
+      "dark": { "background": "rgba(255,255,255,0.2)", "icon": "#ffffff" }
+    },
+    "qrMenu": {
+      "light": { "background": "#faf5ff", "icon": "#9333ea" },
+      "dark": { "background": "rgba(147, 51, 234, 0.1)", "icon": "#9333ea" }
+    },
+    "reports": {
+      "light": { "background": "#fce7f3", "icon": "#db2777" },
+      "dark": { "background": "rgba(219, 39, 119, 0.1)", "icon": "#db2777" }
+    }
+  },
+
+  "badgeStyles": {
+    "hero": {
+      "light": { "background": "#ffedd5", "text": "#c2410c" },
+      "dark": { "background": "rgba(124, 45, 18, 0.3)", "text": "#fdba74" }
+    },
+    "easyStart": {
+      "light": { "background": "#eff6ff", "text": "#2563eb", "border": "#bfdbfe" },
+      "dark": { "background": "rgba(30, 58, 138, 0.2)", "text": "#60a5fa", "border": "rgba(30, 58, 138, 0.3)" }
+    },
+    "hiring": {
+      "light": { "background": "#dbeafe", "text": "#2563eb" },
+      "dark": { "background": "rgba(30, 58, 138, 0.3)", "text": "#60a5fa" }
+    },
+    "phase1": {
+      "light": { "background": "#ffedd5", "text": "#ea580c" },
+      "dark": { "background": "rgba(234, 88, 12, 0.3)", "text": "#fb923c" }
+    },
+    "phase2": {
+      "light": { "background": "#dbeafe", "text": "#2563eb" },
+      "dark": { "background": "rgba(37, 99, 235, 0.3)", "text": "#60a5fa" }
+    },
+    "popular": {
+      "light": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "text": "#ffffff" },
+      "dark": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "text": "#ffffff" }
+    },
+    "savings": {
+      "light": { "background": "#dcfce7", "text": "#15803d" },
+      "dark": { "background": "rgba(22, 163, 74, 0.3)", "text": "#4ade80" }
+    }
+  },
+
+  "processStepColors": {
+    "normalCard": {
+      "light": { "background": "#ffffff", "border": "#f1f5f9", "numberColor": "#e2e8f0", "iconBg": "#f8fafc", "title": "#0f172a", "description": "#64748b" },
+      "dark": { "background": "#111111", "border": "#222222", "numberColor": "#333333", "iconBg": "#1a1a1a", "title": "#ffffff", "description": "#94a3b8" }
+    },
+    "highlightedCard": {
+      "light": { "background": "#2563eb", "numberColor": "rgba(255,255,255,0.2)", "iconBg": "rgba(255,255,255,0.2)", "title": "#ffffff", "description": "rgba(255,255,255,0.8)" },
+      "dark": { "background": "#0f172a", "numberColor": "rgba(255,255,255,0.2)", "iconBg": "rgba(255,255,255,0.2)", "title": "#ffffff", "description": "rgba(255,255,255,0.8)" }
+    }
+  },
+
+  "cardShadows": {
+    "cardDefault": {
+      "light": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+      "dark": "0 1px 3px 0 rgba(0, 0, 0, 0.3)"
+    },
+    "cardHover": {
+      "light": "0 25px 50px -12px rgba(0, 0, 0, 0.1)",
+      "dark": "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+    },
+    "testimonialCard": {
+      "light": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+      "dark": "0 4px 6px -1px rgba(0, 0, 0, 0.3)"
+    },
+    "videoCard": {
+      "light": "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+      "dark": "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+    }
+  },
+
+  "componentColors": {
+    "navbar": {
+      "logo": { "lightModeSrc": "/logo.svg", "darkModeSrc": "/logo-dark.svg", "altText": "Yummy POS", "width": 32, "height": 32 },
+      "brandName": { "text": "Yummy", "lightColor": "#0f172a", "darkColor": "#ffffff" },
+      "navItemColors": {
+        "default": { "light": "#64748b", "dark": "#94a3b8" },
+        "hover": { "light": "#0f172a", "dark": "#ffffff" },
+        "activeBackground": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.1)" }
+      },
+      "megaMenuColors": {
+        "background": { "light": "#ffffff", "dark": "#171717" },
+        "border": { "light": "#e2e8f0", "dark": "#262626" },
+        "itemHover": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.05)" },
+        "itemText": { "light": "#1e293b", "dark": "#e5e5e5" },
+        "itemDescription": { "light": "#64748b", "dark": "#a3a3a3" },
+        "iconColor": { "light": "#94a3b8", "dark": "#6b7280" },
+        "iconColorHover": { "light": "#ff6929", "dark": "#ff6929" }
+      },
+      "themeToggleIcon": { "lightModeIcon": "dark_mode", "darkModeIcon": "light_mode" },
+      "loginButton": {
+        "text": "Login",
+        "href": "https://app.yummyever.com/",
+        "lightBackground": "#0f172a",
+        "lightText": "#ffffff",
+        "darkBackground": "#ffffff",
+        "darkText": "#0f172a"
+      },
+      "mobileMenuColors": {
+        "background": { "light": "#ffffff", "dark": "#0a0a0a" },
+        "itemBorder": { "light": "#e2e8f0", "dark": "#262626" },
+        "itemText": { "light": "#0f172a", "dark": "#ffffff" },
+        "appearanceLabel": { "light": "#64748b", "dark": "#94a3b8" }
+      }
+    },
+    "footer": {
+      "colors": {
+        "background": { "light": "#ffffff", "dark": "#0a0a0a" },
+        "borderTop": { "light": "#e5e7eb", "dark": "#171717" },
+        "text": { "light": "#4b5563", "dark": "#d4d4d4" },
+        "headingText": { "light": "#0f172a", "dark": "#ffffff" },
+        "linkHover": { "light": "#ff6929", "dark": "#ff6929" }
+      }
+    },
+    "pricingCard": {
+      "bgLight": "#ffffff",
+      "bgDark": "#0a0a0a",
+      "popularBgDark": "#171717",
+      "borderLight": "#e2e8f0",
+      "borderDark": "rgba(255,255,255,0.1)",
+      "popularBorderColor": "#f97316",
+      "priceBoxBgLight": "#f1f5f9",
+      "priceBoxBgDark": "rgba(255,255,255,0.03)",
+      "nameLight": "#0f172a",
+      "nameDark": "#ffffff",
+      "popularNameColor": "#f97316",
+      "descLight": "#64748b",
+      "descDark": "#a3a3a3",
+      "featureTextLight": "#475569",
+      "featureTextDark": "#d4d4d4",
+      "checkIconBgLight": "#e2e8f0",
+      "checkIconBgDark": "rgba(255,255,255,0.1)",
+      "checkIconBgPopular": "rgba(249, 115, 22, 0.1)",
+      "checkIconColorLight": "#475569",
+      "checkIconColorDark": "#ffffff",
+      "checkIconColorPopular": "#f97316"
+    },
+    "pricingToggle": {
+      "activeColor": "#f97316",
+      "inactiveColorLight": "#cbd5e1",
+      "inactiveColorDark": "#404040",
+      "labelActiveLight": "#0f172a",
+      "labelActiveDark": "#ffffff",
+      "labelInactiveLight": "#64748b",
+      "labelInactiveDark": "#737373"
+    },
+    "faqAccordion": {
+      "borderLight": "#e2e8f0",
+      "borderDark": "rgba(255,255,255,0.1)",
+      "questionLight": "#1e293b",
+      "questionDark": "#f1f5f9",
+      "answerLight": "#64748b",
+      "answerDark": "#94a3b8",
+      "iconColorDefault": "#9ca3af",
+      "iconColorActive": "#ff6929"
+    },
+    "careersCard": {
+      "bgLight": "#ffffff",
+      "bgDark": "#171717",
+      "borderLight": "#e2e8f0",
+      "borderDark": "#262626",
+      "departmentBgLight": "#f1f5f9",
+      "departmentBgDark": "rgba(255,255,255,0.05)",
+      "titleLight": "#0f172a",
+      "titleDark": "#ffffff",
+      "metaLight": "#64748b",
+      "metaDark": "#a3a3a3",
+      "descLight": "#94a3b8",
+      "descDark": "#737373",
+      "applyLinkColor": "#ff6929"
+    },
+    "careersCategoryButton": {
+      "activeBg": "#ff6929",
+      "activeText": "#ffffff",
+      "inactiveBgLight": "#f3f4f6",
+      "inactiveBgDark": "#262626",
+      "inactiveTextLight": "#4b5563",
+      "inactiveTextDark": "#9ca3af"
+    },
+    "teamValueCard": {
+      "bgLight": "#ffffff",
+      "bgDark": "#171717",
+      "borderLight": "#e2e8f0",
+      "borderDark": "#262626",
+      "titleLight": "#0f172a",
+      "titleDark": "#ffffff",
+      "descLight": "#64748b",
+      "descDark": "#a3a3a3"
+    },
+    "contactForm": {
+      "labelLight": "#475569",
+      "labelDark": "#d4d4d4",
+      "inputBgLight": "#f8fafc",
+      "inputBgDark": "#0a0a0a",
+      "inputBorderLight": "#e2e8f0",
+      "inputBorderDark": "#262626",
+      "inputTextLight": "#0f172a",
+      "inputTextDark": "#ffffff",
+      "submitButtonBg": "#ea580c",
+      "submitButtonBgHover": "#c2410c",
+      "submitButtonText": "#ffffff",
+      "submitButtonShadow": "0 4px 14px rgba(249, 115, 22, 0.2)"
+    },
+    "helpSearch": {
+      "bgLight": "#ffffff",
+      "bgDark": "#171717",
+      "textLight": "#0f172a",
+      "textDark": "#ffffff"
+    },
+    "helpLinks": {
+      "dividerLight": "#d1d5db",
+      "dividerDark": "rgba(255,255,255,0.1)",
+      "hoverBgLight": "rgba(0,0,0,0.05)",
+      "hoverBgDark": "rgba(255,255,255,0.05)"
+    },
+    "blogCard": {
+      "bgLight": "#ffffff",
+      "bgDark": "#171717",
+      "borderLight": "#e2e8f0",
+      "borderDark": "#262626",
+      "titleLight": "#0f172a",
+      "titleDark": "#ffffff",
+      "excerptLight": "#64748b",
+      "excerptDark": "#a3a3a3",
+      "dateLight": "#94a3b8",
+      "dateDark": "#737373"
+    },
+    "blogPost": {
+      "headingLight": "#0f172a",
+      "headingDark": "#ffffff",
+      "bodyLight": "#475569",
+      "bodyDark": "#94a3b8",
+      "linkColor": "#ff6929",
+      "strongColor": "#ff6929"
+    },
+    "galleryAccordion": {
+      "activeBgLight": "#f8fafc",
+      "activeBgDark": "#171717",
+      "activeBorderLight": "#e2e8f0",
+      "activeBorderDark": "#262626",
+      "inactiveTitleLight": "#64748b",
+      "inactiveTitleDark": "#94a3b8",
+      "activeTitleLight": "#0f172a",
+      "activeTitleDark": "#ffffff",
+      "bulletColor": "#ff6929"
+    },
+    "galleryStepIndicator": {
+      "activeBackground": "#ff6929",
+      "activeBorder": "#ff6929",
+      "activeText": "#ffffff",
+      "inactiveBackground": "transparent",
+      "inactiveBorderLight": "#d1d5db",
+      "inactiveBorderDark": "#404040",
+      "inactiveText": "#9ca3af"
+    },
+    "featureCard": {
+      "bgLight": "#ffffff",
+      "bgDark": "#171717",
+      "borderLight": "#e5e7eb",
+      "borderDark": "#262626",
+      "titleLight": "#0f172a",
+      "titleDark": "#ffffff",
+      "descLight": "#64748b",
+      "descDark": "#a3a3a3"
+    }
+  }
+}

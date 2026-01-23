@@ -1,0 +1,311 @@
+{
+  "privacyPolicy": {
+    "slug": "privacy-policy",
+    "badge": "Privacy Policy",
+    "title": "Your privacy matters to Yummy",
+    "lastUpdated": "2025-12-29",
+    "introduction": "Yummy (\"we\", \"our\", or \"us\") operates the Yummy mobile application and related services. This Privacy Policy explains how we collect, use, disclose, and protect your information when you use our application and services. By using Yummy, you agree to the collection and use of information in accordance with this policy.",
+    "sections": [
+      {
+        "title": "1. Information We Collect",
+        "order": 1,
+        "subsections": [
+          {
+            "title": "1.1 Personal Information",
+            "content": null,
+            "items": [
+              "Full name",
+              "Email address",
+              "Phone number",
+              "User role (Admin, Staff, Kitchen, etc.)",
+              "Restaurant details (name, address, branch)",
+              "Login credentials (securely stored)"
+            ]
+          },
+          {
+            "title": "1.2 Usage & Device Information",
+            "content": null,
+            "items": [
+              "Device model",
+              "Operating system version",
+              "App version",
+              "IP address",
+              "Device identifiers",
+              "Log data and crash reports"
+            ]
+          },
+          {
+            "title": "1.3 Location Information (Optional)",
+            "content": "If enabled by the user:",
+            "items": [
+              "Approximate or precise location for attendance or business verification purposes",
+              "Location access is optional and used only when required for specific features."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "2. How We Use Your Information",
+        "order": 2,
+        "content": null,
+        "items": [
+          "Provide and manage restaurant operations",
+          "Authenticate users securely",
+          "Manage staff, payroll, and orders",
+          "Send notifications and alerts",
+          "Improve app performance and reliability",
+          "Prevent fraud and unauthorized access"
+        ]
+      },
+      {
+        "title": "3. Data Sharing & Disclosure",
+        "order": 3,
+        "content": "We do not sell or rent your personal data. We may share data only:",
+        "items": [
+          "With trusted service providers (e.g., hosting, analytics)",
+          "When required by law",
+          "To protect our legal rights and platform security"
+        ]
+      },
+      {
+        "title": "4. Data Security",
+        "order": 4,
+        "content": "We take reasonable measures to protect your data including:",
+        "items": [
+          "Encrypted data transmission (HTTPS)",
+          "Secure backend APIs",
+          "Role-based access control",
+          "Restricted database access"
+        ]
+      },
+      {
+        "title": "5. Data Retention",
+        "order": 5,
+        "content": "We retain data only as long as necessary:",
+        "items": [
+          "To provide our services",
+          "To comply with legal obligations",
+          "To resolve disputes"
+        ],
+        "footer": "You may request deletion of your data at any time."
+      },
+      {
+        "title": "6. User Rights",
+        "order": 6,
+        "content": "You have the right to:",
+        "items": [
+          "Access your personal data",
+          "Update or correct information",
+          "Request deletion of your data",
+          "Withdraw consent at any time"
+        ],
+        "footer": "To request changes, contact us at support@yummyever.com"
+      },
+      {
+        "title": "7. Children's Privacy",
+        "order": 7,
+        "content": "Yummy is not intended for children under 13. We do not knowingly collect personal data from children."
+      },
+      {
+        "title": "8. Third-Party Services",
+        "order": 8,
+        "content": "We may use third-party services such as:",
+        "items": [
+          "Google Firebase (Analytics, Notifications)",
+          "Cloud hosting providers"
+        ],
+        "footer": "These services have their own privacy policies."
+      },
+      {
+        "title": "9. Changes to This Policy",
+        "order": 9,
+        "content": "We may update this Privacy Policy from time to time. Any changes will be posted on this page."
+      },
+      {
+        "title": "10. Contact Us",
+        "order": 10,
+        "content": "If you have questions or concerns:",
+        "contactInfo": {
+          "email": "everpeak.np@gmail.com",
+          "website": "https://yummyever.com"
+        }
+      }
+    ]
+  },
+  "termsAndConditions": {
+    "slug": "terms-and-conditions",
+    "badge": "Terms & Conditions",
+    "title": "Terms for using the Yummy platform",
+    "lastUpdated": "2025-12-29",
+    "introduction": "Welcome to Yummy! By accessing or using the Yummy mobile application or website, you agree to be bound by these Terms and Conditions.",
+    "sections": [
+      {
+        "title": "1. Acceptance of Terms",
+        "order": 1,
+        "content": "By using this application, you agree to comply with these terms. If you do not agree, please do not use the app."
+      },
+      {
+        "title": "2. Use of the Application",
+        "order": 2,
+        "content": "You agree to:",
+        "items": [
+          "Use the app only for lawful purposes",
+          "Provide accurate information",
+          "Maintain confidentiality of login credentials",
+          "Not misuse or attempt to disrupt the system"
+        ]
+      },
+      {
+        "title": "3. Account Responsibility",
+        "order": 3,
+        "content": "You are responsible for:",
+        "items": [
+          "All activity under your account",
+          "Keeping login credentials secure"
+        ],
+        "footer": "We are not responsible for unauthorized access caused by user negligence."
+      },
+      {
+        "title": "4. Service Availability",
+        "order": 4,
+        "content": "We aim to provide uninterrupted service but do not guarantee continuous availability or error-free operation. Service may be temporarily suspended for maintenance or upgrades."
+      },
+      {
+        "title": "5. Intellectual Property",
+        "order": 5,
+        "content": "All content including logos, design, source code, text, and graphics belongs to Yummy and may not be copied or reused without permission."
+      },
+      {
+        "title": "6. Termination",
+        "order": 6,
+        "content": "We reserve the right to suspend or terminate accounts that violate these terms, abuse the platform, or engage in illegal activity."
+      },
+      {
+        "title": "7. Limitation of Liability",
+        "order": 7,
+        "content": "Yummy shall not be liable for business losses, data loss, or indirect or incidental damages. Use of the app is at your own risk."
+      },
+      {
+        "title": "8. Changes to Terms",
+        "order": 8,
+        "content": "We may update these terms at any time. Continued use of the app means acceptance of updated terms."
+      },
+      {
+        "title": "9. Governing Law",
+        "order": 9,
+        "content": "These terms shall be governed by the laws of Nepal."
+      },
+      {
+        "title": "10. Contact Information",
+        "order": 10,
+        "contactInfo": {
+          "email": "everpeak.np@gmail.com",
+          "website": "https://yummyever.com"
+        }
+      }
+    ]
+  },
+  "cookiesPolicy": {
+    "slug": "cookies",
+    "badge": "Cookie Policy",
+    "title": "How Yummy uses cookies",
+    "lastUpdated": "2025-12-29",
+    "introduction": "This Cookie Policy explains what cookies are and how Yummy uses them on our website and application. We use cookies to enhance your experience and provide a personalized service.",
+    "sections": [
+      {
+        "title": "1. What Are Cookies?",
+        "order": 1,
+        "content": "Cookies are small text files stored on your device when you visit a website. They help us remember your preferences, understand how you use our platform, and improve your experience."
+      },
+      {
+        "title": "2. Types of Cookies We Use",
+        "order": 2,
+        "subsections": [
+          {
+            "title": "2.1 Essential Cookies",
+            "content": "Required for the website to function properly. These cannot be disabled.",
+            "items": [
+              "Session management",
+              "Authentication and security",
+              "Load balancing"
+            ]
+          },
+          {
+            "title": "2.2 Functional Cookies",
+            "content": "Remember your preferences and settings.",
+            "items": [
+              "Language preferences",
+              "Theme settings (light/dark mode)",
+              "Remember login state"
+            ]
+          },
+          {
+            "title": "2.3 Analytics Cookies",
+            "content": "Help us understand how visitors interact with our website.",
+            "items": [
+              "Page views and navigation patterns",
+              "Time spent on pages",
+              "Error tracking and performance monitoring"
+            ]
+          },
+          {
+            "title": "2.4 Marketing Cookies",
+            "content": "Used to deliver relevant advertisements and track campaign effectiveness.",
+            "items": [
+              "Ad targeting",
+              "Campaign performance tracking",
+              "Cross-site identification (optional)"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "3. Third-Party Cookies",
+        "order": 3,
+        "content": "We may use cookies from third-party services:",
+        "items": [
+          "Google Analytics - for website traffic analysis",
+          "Firebase - for app performance monitoring",
+          "Social media plugins - for sharing features"
+        ],
+        "footer": "These third parties have their own cookie policies."
+      },
+      {
+        "title": "4. Managing Cookies",
+        "order": 4,
+        "content": "You can control cookies through your browser settings:",
+        "items": [
+          "Block all cookies",
+          "Delete existing cookies",
+          "Allow cookies from specific sites only",
+          "Set preferences for different types of cookies"
+        ],
+        "footer": "Note: Disabling cookies may affect website functionality."
+      },
+      {
+        "title": "5. Cookie Retention",
+        "order": 5,
+        "content": "Different cookies are stored for different periods:",
+        "items": [
+          "Session cookies - deleted when you close your browser",
+          "Persistent cookies - stored for up to 1 year",
+          "Analytics cookies - typically stored for 26 months"
+        ]
+      },
+      {
+        "title": "6. Updates to This Policy",
+        "order": 6,
+        "content": "We may update this Cookie Policy from time to time. Changes will be posted on this page with an updated revision date."
+      },
+      {
+        "title": "7. Contact Us",
+        "order": 7,
+        "content": "If you have questions about our use of cookies:",
+        "contactInfo": {
+          "email": "everpeak.np@gmail.com",
+          "website": "https://yummyever.com"
+        }
+      }
+    ]
+  }
+}

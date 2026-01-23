@@ -1,0 +1,1061 @@
+{
+  "meta": {
+    "project": "Yummy Landing Page - Complete Backend Spec",
+    "framework": "Django + Django Admin",
+    "purpose": "Complete specification for making every element dynamic including all theme colors, hover states, icons, and micro-copy",
+    "version": "2.0",
+    "generatedAt": "2026-01-18"
+  },
+
+  "themeSystem": {
+    "description": "Complete theme configuration for dark and light modes. EVERY color must be editable.",
+    
+    "globalColors": {
+      "endpoint": "GET /api/theme/colors",
+      "model": "ThemeColor",
+      "fields": {
+        "name": "CharField(unique=True)",
+        "lightMode": "CharField(max_length=7, help_text='Hex color for light mode')",
+        "darkMode": "CharField(max_length=7, help_text='Hex color for dark mode')",
+        "description": "CharField(max_length=200)"
+      },
+      "currentColors": {
+        "primary": { "light": "#ff6929", "dark": "#ff6929", "desc": "Brand primary color (orange)" },
+        "primaryHover": { "light": "#ea580c", "dark": "#ea580c", "desc": "Primary button hover" },
+        "primaryLight": { "light": "#ffedd5", "dark": "rgba(124, 45, 18, 0.3)", "desc": "Primary color light tint for badges" },
+        "primaryLightText": { "light": "#c2410c", "dark": "#fdba74", "desc": "Text on primary light background" },
+        
+        "background": { "light": "#ffffff", "dark": "#0a0a0a", "desc": "Main page background" },
+        "backgroundAlt": { "light": "#f8fafc", "dark": "#050505", "desc": "Alternate section background" },
+        "backgroundCard": { "light": "#ffffff", "dark": "#171717", "desc": "Card/surface background" },
+        "backgroundCardHover": { "light": "#f8fafc", "dark": "#1a1a1a", "desc": "Card hover background" },
+        "backgroundSubtle": { "light": "rgba(255,255,255,0.02)", "dark": "rgba(255,255,255,0.02)", "desc": "Very subtle background" },
+        "backgroundOverlay": { "light": "rgba(255,255,255,0.9)", "dark": "rgba(10,10,10,0.9)", "desc": "Glass/overlay background" },
+        
+        "textPrimary": { "light": "#0f172a", "dark": "#ffffff", "desc": "Main heading text" },
+        "textSecondary": { "light": "#475569", "dark": "#94a3b8", "desc": "Body text, subtitles" },
+        "textMuted": { "light": "#64748b", "dark": "#a3a3a3", "desc": "Muted/helper text" },
+        "textSubtle": { "light": "#94a3b8", "dark": "#737373", "desc": "Very subtle text" },
+        
+        "border": { "light": "#e2e8f0", "dark": "#262626", "desc": "Default border color" },
+        "borderLight": { "light": "#f1f5f9", "dark": "#222222", "desc": "Light border" },
+        "borderSubtle": { "light": "#e5e7eb", "dark": "rgba(255,255,255,0.1)", "desc": "Subtle border" },
+        
+        "navBackground": { "light": "rgba(255, 255, 255, 0.8)", "dark": "rgba(10, 10, 10, 0.8)", "desc": "Navbar background with blur" },
+        "navBorder": { "light": "#e2e8f0", "dark": "rgba(255,255,255,0.05)", "desc": "Navbar bottom border" },
+        "navText": { "light": "#64748b", "dark": "#94a3b8", "desc": "Nav link text color" },
+        "navTextActive": { "light": "#0f172a", "dark": "#ffffff", "desc": "Active nav link" },
+        "navTabHover": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.1)", "desc": "Nav tab hover background" },
+        
+        "footerBackground": { "light": "#ffffff", "dark": "#0a0a0a", "desc": "Footer background" },
+        "footerBorder": { "light": "#e5e7eb", "dark": "#171717", "desc": "Footer border" },
+        "footerText": { "light": "#4b5563", "dark": "#d4d4d4", "desc": "Footer text" },
+        "footerHeading": { "light": "#0f172a", "dark": "#ffffff", "desc": "Footer section headings" },
+        "footerLinkHover": { "light": "#ff6929", "dark": "#ff6929", "desc": "Footer link hover color" }
+      }
+    },
+
+    "buttonStyles": {
+      "endpoint": "GET /api/theme/buttons",
+      "model": "ButtonStyle",
+      "description": "All button styles with default and hover states for both themes",
+      "currentStyles": {
+        "primary": {
+          "light": {
+            "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+            "backgroundHover": "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)",
+            "text": "#ffffff",
+            "shadow": "0 4px 14px 0 rgba(249, 115, 22, 0.39)",
+            "shadowHover": "0 6px 20px 0 rgba(249, 115, 22, 0.5)"
+          },
+          "dark": {
+            "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)",
+            "backgroundHover": "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)",
+            "text": "#ffffff",
+            "shadow": "0 4px 14px 0 rgba(249, 115, 22, 0.39)",
+            "shadowHover": "0 6px 20px 0 rgba(249, 115, 22, 0.5)"
+          }
+        },
+        "secondary": {
+          "light": {
+            "background": "#ffffff",
+            "backgroundHover": "#f8fafc",
+            "text": "#475569",
+            "border": "#e2e8f0",
+            "borderHover": "#cbd5e1"
+          },
+          "dark": {
+            "background": "#171717",
+            "backgroundHover": "#1a1a1a",
+            "text": "#a3a3a3",
+            "border": "#262626",
+            "borderHover": "#404040"
+          }
+        },
+        "outline": {
+          "light": {
+            "background": "transparent",
+            "backgroundHover": "#f8fafc",
+            "text": "#64748b",
+            "border": "#e2e8f0",
+            "borderHover": "#ff6929"
+          },
+          "dark": {
+            "background": "transparent",
+            "backgroundHover": "rgba(255,255,255,0.05)",
+            "text": "#a3a3a3",
+            "border": "#404040",
+            "borderHover": "#ff6929"
+          }
+        },
+        "ghost": {
+          "light": {
+            "background": "transparent",
+            "backgroundHover": "#f1f5f9",
+            "text": "#64748b"
+          },
+          "dark": {
+            "background": "transparent",
+            "backgroundHover": "rgba(255,255,255,0.1)",
+            "text": "#94a3b8"
+          }
+        },
+        "login": {
+          "light": {
+            "background": "#0f172a",
+            "text": "#ffffff"
+          },
+          "dark": {
+            "background": "#ffffff",
+            "text": "#0f172a"
+          }
+        }
+      }
+    },
+
+    "featureIconColors": {
+      "description": "Icon background colors for feature cards",
+      "styles": {
+        "inventory": {
+          "light": { "background": "#f0fdf4", "icon": "#16a34a" },
+          "dark": { "background": "rgba(34, 197, 94, 0.1)", "icon": "#16a34a" }
+        },
+        "billing": {
+          "light": { "background": "rgba(255,255,255,0.1)", "icon": "#ffffff" },
+          "dark": { "background": "rgba(255,255,255,0.2)", "icon": "#ffffff" }
+        },
+        "qrMenu": {
+          "light": { "background": "#faf5ff", "icon": "#9333ea" },
+          "dark": { "background": "rgba(147, 51, 234, 0.1)", "icon": "#9333ea" }
+        },
+        "reports": {
+          "light": { "background": "#fce7f3", "icon": "#db2777" },
+          "dark": { "background": "rgba(219, 39, 119, 0.1)", "icon": "#db2777" }
+        }
+      }
+    },
+
+    "badgeStyles": {
+      "description": "Badge/pill component styles",
+      "styles": {
+        "hero": {
+          "light": { "background": "#ffedd5", "text": "#c2410c" },
+          "dark": { "background": "rgba(124, 45, 18, 0.3)", "text": "#fdba74" }
+        },
+        "easyStart": {
+          "light": { "background": "#eff6ff", "text": "#2563eb", "border": "#bfdbfe" },
+          "dark": { "background": "rgba(30, 58, 138, 0.2)", "text": "#60a5fa", "border": "rgba(30, 58, 138, 0.3)" }
+        },
+        "hiring": {
+          "light": { "background": "#dbeafe", "text": "#2563eb" },
+          "dark": { "background": "rgba(30, 58, 138, 0.3)", "text": "#60a5fa" }
+        },
+        "phase1": {
+          "light": { "background": "#ffedd5", "text": "#ea580c" },
+          "dark": { "background": "rgba(234, 88, 12, 0.3)", "text": "#fb923c" }
+        },
+        "phase2": {
+          "light": { "background": "#dbeafe", "text": "#2563eb" },
+          "dark": { "background": "rgba(37, 99, 235, 0.3)", "text": "#60a5fa" }
+        },
+        "popular": {
+          "light": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "text": "#ffffff" },
+          "dark": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "text": "#ffffff" }
+        },
+        "savings": {
+          "light": { "background": "#dcfce7", "text": "#15803d" },
+          "dark": { "background": "rgba(22, 163, 74, 0.3)", "text": "#4ade80" }
+        }
+      }
+    },
+
+    "processStepColors": {
+      "description": "Process section card colors",
+      "normalCard": {
+        "light": { "background": "#ffffff", "border": "#f1f5f9", "numberColor": "#e2e8f0" },
+        "dark": { "background": "#111111", "border": "#222222", "numberColor": "#333333" }
+      },
+      "highlightedCard": {
+        "light": { "background": "#2563eb", "border": "none", "numberColor": "rgba(255,255,255,0.2)", "text": "#ffffff" },
+        "dark": { "background": "#0f172a", "border": "none", "numberColor": "rgba(255,255,255,0.2)", "text": "#ffffff" }
+      },
+      "iconBackgrounds": {
+        "step1": { "light": "#f8fafc", "dark": "#1a1a1a" },
+        "step2": { "light": "#f8fafc", "dark": "#1a1a1a" },
+        "step3Highlighted": { "light": "rgba(255,255,255,0.2)", "dark": "rgba(255,255,255,0.2)" }
+      }
+    },
+
+    "cardShadows": {
+      "description": "Shadow styles for cards and components",
+      "styles": {
+        "cardDefault": {
+          "light": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+          "dark": "0 1px 3px 0 rgba(0, 0, 0, 0.3)"
+        },
+        "cardHover": {
+          "light": "0 25px 50px -12px rgba(0, 0, 0, 0.1)",
+          "dark": "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+        },
+        "testimonialCard": {
+          "light": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+          "dark": "0 4px 6px -1px rgba(0, 0, 0, 0.3)"
+        }
+      }
+    }
+  },
+
+  "djangoAdminStructure": {
+    "description": "Django admin organized with separate sections per page",
+    "sections": [
+      { "name": "Global Settings", "app": "core", "models": ["SiteConfig", "ThemeColor", "ButtonStyle", "Logo", "SocialLink"], "icon": "settings" },
+      { "name": "Navigation", "app": "navigation", "models": ["MainNavItem", "MegaMenuItem", "FooterSection", "FooterLink"], "icon": "menu" },
+      { "name": "Home Page", "app": "home", "models": ["HeroSection", "HeroCTA", "ProcessSection", "ProcessStep", "TestimonialSection", "Testimonial", "AboutSection", "FeatureSection", "FeatureCard", "GallerySection", "GalleryFeature", "LaunchPhase", "LaunchPhaseCard"], "icon": "home" },
+      { "name": "Pricing Page", "app": "pricing", "models": ["PricingPageConfig", "PricingPlan", "PlanFeature", "PricingPromotion", "PricingFAQ"], "icon": "attach_money" },
+      { "name": "FAQ Page", "app": "faq", "models": ["FAQPageConfig", "FAQCategory", "FAQQuestion"], "icon": "help" },
+      { "name": "Careers Page", "app": "careers", "models": ["CareersPageConfig", "JobCategory", "JobPosition"], "icon": "work" },
+      { "name": "Team Page", "app": "team", "models": ["TeamPageConfig", "CompanyValue", "TeamMember"], "icon": "groups" },
+      { "name": "Contact Page", "app": "contact", "models": ["ContactPageConfig", "ContactCategory", "OfficeLocation"], "icon": "contact_mail" },
+      { "name": "Help Center", "app": "help", "models": ["HelpPageConfig", "HelpLinkColumn", "HelpLink"], "icon": "support" },
+      { "name": "Blog", "app": "blog", "models": ["BlogPost", "BlogCategory", "BlogAuthor"], "icon": "article" },
+      { "name": "Features Pages", "app": "features", "models": ["FeaturePageConfig", "FeaturePage", "FeaturePageSection"], "icon": "star" },
+      { "name": "Legal Pages", "app": "legal", "models": ["LegalPage"], "icon": "gavel" },
+      { "name": "SEO", "app": "seo", "models": ["GlobalSEO", "PageSEO"], "icon": "search" }
+    ]
+  },
+
+  "seoConfiguration": {
+    "globalSEO": {
+      "fields": {
+        "defaultTitleTemplate": "string (e.g., '%s | Yummy POS')",
+        "defaultDescription": "string (max 160 chars)",
+        "defaultKeywords": "text (comma-separated)",
+        "defaultOgImage": "image (1200x630)",
+        "twitterHandle": "string",
+        "googleAnalyticsId": "string",
+        "facebookPixelId": "string",
+        "robotsDefault": "choice (index,follow...)",
+        "canonicalDomain": "url"
+      }
+    },
+    "pageSEO": {
+      "description": "Every page needs these SEO fields",
+      "fields": {
+        "metaTitle": "string (50-60 chars)",
+        "metaDescription": "string (150-160 chars)",
+        "metaKeywords": "text",
+        "canonicalUrl": "url (optional override)",
+        "robots": "choice",
+        "ogTitle": "string",
+        "ogDescription": "string",
+        "ogImage": "image",
+        "ogType": "choice (website|article)",
+        "twitterTitle": "string",
+        "twitterDescription": "string",
+        "twitterImage": "image",
+        "twitterCardType": "choice (summary|summary_large_image)",
+        "structuredData": "json (JSON-LD)",
+        "customHeadTags": "text (additional meta tags)"
+      },
+      "requiredFor": ["home", "pricing", "faq", "careers", "team", "contact", "help", "blog", "features", "features/smart-inventory", "features/ird-billing", "features/qr-menu", "features/reports", "privacy-policy", "terms-and-conditions"]
+    }
+  },
+
+  "components": {
+    "navbar": {
+      "endpoint": "GET /api/components/navbar",
+      "editableElements": {
+        "logo": { "lightModeSrc": "image", "darkModeSrc": "image", "altText": "string", "width": "number", "height": "number" },
+        "brandName": { "text": "string", "lightColor": "#0f172a", "darkColor": "#ffffff" },
+        "navItems": [
+          { "title": "string", "href": "string", "hasMegaMenu": "boolean", "megaMenuType": "string|null", "order": "number" }
+        ],
+        "navItemColors": {
+          "default": { "light": "#64748b", "dark": "#94a3b8" },
+          "hover": { "light": "#0f172a", "dark": "#ffffff" },
+          "activeBackground": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.1)" }
+        },
+        "megaMenuColors": {
+          "background": { "light": "#ffffff", "dark": "#171717" },
+          "border": { "light": "#e2e8f0", "dark": "#262626" },
+          "itemHover": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.05)" },
+          "itemText": { "light": "#1e293b", "dark": "#e5e5e5" },
+          "itemDescription": { "light": "#64748b", "dark": "#a3a3a3" },
+          "iconColor": { "light": "#94a3b8", "dark": "#6b7280" },
+          "iconColorHover": { "light": "#ff6929", "dark": "#ff6929" }
+        },
+        "themeToggleIcon": { "lightModeIcon": "dark_mode", "darkModeIcon": "light_mode" },
+        "loginButton": {
+          "text": "string",
+          "href": "string",
+          "lightBackground": "#0f172a",
+          "lightText": "#ffffff",
+          "darkBackground": "#ffffff",
+          "darkText": "#0f172a"
+        },
+        "mobileMenuColors": {
+          "background": { "light": "#ffffff", "dark": "#0a0a0a" },
+          "itemBorder": { "light": "#e2e8f0", "dark": "#262626" },
+          "itemText": { "light": "#0f172a", "dark": "#ffffff" },
+          "appearanceLabel": { "light": "#64748b", "dark": "#94a3b8" }
+        }
+      }
+    },
+
+    "footer": {
+      "endpoint": "GET /api/components/footer",
+      "editableElements": {
+        "colors": {
+          "background": { "light": "#ffffff", "dark": "#0a0a0a" },
+          "borderTop": { "light": "#e5e7eb", "dark": "#171717" },
+          "text": { "light": "#4b5563", "dark": "#d4d4d4" },
+          "headingText": { "light": "#0f172a", "dark": "#ffffff" },
+          "linkHover": { "light": "#ff6929", "dark": "#ff6929" }
+        },
+        "companyInfo": {
+          "logoLight": "image",
+          "logoDark": "image",
+          "brandName": "string",
+          "tagline": "string"
+        },
+        "sections": [
+          { "title": "string", "links": [{ "label": "string", "href": "string" }] }
+        ],
+        "contactInfo": {
+          "address": "string",
+          "email": "string",
+          "phone": "string"
+        },
+        "socialLinks": [
+          { "platform": "string", "url": "string", "svgIcon": "text" }
+        ],
+        "copyrightText": "string",
+        "parentCompany": { "name": "string", "logo": "image" },
+        "legalLinks": [
+          { "label": "string", "href": "string" }
+        ]
+      }
+    },
+
+    "hero": {
+      "endpoint": "GET /api/pages/home/hero",
+      "editableElements": {
+        "badge": {
+          "icon": "string (Material Icon)",
+          "text": "string",
+          "emoji": "string",
+          "bgLight": "#ffedd5",
+          "bgDark": "rgba(124, 45, 18, 0.3)",
+          "textLight": "#c2410c",
+          "textDark": "#fdba74"
+        },
+        "headline": {
+          "line1": "string",
+          "line2": "string",
+          "highlightWord": "string",
+          "highlightColor": "#ff6929",
+          "textLight": "#0f172a",
+          "textDark": "#ffffff"
+        },
+        "subheadline": {
+          "text": "string (can contain line breaks)",
+          "textLight": "#475569",
+          "textDark": "#94a3b8"
+        },
+        "ctaButtons": [
+          {
+            "text": "string",
+            "href": "string",
+            "type": "primary|secondary",
+            "successText": "string (for animated buttons)",
+            "icon": "string|null"
+          }
+        ],
+        "secondaryButtonColors": {
+          "bgLight": "#ffffff",
+          "bgLightHover": "#f8fafc",
+          "bgDark": "#171717",
+          "bgDarkHover": "#1a1a1a",
+          "textLight": "#475569",
+          "textDark": "#a3a3a3",
+          "borderLight": "#e2e8f0",
+          "borderDark": "#262626"
+        }
+      }
+    },
+
+    "process": {
+      "endpoint": "GET /api/pages/home/process",
+      "editableElements": {
+        "sectionColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#050505"
+        },
+        "badge": {
+          "text": "string",
+          "bgLight": "#eff6ff",
+          "bgDark": "rgba(30, 58, 138, 0.2)",
+          "textLight": "#2563eb",
+          "textDark": "#60a5fa",
+          "borderLight": "#bfdbfe",
+          "borderDark": "rgba(30, 58, 138, 0.3)"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#94a3b8" },
+        "steps": [
+          {
+            "number": "string",
+            "icon": "string (Material Icon)",
+            "iconColor": "string",
+            "title": "string",
+            "description": "string",
+            "isHighlighted": "boolean"
+          }
+        ],
+        "normalCardColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#111111",
+          "borderLight": "#f1f5f9",
+          "borderDark": "#222222",
+          "numberLight": "#e2e8f0",
+          "numberDark": "#333333",
+          "iconBgLight": "#f8fafc",
+          "iconBgDark": "#1a1a1a",
+          "titleLight": "#0f172a",
+          "titleDark": "#ffffff",
+          "descLight": "#64748b",
+          "descDark": "#94a3b8"
+        },
+        "highlightedCardColors": {
+          "bgLight": "#2563eb",
+          "bgDark": "#0f172a",
+          "numberColor": "rgba(255,255,255,0.2)",
+          "iconBg": "rgba(255,255,255,0.2)",
+          "titleColor": "#ffffff",
+          "descColor": "rgba(255,255,255,0.8)"
+        }
+      }
+    },
+
+    "testimonials": {
+      "endpoint": "GET /api/pages/home/testimonials",
+      "editableElements": {
+        "sectionColors": {
+          "bgLight": "#f8fafc",
+          "bgDark": "#0a0a0a"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "color": "#64748b" },
+        "cards": [
+          {
+            "imageUrl": "image",
+            "quote": "string",
+            "author": "string",
+            "authorTitle": "string (optional)"
+          }
+        ],
+        "cardColors": {
+          "bgDark": "rgba(255,255,255,0.05)",
+          "borderDark": "rgba(255,255,255,0.1)",
+          "overlayGradient": "linear-gradient to top from black"
+        }
+      }
+    },
+
+    "about": {
+      "endpoint": "GET /api/pages/home/about",
+      "editableElements": {
+        "sectionColors": {
+          "bgLight": "#f8fafc",
+          "bgDark": "#050505"
+        },
+        "title": {
+          "prefix": "string",
+          "highlight": "string",
+          "highlightColor": "#ff6929",
+          "suffix": "string",
+          "textLight": "#0f172a",
+          "textDark": "#ffffff"
+        },
+        "description": { "text": "string", "colorLight": "#475569", "colorDark": "#94a3b8" },
+        "video": {
+          "url": "string",
+          "thumbnailUrl": "image (optional)"
+        },
+        "videoCardShadow": {
+          "light": "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+          "dark": "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+        }
+      }
+    },
+
+    "features": {
+      "endpoint": "GET /api/pages/home/features",
+      "editableElements": {
+        "sectionColors": {
+          "bgLight": "#f8fafc",
+          "bgDark": "#0a0a0a"
+        },
+        "badge": {
+          "icon": "bolt",
+          "text": "string",
+          "bgLight": "#eff6ff",
+          "bgDark": "rgba(30, 58, 138, 0.2)",
+          "textLight": "#2563eb",
+          "textDark": "#60a5fa"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#94a3b8" },
+        "cards": [
+          {
+            "id": "string",
+            "title": "string",
+            "description": "string",
+            "icon": "string (Material Icon)",
+            "iconColor": "string",
+            "iconBgLight": "string",
+            "iconBgDark": "string",
+            "gridSpan": "wide|tall|normal",
+            "mockData": "json (for animated UI previews)",
+            "decorGlowColor": "string"
+          }
+        ],
+        "cardColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#171717",
+          "borderLight": "#e5e7eb",
+          "borderDark": "#262626",
+          "titleLight": "#0f172a",
+          "titleDark": "#ffffff",
+          "descLight": "#64748b",
+          "descDark": "#a3a3a3"
+        }
+      }
+    },
+
+    "gallery": {
+      "endpoint": "GET /api/pages/home/gallery",
+      "editableElements": {
+        "sectionColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#94a3b8" },
+        "features": [
+          {
+            "id": "string",
+            "title": "string",
+            "description": "string",
+            "icon": "string (Material Icon)",
+            "image": "image",
+            "bulletPoints": ["string"]
+          }
+        ],
+        "accordionColors": {
+          "activeBgLight": "#f8fafc",
+          "activeBgDark": "#171717",
+          "activeBorderLight": "#e2e8f0",
+          "activeBorderDark": "#262626",
+          "inactiveTitleLight": "#64748b",
+          "inactiveTitleDark": "#94a3b8",
+          "activeTitleLight": "#0f172a",
+          "activeTitleDark": "#ffffff",
+          "bulletColor": "#ff6929"
+        },
+        "stepIndicatorColors": {
+          "activeBackground": "#ff6929",
+          "activeBorder": "#ff6929",
+          "activeText": "#ffffff",
+          "inactiveBackground": "transparent",
+          "inactiveBorderLight": "#d1d5db",
+          "inactiveBorderDark": "#404040",
+          "inactiveText": "#9ca3af"
+        }
+      }
+    },
+
+    "launchPhases": {
+      "endpoint": "GET /api/pages/home/launch-phases",
+      "editableElements": {
+        "sectionColors": {
+          "bgLight": "#f8fafc",
+          "bgDark": "#000000"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "phases": [
+          {
+            "label": "string (PHASE 1)",
+            "title": "string",
+            "badgeBgLight": "string",
+            "badgeBgDark": "string",
+            "badgeTextLight": "string",
+            "badgeTextDark": "string",
+            "titleColor": "string",
+            "cards": [
+              { "title": "string", "description": "string", "image": "image" }
+            ]
+          }
+        ]
+      }
+    },
+
+    "pricing": {
+      "endpoint": "GET /api/pages/pricing",
+      "editableElements": {
+        "sectionColors": {
+          "bgLight": "#f8fafc",
+          "bgDark": "rgba(255,255,255,0.02)",
+          "borderLight": "#e2e8f0",
+          "borderDark": "rgba(255,255,255,0.05)"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#a3a3a3" },
+        "toggle": {
+          "monthlyLabel": "string",
+          "yearlyLabel": "string",
+          "savingsLabel": "string",
+          "activeColor": "#f97316",
+          "inactiveColorLight": "#cbd5e1",
+          "inactiveColorDark": "#404040",
+          "labelActiveLight": "#0f172a",
+          "labelActiveDark": "#ffffff",
+          "labelInactiveLight": "#64748b",
+          "labelInactiveDark": "#737373"
+        },
+        "savingsBadge": {
+          "bgLight": "#dcfce7",
+          "bgDark": "rgba(22, 163, 74, 0.3)",
+          "textLight": "#15803d",
+          "textDark": "#4ade80"
+        },
+        "promotionBanner": {
+          "icon": "string (Material Icon)",
+          "text": "string",
+          "highlightText": "string",
+          "highlightColor": "#ff6929"
+        },
+        "plans": [
+          {
+            "name": "string",
+            "priceMonthly": "string",
+            "priceYearly": "string",
+            "description": "string",
+            "features": ["string"],
+            "ctaText": "string",
+            "ctaHref": "string",
+            "isPopular": "boolean"
+          }
+        ],
+        "cardColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a",
+          "popularBgDark": "#171717",
+          "borderLight": "#e2e8f0",
+          "borderDark": "rgba(255,255,255,0.1)",
+          "popularBorderColor": "#f97316",
+          "priceBoxBgLight": "#f1f5f9",
+          "priceBoxBgDark": "rgba(255,255,255,0.03)",
+          "nameLight": "#0f172a",
+          "nameDark": "#ffffff",
+          "popularNameColor": "#f97316",
+          "descLight": "#64748b",
+          "descDark": "#a3a3a3",
+          "featureTextLight": "#475569",
+          "featureTextDark": "#d4d4d4",
+          "checkIconBgLight": "#e2e8f0",
+          "checkIconBgDark": "rgba(255,255,255,0.1)",
+          "checkIconBgPopular": "rgba(249, 115, 22, 0.1)",
+          "checkIconColorLight": "#475569",
+          "checkIconColorDark": "#ffffff",
+          "checkIconColorPopular": "#f97316"
+        },
+        "faqs": [
+          { "question": "string", "answer": "string" }
+        ],
+        "faqColors": {
+          "sectionTitleLight": "#0f172a",
+          "sectionTitleDark": "#ffffff",
+          "sectionSubtitleLight": "#64748b",
+          "sectionSubtitleDark": "#a3a3a3",
+          "questionLight": "#1e293b",
+          "questionDark": "#e5e5e5",
+          "answerLight": "#64748b",
+          "answerDark": "#a3a3a3",
+          "iconColorDefault": "#9ca3af",
+          "iconColorActive": "#ff6929"
+        }
+      }
+    }
+  },
+
+  "pages": {
+    "faq": {
+      "endpoint": "GET /api/pages/faq",
+      "editableElements": {
+        "pageColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#a3a3a3" },
+        "contactPrompt": { "text": "string", "linkText": "string", "linkHref": "string", "linkColor": "#ff6929" },
+        "categories": [
+          {
+            "title": "string",
+            "bgLight": "#f8fafc",
+            "bgDark": "rgba(255,255,255,0.02)",
+            "titleLight": "#334155",
+            "titleDark": "#e2e8f0",
+            "questions": [
+              { "question": "string", "answer": "string" }
+            ]
+          }
+        ],
+        "accordionColors": {
+          "borderLight": "#e2e8f0",
+          "borderDark": "rgba(255,255,255,0.1)",
+          "questionLight": "#1e293b",
+          "questionDark": "#f1f5f9",
+          "answerLight": "#64748b",
+          "answerDark": "#94a3b8"
+        }
+      }
+    },
+
+    "careers": {
+      "endpoint": "GET /api/pages/careers",
+      "editableElements": {
+        "pageColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a"
+        },
+        "badge": { "text": "string", "bgLight": "#dbeafe", "bgDark": "rgba(30, 58, 138, 0.3)", "textLight": "#2563eb", "textDark": "#60a5fa" },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#a3a3a3" },
+        "searchPlaceholder": "string",
+        "categories": ["string"],
+        "categoryButtonColors": {
+          "activeBg": "#ff6929",
+          "activeText": "#ffffff",
+          "inactiveBgLight": "#f3f4f6",
+          "inactiveBgDark": "#262626",
+          "inactiveTextLight": "#4b5563",
+          "inactiveTextDark": "#9ca3af"
+        },
+        "jobCardColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#171717",
+          "borderLight": "#e2e8f0",
+          "borderDark": "#262626",
+          "departmentBgLight": "#f1f5f9",
+          "departmentBgDark": "rgba(255,255,255,0.05)",
+          "titleLight": "#0f172a",
+          "titleDark": "#ffffff",
+          "metaLight": "#64748b",
+          "metaDark": "#a3a3a3",
+          "descLight": "#94a3b8",
+          "descDark": "#737373",
+          "applyLinkColor": "#ff6929"
+        },
+        "jobs": [
+          {
+            "title": "string",
+            "department": "string",
+            "type": "string",
+            "location": "string",
+            "description": "string"
+          }
+        ],
+        "emptyState": {
+          "title": "string",
+          "message": "string"
+        }
+      }
+    },
+
+    "team": {
+      "endpoint": "GET /api/pages/team",
+      "editableElements": {
+        "pageColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a"
+        },
+        "icon": { "name": "FiUsers", "bgLight": "#ffedd5", "bgDark": "rgba(234, 88, 12, 0.3)", "colorLight": "#ea580c", "colorDark": "#fb923c" },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "companyLogo": "image",
+        "subtitle": { "text": "string", "highlightWord": "string", "highlightColor": "#f97316", "colorLight": "#64748b", "colorDark": "#a3a3a3" },
+        "values": [
+          {
+            "icon": "string",
+            "iconColor": "string",
+            "title": "string",
+            "description": "string"
+          }
+        ],
+        "valueCardColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#171717",
+          "borderLight": "#e2e8f0",
+          "borderDark": "#262626",
+          "titleLight": "#0f172a",
+          "titleDark": "#ffffff",
+          "descLight": "#64748b",
+          "descDark": "#a3a3a3"
+        },
+        "joinSection": {
+          "bgLight": "#f8fafc",
+          "bgDark": "#171717",
+          "title": "string",
+          "titleLight": "#0f172a",
+          "titleDark": "#ffffff",
+          "description": "string",
+          "descLight": "#64748b",
+          "descDark": "#a3a3a3",
+          "ctaText": "string",
+          "ctaHref": "string"
+        }
+      }
+    },
+
+    "contact": {
+      "endpoint": "GET /api/pages/contact",
+      "editableElements": {
+        "pageColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#a3a3a3" },
+        "infoSection": {
+          "title": "string",
+          "bgLight": "#f8fafc",
+          "bgDark": "rgba(255,255,255,0.03)"
+        },
+        "contactItems": [
+          {
+            "icon": "string (FiMapPin, FiMail, FiPhone)",
+            "iconBgLight": "string",
+            "iconBgDark": "string",
+            "iconColorLight": "string",
+            "iconColorDark": "string",
+            "title": "string",
+            "content": "string (can contain links)"
+          }
+        ],
+        "mapEmbedUrl": "string",
+        "mapFilter": {
+          "light": "none",
+          "dark": "invert(90%) hue-rotate(180deg)"
+        },
+        "formSection": {
+          "title": "string",
+          "bgLight": "#ffffff",
+          "bgDark": "#171717"
+        },
+        "formColors": {
+          "labelLight": "#475569",
+          "labelDark": "#d4d4d4",
+          "inputBgLight": "#f8fafc",
+          "inputBgDark": "#0a0a0a",
+          "inputBorderLight": "#e2e8f0",
+          "inputBorderDark": "#262626",
+          "inputTextLight": "#0f172a",
+          "inputTextDark": "#ffffff"
+        },
+        "categories": ["string (dropdown options)"],
+        "submitButton": {
+          "text": "string",
+          "icon": "string",
+          "bg": "#ea580c",
+          "bgHover": "#c2410c",
+          "text": "#ffffff",
+          "shadow": "0 4px 14px rgba(249, 115, 22, 0.2)"
+        }
+      }
+    },
+
+    "help": {
+      "endpoint": "GET /api/pages/help",
+      "editableElements": {
+        "pageColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a"
+        },
+        "containerBg": {
+          "light": "#f3f4f6",
+          "dark": "rgba(255,255,255,0.03)"
+        },
+        "title": { "text": "string", "colorLight": "#1f2937", "colorDark": "#f3f4f6" },
+        "subtitle": "string",
+        "searchPlaceholder": "string",
+        "searchColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#171717",
+          "textLight": "#0f172a",
+          "textDark": "#ffffff"
+        },
+        "linkColumns": [
+          { "links": [{ "label": "string", "href": "string" }] }
+        ],
+        "linkColors": {
+          "dividerLight": "#d1d5db",
+          "dividerDark": "rgba(255,255,255,0.1)",
+          "hoverBgLight": "rgba(0,0,0,0.05)",
+          "hoverBgDark": "rgba(255,255,255,0.05)"
+        },
+        "noResultsText": "string"
+      }
+    },
+
+    "blog": {
+      "listEndpoint": "GET /api/blog/posts",
+      "detailEndpoint": "GET /api/blog/posts/:slug",
+      "editableElements": {
+        "listPageColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#0a0a0a"
+        },
+        "title": { "text": "string", "colorLight": "#0f172a", "colorDark": "#ffffff" },
+        "subtitle": { "text": "string", "colorLight": "#64748b", "colorDark": "#94a3b8" },
+        "posts": [
+          {
+            "slug": "string",
+            "title": "string",
+            "excerpt": "string",
+            "date": "date",
+            "image": "image",
+            "content": "richtext (HTML)",
+            "metaTitle": "string",
+            "metaDescription": "string",
+            "keywords": ["string"],
+            "author": "string",
+            "category": "string"
+          }
+        ],
+        "cardColors": {
+          "bgLight": "#ffffff",
+          "bgDark": "#171717",
+          "borderLight": "#e2e8f0",
+          "borderDark": "#262626",
+          "titleLight": "#0f172a",
+          "titleDark": "#ffffff",
+          "excerptLight": "#64748b",
+          "excerptDark": "#a3a3a3",
+          "dateLight": "#94a3b8",
+          "dateDark": "#737373"
+        },
+        "postPageColors": {
+          "headingLight": "#0f172a",
+          "headingDark": "#ffffff",
+          "bodyLight": "#475569",
+          "bodyDark": "#94a3b8",
+          "linkColor": "#ff6929",
+          "strongColor": "#ff6929"
+        }
+      }
+    },
+
+    "features": {
+      "listEndpoint": "GET /api/pages/features",
+      "detailEndpoint": "GET /api/pages/features/:slug",
+      "editableElements": {
+        "featurePages": [
+          {
+            "slug": "string",
+            "title": "string",
+            "subtitle": "string",
+            "icon": "string (Material Icon)",
+            "heroImage": "image",
+            "metaTitle": "string",
+            "metaDescription": "string",
+            "sections": "richtext or structured sections"
+          }
+        ]
+      }
+    },
+
+    "legal": {
+      "endpoint": "GET /api/pages/legal/:type",
+      "editableElements": {
+        "pages": [
+          {
+            "type": "privacy-policy|terms-and-conditions|cookies",
+            "title": "string",
+            "content": "richtext (HTML)",
+            "lastUpdated": "date",
+            "metaTitle": "string",
+            "metaDescription": "string"
+          }
+        ]
+      }
+    }
+  },
+
+  "icons": {
+    "description": "All Material Symbols icons used - must be editable in admin",
+    "list": [
+      "verified", "bolt", "inventory_2", "receipt_long", "qr_code_2", "bar_chart",
+      "person_add", "restaurant_menu", "point_of_sale", "dashboard", "flash_on",
+      "table_restaurant", "checklist", "celebration", "light_mode", "dark_mode",
+      "arrow_forward", "expand_less", "group", "help", "quiz", "check_circle",
+      "settings", "menu", "home", "attach_money", "work", "groups", "contact_mail",
+      "support", "article", "star", "gavel", "search", "photo_library"
+    ]
+  },
+
+  "apiEndpoints": {
+    "summary": [
+      "GET /api/config/site - Global site configuration",
+      "GET /api/theme/colors - All theme colors (light/dark)",
+      "GET /api/theme/buttons - Button styles",
+      "GET /api/navigation/main - Main nav items",
+      "GET /api/navigation/footer - Footer config",
+      "GET /api/components/navbar - Full navbar config",
+      "GET /api/components/footer - Full footer config",
+      "GET /api/pages/home - Complete homepage data",
+      "GET /api/pages/home/hero - Hero section only",
+      "GET /api/pages/home/process - Process section only",
+      "GET /api/pages/home/testimonials",
+      "GET /api/pages/home/about",
+      "GET /api/pages/home/features",
+      "GET /api/pages/home/gallery",
+      "GET /api/pages/home/launch-phases",
+      "GET /api/pages/pricing",
+      "GET /api/pages/faq",
+      "GET /api/pages/careers",
+      "GET /api/pages/careers/jobs",
+      "GET /api/pages/team",
+      "GET /api/pages/contact",
+      "GET /api/pages/help",
+      "GET /api/pages/features",
+      "GET /api/pages/features/:slug",
+      "GET /api/pages/legal/:type",
+      "GET /api/blog/posts",
+      "GET /api/blog/posts/:slug",
+      "GET /api/seo/global",
+      "GET /api/seo/page/:pageId",
+      "POST /api/contact/submit"
+    ]
+  }
+}

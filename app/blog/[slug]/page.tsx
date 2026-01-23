@@ -76,5 +76,5 @@ export default async function BlogPage({ params }: Props) {
     }
   };
 
-  return <BlogPostClient post={post} jsonLd={jsonLd} />;
+  return <BlogPostClient post={post} jsonLd={jsonLd} slug={slug} />;
 }

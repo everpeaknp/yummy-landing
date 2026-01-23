@@ -1,23 +1,66 @@
 "use client";
 
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  FiArrowRight,
-  FiChevronDown,
-  FiMenu,
-  FiX
-} from "react-icons/fi";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "@/hooks/useTheme";
 import { siteConfig } from "@/lib/constants";
+import { getNavbar, type NavbarData, type NavItem, useRefetchOnFocus } from "@/lib/api";
+
+const fallbackData: Partial<NavbarData> = {
+  logo: {
+    lightModeSrc: "/images/yummy_logo_orange.png",
+    darkModeSrc: "/images/yummy_logo.png",
+    text: "Yummy Ever",
+    href: "/"
+  },
+  themeToggle: {
+    visible: true,
+    lightModeIcon: "light_mode",
+    darkModeIcon: "dark_mode"
+  },
+  loginButton: {
+    text: "Login",
+    href: siteConfig.links.app,
+    visible: true,
+    lightBackground: "#0f172a",
+    lightText: "#ffffff",
+    darkBackground: "#ffffff",
+    darkText: "#0f172a"
+  },
+  items: [
+      { title: "Features", href: "/features", hasMegaMenu: true, megaMenuType: "features", order: 1 },
+      { title: "Pricing", href: "/pricing", hasMegaMenu: false, order: 2 },
+      { title: "Company", href: "/team", hasMegaMenu: true, megaMenuType: "company", order: 3 },
+      { title: "Careers", href: "/careers", hasMegaMenu: false, order: 4 },
+      { title: "Blog", href: "/blog", hasMegaMenu: true, megaMenuType: "blog", order: 5 },
+  ],
+  buttons: []
+};
 
 export function Navbar() {
   const { theme, toggleTheme, mounted } = useTheme();
   const isDark = theme === "dark";
-
+  const [data, setData] = useState<Partial<NavbarData>>(fallbackData);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const apiData = await getNavbar();
+      setData(apiData);
+    } catch (error) {
+      console.error("[Navbar] Failed to fetch navbar data:", error);
+      // Keep fallback data
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useRefetchOnFocus(fetchData);
+
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -26,6 +69,30 @@ export function Navbar() {
       document.body.style.overflow = "auto";
     }
   }, [mobileMenuOpen]);
+
+  // Construct TABS based on API data order, but keep component mapping static for simplicity
+  const items = (data.items || fallbackData.items!).sort((a, b) => a.order - b.order);
+  
+  // Maps for dynamic data to components
+  // We need to rebuild TABS array with dynamic titles/hrefs but keep the component association
+  const dynamicCols = items.map((item, idx) => {
+    let Component = null;
+    if (item.megaMenuType === 'features') Component = FeaturesMenu;
+    if (item.megaMenuType === 'company') Component = CompanyMenu;
+    if (item.megaMenuType === 'blog') Component = Blog;
+
+    return {
+       id: idx + 1,
+       title: item.title,
+       href: item.href,
+       originalId: item.megaMenuType,
+       Component
+    }
+  });
+
+  const logo = data.logo || fallbackData.logo!;
+  const loginBtn = data.loginButton || fallbackData.loginButton!;
+  const themeToggleConfig = data.themeToggle || fallbackData.themeToggle!;
 
   return (
     <>
@@ -38,10 +105,10 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
          {/* Logo */}
-         <Link href="/" className="flex items-center gap-3 relative z-50">
+         <Link href={logo.href} className="flex items-center gap-3 relative z-50">
            <Image
-             src={isDark ? "/images/yummy_logo.png" : "/images/yummy_logo_orange.png"}
-             alt="Yummy Logo"
+             src={isDark ? logo.darkModeSrc : logo.lightModeSrc}
+             alt={logo.text}
              width={50}
              height={50}
              className="h-8 w-auto"
@@ -50,18 +117,19 @@ export function Navbar() {
              className="text-xl font-bold font-display tracking-tight leading-none"
              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
            >
-             Yummy Ever
+             {logo.text}
            </span>
          </Link>
 
          {/* Centered Shifting Tabs (Desktop) */}
          <div className="hidden md:flex justify-center flex-1">
-             <Tabs isDark={isDark} />
+             <Tabs tabs={dynamicCols} isDark={isDark} />
          </div>
 
          {/* Actions (Desktop) */}
          <div className="hidden md:flex items-center gap-4">
             {/* Theme Toggle */}
+            {themeToggleConfig.visible && (
             <button
                 onClick={toggleTheme}
                 className="p-2 transition-colors rounded-full"
@@ -70,23 +138,26 @@ export function Navbar() {
             >
                 {mounted && (
                     <span className="material-symbols-outlined text-[20px]">
-                        {isDark ? "light_mode" : "dark_mode"}
+                        {isDark ? themeToggleConfig.darkModeIcon : themeToggleConfig.lightModeIcon}
                     </span>
                 )}
             </button>
+            )}
 
             {/* Login Button */}
+            {loginBtn.visible !== false && (
             <Link
-                href={siteConfig.links.app}
+                href={loginBtn.href}
                 target="_blank"
                 className="px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-opacity"
                 style={{ 
-                    backgroundColor: isDark ? '#ffffff' : '#0f172a',
-                    color: isDark ? '#0f172a' : '#ffffff'
+                    backgroundColor: isDark ? (loginBtn.darkBackground || '#ffffff') : (loginBtn.lightBackground || '#0f172a'),
+                    color: isDark ? (loginBtn.darkText || '#0f172a') : (loginBtn.lightText || '#ffffff')
                 }}
             >
-                Login
+                {loginBtn.text}
             </Link>
+            )}
          </div>
          
          {/* Mobile Menu Toggle */}
@@ -96,7 +167,7 @@ export function Navbar() {
                 className="p-2 transition-colors relative z-50"
                 style={{ color: isDark ? '#ffffff' : '#0f172a' }}
              >
-                 {mobileMenuOpen ? <FiX className="text-2xl" /> : <FiMenu className="text-2xl" />}
+                 {mobileMenuOpen ? <span className="material-symbols-outlined text-2xl">close</span> : <span className="material-symbols-outlined text-2xl">menu</span>}
              </button>
           </div>
       </div>
@@ -113,7 +184,7 @@ export function Navbar() {
            style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
         >
            <div className="flex flex-col gap-6 text-xl font-medium">
-              {TABS.map((t) => (
+              {dynamicCols.map((t) => (
                 <div key={t.id} className="border-b pb-4" style={{ borderColor: isDark ? '#262626' : '#e2e8f0' }}>
                    <Link 
                       href={t.href} 
@@ -142,12 +213,12 @@ export function Navbar() {
               </div>
 
                <Link
-                href={siteConfig.links.app}
+                href={loginBtn.href}
                 target="_blank"
                 className="mt-auto w-full py-4 text-center rounded-xl font-bold text-lg"
                 style={{ 
-                    backgroundColor: isDark ? '#ffffff' : '#0f172a',
-                    color: isDark ? '#0f172a' : '#ffffff'
+                    backgroundColor: isDark ? (loginBtn.darkBackground || '#ffffff') : (loginBtn.lightBackground || '#0f172a'),
+                    color: isDark ? (loginBtn.darkText || '#0f172a') : (loginBtn.lightText || '#ffffff')
                 }}
             >
                 Login to Dashboard
@@ -160,7 +231,7 @@ export function Navbar() {
   );
 }
 
-const Tabs = ({ isDark }: { isDark: boolean }) => {
+const Tabs = ({ tabs, isDark }: { tabs: any[], isDark: boolean }) => {
   const [selected, setSelected] = useState<number | null>(null);
   const [dir, setDir] = useState<null | "l" | "r">(null);
 
@@ -179,7 +250,7 @@ const Tabs = ({ isDark }: { isDark: boolean }) => {
       onMouseLeave={() => handleSetSelected(null)}
       className="relative flex h-fit gap-2"
     >
-      {TABS.map((t) => {
+      {tabs.map((t) => {
         if (!t.Component) {
              return (
                  <Link 
@@ -210,7 +281,7 @@ const Tabs = ({ isDark }: { isDark: boolean }) => {
       })}
 
       <AnimatePresence>
-        {selected && <Content dir={dir} selected={selected} isDark={isDark} />}
+        {selected && <Content tabs={tabs} dir={dir} selected={selected} isDark={isDark} />}
       </AnimatePresence>
     </div>
   );
@@ -248,11 +319,13 @@ const Tab = ({
       }}
     >
       <span>{children}</span>
-      <FiChevronDown
-        className={`transition-transform ${
+      <span
+        className={`material-symbols-outlined transition-transform ${
           selected === tab ? "rotate-180" : ""
         }`}
-      />
+      >
+        expand_more
+      </span>
     </Link>
   );
 };
@@ -260,11 +333,13 @@ const Tab = ({
 const Content = ({
   selected,
   dir,
-  isDark
+  isDark,
+  tabs
 }: {
   selected: number | null;
   dir: null | "l" | "r";
   isDark: boolean;
+  tabs: any[];
 }) => {
   const [left, setLeft] = useState(0);
 
@@ -302,7 +377,7 @@ const Content = ({
       <Bridge />
       <Nub isDark={isDark} />
 
-      {TABS.map((t) => {
+      {tabs.map((t) => {
         if (!t.Component) return null;
         return (
           <div className="overflow-hidden" key={t.id}>
@@ -369,7 +444,7 @@ const FeaturesMenu = ({ isDark }: { isDark: boolean }) => {
 
       <Link href="/features" className="ml-auto mt-4 flex items-center gap-1 text-sm text-primary w-fit hover:underline pt-2 border-t border-dashed border-gray-200 dark:border-gray-800">
         <span>View all features</span>
-        <FiArrowRight />
+        <span className="material-symbols-outlined">arrow_forward</span>
       </Link>
     </div>
   );
@@ -410,7 +485,7 @@ const Blog = ({ isDark }: { isDark: boolean }) => {
       </div>
       <Link href="/blog" className="ml-auto mt-4 flex items-center gap-1 text-sm text-primary w-fit hover:underline">
         <span>View all posts</span>
-        <FiArrowRight />
+        <span className="material-symbols-outlined">arrow_forward</span>
       </Link>
     </div>
   );
@@ -450,31 +525,3 @@ const CompanyMenu = ({ isDark }: { isDark: boolean }) => {
     </div>
   );
 };
-
-const TABS = [
-  {
-    title: "Features",
-    href: "/features",
-    Component: FeaturesMenu,
-  },
-  {
-    title: "Pricing",
-    href: "/pricing",
-    Component: null, // Direct link, no mega menu
-  },
-  {
-    title: "Company",
-    href: "/team",
-    Component: CompanyMenu,
-  },
-  {
-    title: "Careers",
-    href: "/careers",
-    Component: null,
-  },
-  {
-    title: "Blog",
-    href: "/blog",
-    Component: Blog,
-  },
-].map((n, idx) => ({ ...n, id: idx + 1 }));

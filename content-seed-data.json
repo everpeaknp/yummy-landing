@@ -1,0 +1,435 @@
+{
+  "siteConfig": {
+    "siteName": "Yummy POS",
+    "tagline": "Yummy Ever",
+    "description": "Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
+    "productionUrl": "https://yummypos.com",
+    "appLoginUrl": "https://app.yummyever.com/",
+    "companyName": "Everacy",
+    "copyrightText": "© 2026 Yummy Ever. All rights reserved."
+  },
+
+  "themeColors": {
+    "primary": { "light": "#ff6929", "dark": "#ff6929", "description": "Brand primary color (orange)" },
+    "primaryHover": { "light": "#ea580c", "dark": "#ea580c", "description": "Primary button hover" },
+    "primaryLight": { "light": "#ffedd5", "dark": "rgba(124, 45, 18, 0.3)", "description": "Primary color light tint for badges" },
+    "primaryLightText": { "light": "#c2410c", "dark": "#fdba74", "description": "Text on primary light background" },
+    "background": { "light": "#ffffff", "dark": "#0a0a0a", "description": "Main page background" },
+    "backgroundAlt": { "light": "#f8fafc", "dark": "#050505", "description": "Alternate section background" },
+    "backgroundCard": { "light": "#ffffff", "dark": "#171717", "description": "Card/surface background" },
+    "backgroundCardHover": { "light": "#f8fafc", "dark": "#1a1a1a", "description": "Card hover background" },
+    "backgroundSubtle": { "light": "rgba(255,255,255,0.02)", "dark": "rgba(255,255,255,0.02)", "description": "Very subtle background" },
+    "backgroundOverlay": { "light": "rgba(255,255,255,0.9)", "dark": "rgba(10,10,10,0.9)", "description": "Glass/overlay background" },
+    "textPrimary": { "light": "#0f172a", "dark": "#ffffff", "description": "Main heading text" },
+    "textSecondary": { "light": "#475569", "dark": "#94a3b8", "description": "Body text, subtitles" },
+    "textMuted": { "light": "#64748b", "dark": "#a3a3a3", "description": "Muted/helper text" },
+    "textSubtle": { "light": "#94a3b8", "dark": "#737373", "description": "Very subtle text" },
+    "border": { "light": "#e2e8f0", "dark": "#262626", "description": "Default border color" },
+    "borderLight": { "light": "#f1f5f9", "dark": "#222222", "description": "Light border" },
+    "borderSubtle": { "light": "#e5e7eb", "dark": "rgba(255,255,255,0.1)", "description": "Subtle border" },
+    "navBackground": { "light": "rgba(255, 255, 255, 0.8)", "dark": "rgba(10, 10, 10, 0.8)", "description": "Navbar background with blur" },
+    "navBorder": { "light": "#e2e8f0", "dark": "rgba(255,255,255,0.05)", "description": "Navbar bottom border" },
+    "navText": { "light": "#64748b", "dark": "#94a3b8", "description": "Nav link text color" },
+    "navTextActive": { "light": "#0f172a", "dark": "#ffffff", "description": "Active nav link" },
+    "navTabHover": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.1)", "description": "Nav tab hover background" },
+    "footerBackground": { "light": "#ffffff", "dark": "#0a0a0a", "description": "Footer background" },
+    "footerBorder": { "light": "#e5e7eb", "dark": "#171717", "description": "Footer border" },
+    "footerText": { "light": "#4b5563", "dark": "#d4d4d4", "description": "Footer text" },
+    "footerHeading": { "light": "#0f172a", "dark": "#ffffff", "description": "Footer section headings" },
+    "footerLinkHover": { "light": "#ff6929", "dark": "#ff6929", "description": "Footer link hover color" }
+  },
+
+  "buttonStyles": {
+    "primary": {
+      "light": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "backgroundHover": "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)", "text": "#ffffff", "shadow": "0 4px 14px 0 rgba(249, 115, 22, 0.39)", "shadowHover": "0 6px 20px 0 rgba(249, 115, 22, 0.5)" },
+      "dark": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "backgroundHover": "linear-gradient(135deg, #ea580c 0%, #c2410c 100%)", "text": "#ffffff", "shadow": "0 4px 14px 0 rgba(249, 115, 22, 0.39)", "shadowHover": "0 6px 20px 0 rgba(249, 115, 22, 0.5)" }
+    },
+    "secondary": {
+      "light": { "background": "#ffffff", "backgroundHover": "#f8fafc", "text": "#475569", "border": "#e2e8f0", "borderHover": "#cbd5e1" },
+      "dark": { "background": "#171717", "backgroundHover": "#1a1a1a", "text": "#a3a3a3", "border": "#262626", "borderHover": "#404040" }
+    },
+    "outline": {
+      "light": { "background": "transparent", "backgroundHover": "#f8fafc", "text": "#64748b", "border": "#e2e8f0", "borderHover": "#ff6929" },
+      "dark": { "background": "transparent", "backgroundHover": "rgba(255,255,255,0.05)", "text": "#a3a3a3", "border": "#404040", "borderHover": "#ff6929" }
+    },
+    "ghost": {
+      "light": { "background": "transparent", "backgroundHover": "#f1f5f9", "text": "#64748b" },
+      "dark": { "background": "transparent", "backgroundHover": "rgba(255,255,255,0.1)", "text": "#94a3b8" }
+    },
+    "login": {
+      "light": { "background": "#0f172a", "text": "#ffffff" },
+      "dark": { "background": "#ffffff", "text": "#0f172a" }
+    }
+  },
+
+  "featureIconColors": {
+    "inventory": { "light": { "background": "#f0fdf4", "icon": "#16a34a" }, "dark": { "background": "rgba(34, 197, 94, 0.1)", "icon": "#16a34a" } },
+    "billing": { "light": { "background": "rgba(255,255,255,0.1)", "icon": "#ffffff" }, "dark": { "background": "rgba(255,255,255,0.2)", "icon": "#ffffff" } },
+    "qrMenu": { "light": { "background": "#faf5ff", "icon": "#9333ea" }, "dark": { "background": "rgba(147, 51, 234, 0.1)", "icon": "#9333ea" } },
+    "reports": { "light": { "background": "#fce7f3", "icon": "#db2777" }, "dark": { "background": "rgba(219, 39, 119, 0.1)", "icon": "#db2777" } }
+  },
+
+  "badgeStyles": {
+    "hero": { "light": { "background": "#ffedd5", "text": "#c2410c" }, "dark": { "background": "rgba(124, 45, 18, 0.3)", "text": "#fdba74" } },
+    "easyStart": { "light": { "background": "#eff6ff", "text": "#2563eb", "border": "#bfdbfe" }, "dark": { "background": "rgba(30, 58, 138, 0.2)", "text": "#60a5fa", "border": "rgba(30, 58, 138, 0.3)" } },
+    "hiring": { "light": { "background": "#dbeafe", "text": "#2563eb" }, "dark": { "background": "rgba(30, 58, 138, 0.3)", "text": "#60a5fa" } },
+    "phase1": { "light": { "background": "#ffedd5", "text": "#ea580c" }, "dark": { "background": "rgba(234, 88, 12, 0.3)", "text": "#fb923c" } },
+    "phase2": { "light": { "background": "#dbeafe", "text": "#2563eb" }, "dark": { "background": "rgba(37, 99, 235, 0.3)", "text": "#60a5fa" } },
+    "popular": { "light": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "text": "#ffffff" }, "dark": { "background": "linear-gradient(135deg, #f97316 0%, #ea580c 100%)", "text": "#ffffff" } },
+    "savings": { "light": { "background": "#dcfce7", "text": "#15803d" }, "dark": { "background": "rgba(22, 163, 74, 0.3)", "text": "#4ade80" } }
+  },
+
+  "processStepColors": {
+    "normalCard": { "light": { "background": "#ffffff", "border": "#f1f5f9", "numberColor": "#e2e8f0", "iconBg": "#f8fafc", "title": "#0f172a", "description": "#64748b" }, "dark": { "background": "#111111", "border": "#222222", "numberColor": "#333333", "iconBg": "#1a1a1a", "title": "#ffffff", "description": "#94a3b8" } },
+    "highlightedCard": { "light": { "background": "#2563eb", "numberColor": "rgba(255,255,255,0.2)", "iconBg": "rgba(255,255,255,0.2)", "title": "#ffffff", "description": "rgba(255,255,255,0.8)" }, "dark": { "background": "#0f172a", "numberColor": "rgba(255,255,255,0.2)", "iconBg": "rgba(255,255,255,0.2)", "title": "#ffffff", "description": "rgba(255,255,255,0.8)" } }
+  },
+
+  "cardShadows": {
+    "cardDefault": { "light": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)", "dark": "0 1px 3px 0 rgba(0, 0, 0, 0.3)" },
+    "cardHover": { "light": "0 25px 50px -12px rgba(0, 0, 0, 0.1)", "dark": "0 25px 50px -12px rgba(0, 0, 0, 0.5)" },
+    "testimonialCard": { "light": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)", "dark": "0 4px 6px -1px rgba(0, 0, 0, 0.3)" },
+    "videoCard": { "light": "0 25px 50px -12px rgba(0, 0, 0, 0.15)", "dark": "0 25px 50px -12px rgba(0, 0, 0, 0.5)" }
+  },
+
+  "componentColors": {
+    "navbar": {
+      "logo": { "lightModeSrc": "/logo.svg", "darkModeSrc": "/logo-dark.svg", "altText": "Yummy POS", "width": 32, "height": 32 },
+      "brandName": { "text": "Yummy", "lightColor": "#0f172a", "darkColor": "#ffffff" },
+      "navItemColors": { "default": { "light": "#64748b", "dark": "#94a3b8" }, "hover": { "light": "#0f172a", "dark": "#ffffff" }, "activeBackground": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.1)" } },
+      "megaMenuColors": { "background": { "light": "#ffffff", "dark": "#171717" }, "border": { "light": "#e2e8f0", "dark": "#262626" }, "itemHover": { "light": "#f1f5f9", "dark": "rgba(255,255,255,0.05)" }, "itemText": { "light": "#1e293b", "dark": "#e5e5e5" }, "itemDescription": { "light": "#64748b", "dark": "#a3a3a3" }, "iconColor": { "light": "#94a3b8", "dark": "#6b7280" }, "iconColorHover": { "light": "#ff6929", "dark": "#ff6929" } },
+      "themeToggleIcon": { "lightModeIcon": "dark_mode", "darkModeIcon": "light_mode" },
+      "loginButton": { "text": "Login", "href": "https://app.yummyever.com/", "lightBackground": "#0f172a", "lightText": "#ffffff", "darkBackground": "#ffffff", "darkText": "#0f172a" },
+      "mobileMenuColors": { "background": { "light": "#ffffff", "dark": "#0a0a0a" }, "itemBorder": { "light": "#e2e8f0", "dark": "#262626" }, "itemText": { "light": "#0f172a", "dark": "#ffffff" }, "appearanceLabel": { "light": "#64748b", "dark": "#94a3b8" } }
+    },
+    "footer": { "colors": { "background": { "light": "#ffffff", "dark": "#0a0a0a" }, "borderTop": { "light": "#e5e7eb", "dark": "#171717" }, "text": { "light": "#4b5563", "dark": "#d4d4d4" }, "headingText": { "light": "#0f172a", "dark": "#ffffff" }, "linkHover": { "light": "#ff6929", "dark": "#ff6929" } } },
+    "pricingCard": { "bgLight": "#ffffff", "bgDark": "#0a0a0a", "popularBgDark": "#171717", "borderLight": "#e2e8f0", "borderDark": "rgba(255,255,255,0.1)", "popularBorderColor": "#f97316", "priceBoxBgLight": "#f1f5f9", "priceBoxBgDark": "rgba(255,255,255,0.03)", "nameLight": "#0f172a", "nameDark": "#ffffff", "popularNameColor": "#f97316", "descLight": "#64748b", "descDark": "#a3a3a3", "featureTextLight": "#475569", "featureTextDark": "#d4d4d4", "checkIconBgLight": "#e2e8f0", "checkIconBgDark": "rgba(255,255,255,0.1)", "checkIconBgPopular": "rgba(249, 115, 22, 0.1)", "checkIconColorLight": "#475569", "checkIconColorDark": "#ffffff", "checkIconColorPopular": "#f97316" },
+    "pricingToggle": { "activeColor": "#f97316", "inactiveColorLight": "#cbd5e1", "inactiveColorDark": "#404040", "labelActiveLight": "#0f172a", "labelActiveDark": "#ffffff", "labelInactiveLight": "#64748b", "labelInactiveDark": "#737373" },
+    "faqAccordion": { "borderLight": "#e2e8f0", "borderDark": "rgba(255,255,255,0.1)", "questionLight": "#1e293b", "questionDark": "#f1f5f9", "answerLight": "#64748b", "answerDark": "#94a3b8", "iconColorDefault": "#9ca3af", "iconColorActive": "#ff6929" },
+    "careersCard": { "bgLight": "#ffffff", "bgDark": "#171717", "borderLight": "#e2e8f0", "borderDark": "#262626", "departmentBgLight": "#f1f5f9", "departmentBgDark": "rgba(255,255,255,0.05)", "titleLight": "#0f172a", "titleDark": "#ffffff", "metaLight": "#64748b", "metaDark": "#a3a3a3", "descLight": "#94a3b8", "descDark": "#737373", "applyLinkColor": "#ff6929" },
+    "careersCategoryButton": { "activeBg": "#ff6929", "activeText": "#ffffff", "inactiveBgLight": "#f3f4f6", "inactiveBgDark": "#262626", "inactiveTextLight": "#4b5563", "inactiveTextDark": "#9ca3af" },
+    "teamValueCard": { "bgLight": "#ffffff", "bgDark": "#171717", "borderLight": "#e2e8f0", "borderDark": "#262626", "titleLight": "#0f172a", "titleDark": "#ffffff", "descLight": "#64748b", "descDark": "#a3a3a3" },
+    "contactForm": { "labelLight": "#475569", "labelDark": "#d4d4d4", "inputBgLight": "#f8fafc", "inputBgDark": "#0a0a0a", "inputBorderLight": "#e2e8f0", "inputBorderDark": "#262626", "inputTextLight": "#0f172a", "inputTextDark": "#ffffff", "submitButtonBg": "#ea580c", "submitButtonBgHover": "#c2410c", "submitButtonText": "#ffffff", "submitButtonShadow": "0 4px 14px rgba(249, 115, 22, 0.2)" },
+    "helpSearch": { "bgLight": "#ffffff", "bgDark": "#171717", "textLight": "#0f172a", "textDark": "#ffffff" },
+    "helpLinks": { "dividerLight": "#d1d5db", "dividerDark": "rgba(255,255,255,0.1)", "hoverBgLight": "rgba(0,0,0,0.05)", "hoverBgDark": "rgba(255,255,255,0.05)" },
+    "blogCard": { "bgLight": "#ffffff", "bgDark": "#171717", "borderLight": "#e2e8f0", "borderDark": "#262626", "titleLight": "#0f172a", "titleDark": "#ffffff", "excerptLight": "#64748b", "excerptDark": "#a3a3a3", "dateLight": "#94a3b8", "dateDark": "#737373" },
+    "blogPost": { "headingLight": "#0f172a", "headingDark": "#ffffff", "bodyLight": "#475569", "bodyDark": "#94a3b8", "linkColor": "#ff6929", "strongColor": "#ff6929" },
+    "galleryAccordion": { "activeBgLight": "#f8fafc", "activeBgDark": "#171717", "activeBorderLight": "#e2e8f0", "activeBorderDark": "#262626", "inactiveTitleLight": "#64748b", "inactiveTitleDark": "#94a3b8", "activeTitleLight": "#0f172a", "activeTitleDark": "#ffffff", "bulletColor": "#ff6929" },
+    "galleryStepIndicator": { "activeBackground": "#ff6929", "activeBorder": "#ff6929", "activeText": "#ffffff", "inactiveBackground": "transparent", "inactiveBorderLight": "#d1d5db", "inactiveBorderDark": "#404040", "inactiveText": "#9ca3af" },
+    "featureCard": { "bgLight": "#ffffff", "bgDark": "#171717", "borderLight": "#e5e7eb", "borderDark": "#262626", "titleLight": "#0f172a", "titleDark": "#ffffff", "descLight": "#64748b", "descDark": "#a3a3a3" }
+  },
+
+  "colors": {
+    "primary": "#ff6929",
+    "primaryHover": "#ea580c",
+    "dark": "#0a0a0a",
+    "light": "#ffffff"
+  },
+
+  "navigation": {
+    "mainNav": [
+      { "title": "Features", "href": "/features", "hasMegaMenu": true, "order": 1 },
+      { "title": "Pricing", "href": "/pricing", "hasMegaMenu": false, "order": 2 },
+      { "title": "Company", "href": "/team", "hasMegaMenu": true, "order": 3 },
+      { "title": "Careers", "href": "/careers", "hasMegaMenu": false, "order": 4 },
+      { "title": "Blog", "href": "/blog", "hasMegaMenu": true, "order": 5 }
+    ],
+    "featuresMenu": [
+      { "name": "Smart Inventory", "href": "/features/smart-inventory", "icon": "inventory_2", "order": 1 },
+      { "name": "IRD Billing", "href": "/features/ird-billing", "icon": "receipt_long", "order": 2 },
+      { "name": "Digital QR Menu", "href": "/features/qr-menu", "icon": "qr_code_2", "order": 3 },
+      { "name": "Real-time Reports", "href": "/features/reports", "icon": "bar_chart", "order": 4 }
+    ],
+    "companyMenu": [
+      { "name": "Team", "href": "/team", "icon": "group", "description": "Meet the people behind Yummy", "order": 1 },
+      { "name": "Help Center", "href": "/help", "icon": "help", "description": "Get support and assistance", "order": 2 },
+      { "name": "FAQ", "href": "/faq", "icon": "quiz", "description": "Common questions answered", "order": 3 }
+    ]
+  },
+
+  "footer": {
+    "brandName": "Yummy Ever",
+    "tagline": "Building innovative restaurant solutions for the modern world.",
+    "quickLinks": [
+      { "label": "Home", "href": "/", "order": 1 },
+      { "label": "Features", "href": "/features", "order": 2 },
+      { "label": "Pricing", "href": "/pricing", "order": 3 },
+      { "label": "Blog", "href": "/blog", "order": 4 },
+      { "label": "FAQ", "href": "/faq", "order": 5 },
+      { "label": "Help Center", "href": "/help", "order": 6 }
+    ],
+    "productLinks": [
+      { "label": "Smart Inventory", "href": "/features/smart-inventory", "order": 1 },
+      { "label": "IRD Billing", "href": "/features/ird-billing", "order": 2 },
+      { "label": "Digital QR Menu", "href": "/features/qr-menu", "order": 3 },
+      { "label": "Analytics", "href": "/features/reports", "order": 4 },
+      { "label": "Cloud POS", "href": "#", "order": 5 }
+    ],
+    "legalLinks": [
+      { "label": "Privacy Policy", "href": "/privacy-policy", "order": 1 },
+      { "label": "Terms of Service", "href": "/terms-and-conditions", "order": 2 },
+      { "label": "Cookies", "href": "/cookies", "order": 3 }
+    ],
+    "socialLinks": [
+      { "platform": "Facebook", "url": "#", "order": 1 },
+      { "platform": "Twitter", "url": "#", "order": 2 },
+      { "platform": "Instagram", "url": "#", "order": 3 }
+    ]
+  },
+
+  "contact": {
+    "address": { "street": "Chhorepatan", "city": "Pokhara", "province": "Gandaki Province", "country": "Nepal" },
+    "emails": [
+      { "label": "General", "email": "yummyever.np@gmail.com", "isPrimary": true },
+      { "label": "Support", "email": "support@yummypos.com", "isPrimary": false }
+    ],
+    "phones": [{ "label": "Main", "number": "+977 9807134097", "hours": "Sun-Fri, 9am - 6pm" }]
+  },
+
+  "pages": {
+    "home": {
+      "hero": {
+        "badge": { "icon": "verified", "text": "Made for Nepal", "emoji": "🇳🇵" },
+        "headline": { "line1": "Manage your", "line2": "Restaurant,", "highlightWord": "Effortlessly." },
+        "subheadline": { "line1": "The #1 Restaurant OS in Nepal. IRD Approved Billing, Inventory, and KOT.", "line2": "Stop worrying about operations and focus on your food." },
+        "ctaButtons": [
+          { "text": "Start Free Trial", "href": "/pricing", "type": "primary", "successText": "Launching...", "order": 1 },
+          { "text": "How it Works", "href": "#about", "type": "secondary", "icon": "arrow_forward", "order": 2 }
+        ]
+      },
+      "process": {
+        "badge": "Easy Start",
+        "title": "Start in 3 Simple Steps",
+        "subtitle": "The fastest setup in the industry. Go live within minutes using our intuitive onboarding process.",
+        "steps": [
+          { "number": "01", "icon": "person_add", "iconColor": "#ff6929", "title": "Create Account", "description": "Sign up instantly with your email. No credit card required for the trial.", "isHighlighted": false, "order": 1 },
+          { "number": "02", "icon": "restaurant_menu", "iconColor": "#3b82f6", "title": "Setup Menu", "description": "Add your categories, items, and tables. Configure your floor plan easily.", "isHighlighted": false, "order": 2 },
+          { "number": "03", "icon": "point_of_sale", "iconColor": "#ffffff", "title": "Start Selling", "description": "Take orders, print KOTs, and manage billing instantly. Watch your business grow.", "isHighlighted": true, "order": 3 }
+        ]
+      },
+      "testimonials": {
+        "title": "Trusted by the Best",
+        "subtitle": "Join 500+ restaurants growing with Yummy.",
+        "items": [
+          { "quote": "Revolutionized our inventory management.", "author": "Baje Ko Sekuwa", "order": 1 },
+          { "quote": "Best POS system in Nepal, hands down.", "author": "Roadhouse Cafe", "order": 2 },
+          { "quote": "KOT printing is lightning fast.", "author": "Trisara", "order": 3 },
+          { "quote": "Support team is always available.", "author": "Burger Shack", "order": 4 },
+          { "quote": "IRD billing made simple.", "author": "Himalayan Java", "order": 5 }
+        ]
+      },
+      "about": {
+        "titlePrefix": "What is",
+        "highlightWord": "Yummy",
+        "titleSuffix": "?",
+        "description": "Discover Yummy through this presentation video which will show you its innovative functioning and how it can transform your experience.",
+        "videoUrl": "https://cruip-tutorials.vercel.app/modal-video/video.mp4"
+      },
+      "features": {
+        "badge": { "icon": "bolt", "text": "Powerful Features" },
+        "title": "Everything you need.",
+        "subtitle": "Run your restaurant like a pro. We've combined the most essential tools into one seamless platform.",
+        "cards": [
+          { "id": "inventory", "title": "Smart Inventory", "description": "Ingredients are deducted automatically as you sell. Get real-time alerts before you run out.", "icon": "inventory_2", "iconColor": "#16a34a", "gridSpan": "wide", "order": 1, "mockData": { "items": [{ "name": "Chicken Breast", "qty": "12kg", "status": "In Stock", "percentage": 80 }, { "name": "Red Onions", "qty": "2kg", "status": "Low Stock", "percentage": 20 }, { "name": "Cooking Oil", "qty": "1.5L", "status": "Critical", "percentage": 10 }, { "name": "Basmati Rice", "qty": "45kg", "status": "In Stock", "percentage": 95 }] } },
+          { "id": "billing", "title": "IRD Billing", "description": "Fully compliant with Nepal Tax Rules. Print with confidence.", "icon": "receipt_long", "gridSpan": "tall", "order": 2, "mockData": { "receiptItems": [{ "name": "Momo Plater", "price": 300 }, { "name": "Coke 500ml", "price": 100 }, { "name": "Ch. Burger", "price": 450 }], "vatPercent": 13, "panNumber": "123-456-789" } },
+          { "id": "qr-menu", "title": "Digital QR Menu", "description": "Allow customers to order instantly from their phone.", "icon": "qr_code_2", "iconColor": "#9333ea", "gridSpan": "normal", "order": 3 },
+          { "id": "reports", "title": "Analytics", "description": "Track sales, staff performance, and peak hours.", "icon": "bar_chart", "iconColor": "#db2777", "gridSpan": "normal", "order": 4 }
+        ]
+      },
+      "gallery": {
+        "title": "What Yummy offers?",
+        "subtitle": "A comprehensive suite of tools designed to modernize every aspect of your restaurant.",
+        "features": [
+          { "id": "track", "title": "Track Every Order in Real Time", "description": "Gain complete visibility over your restaurant's operations. Monitor active orders, view history, and track performance metrics live as they happen.", "icon": "dashboard", "bulletPoints": ["Active Orders Dashboard", "Order History Log", "Full Visibility"], "order": 1 },
+          { "id": "billing", "title": "Fast Orders, Instant Billing", "description": "Streamline your checkout process. Tap to add items, automatically calculate totals, and process payments instantly for a smoother customer experience.", "icon": "flash_on", "bulletPoints": ["Tap to Add", "Auto Total Calculation", "Smooth Checkout"], "order": 2 },
+          { "id": "tables", "title": "Smart Table Management", "description": "Manage your floor plan efficiently. See real-time status of every table—available, occupied, or reserved—at a single glance.", "icon": "table_restaurant", "bulletPoints": ["Available/Occupied Status", "Reserved Tables", "Floor Plan Overview"], "order": 3 },
+          { "id": "pos", "title": "Your Complete Restaurant POS", "description": "A comprehensive solution for all your needs. Handle orders, kitchen communication, billing, and analytics from one unified platform.", "icon": "point_of_sale", "bulletPoints": ["Order Management", "Kitchen Direct Sync", "Billing & Analytics"], "order": 4 },
+          { "id": "kot", "title": "Never Miss an Order", "description": "Ensure perfect coordination with the kitchen. Live KOT displays keep pending and ready statuses synchronized for faster service.", "icon": "checklist", "bulletPoints": ["Live KOT Display", "Pending & Ready Status", "Faster Service Speed"], "order": 5 }
+        ]
+      },
+      "launchPhases": {
+        "title": "Launch and Scale",
+        "phases": [
+          { "label": "PHASE 1", "title": "Setup", "color": "orange", "order": 1, "cards": [{ "title": "Create Profile", "description": "Sign up in seconds. No credit card needed.", "order": 1 }, { "title": "Digital Menu", "description": "Upload items, photos, and set prices.", "order": 2 }, { "title": "Floor Plan", "description": "Configure tables and staff roles.", "order": 3 }] },
+          { "label": "PHASE 2", "title": "Go Live", "color": "blue", "order": 2, "cards": [{ "title": "Smart POS", "description": "Take orders and payments instantly.", "order": 1 }, { "title": "Kitchen Sync", "description": "Orders sent directly to chefs.", "order": 2 }, { "title": "Live Stats", "description": "Monitor sales and stock in real-time.", "order": 3 }] }
+        ]
+      }
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "Choose the plan that fits your business stage. No hidden fees, cancel anytime.",
+      "toggle": { "monthlyLabel": "Monthly", "yearlyLabel": "Yearly", "savingsLabel": "SAVE 33%" },
+      "promotionBanner": { "icon": "celebration", "text": "Free Installation valid until", "highlightText": "February!" },
+      "plans": [
+        { "name": "Starter", "priceMonthly": "Free", "priceYearly": "Free", "description": "Perfect for small cafes and food trucks just getting started.", "features": ["Single Outlet", "Cloud POS System", "Digital Menu (View Only)", "Basic Inventory", "5 Staff Accounts", "Email Support"], "ctaText": "Get Started", "ctaHref": "https://app.yummyever.com/", "isPopular": false, "order": 1 },
+        { "name": "Pro", "priceMonthly": "Rs. 1,500", "priceYearly": "Rs. 12,000", "description": "Everything a growing restaurant needs to scale efficiently.", "features": ["Unlimited Inventory Items", "Table Management & KOT", "Advanced Sales Reports", "Recipe Costing & Profit Analysis", "Customer Database (CRM)", "Staff Performance Tracking", "Waiter App Support", "Priority Email & Chat Support"], "ctaText": "Start Free Trial", "ctaHref": "https://app.yummyever.com/", "isPopular": true, "popularLabel": "Most Popular", "yearlyNote": "Billed Annually (Save Rs. 6000/yr)", "order": 2 },
+        { "name": "Enterprise", "priceMonthly": "Custom", "priceYearly": "Custom", "description": "For multi-location chains and large franchises.", "features": ["Multi-location Management", "Central Kitchen Module", "Custom ERP Integrations", "API Access", "White-label Options", "Dedicated Account Manager", "SLA Support", "On-site Training"], "ctaText": "Contact Sales", "ctaHref": "/contact", "isPopular": false, "order": 3 }
+      ],
+      "faqs": [
+        { "question": "Can I switch plans later?", "answer": "Absolutely! You can upgrade or downgrade your plan at any time. If you upgrade, the prorated amount will be charged.", "order": 1 },
+        { "question": "Is there a setup fee?", "answer": "No, there are no hidden setup fees. You can start with our Free plan and upgrade only when you need more features. Plus, installation is free if you subscribe before February!", "order": 2 },
+        { "question": "Do I need to buy specific hardware?", "answer": "Not necessarily. Yummy works on any device with a browser – including iPads, Android tablets, and laptops. We do recommend thermal printers for KOTs.", "order": 3 },
+        { "question": "Is my data secure?", "answer": "Yes, we use bank-grade encryption to protect your data. Your business information is backed up daily and stored securely on cloud servers.", "order": 4 }
+      ],
+      "faqSectionTitle": "Frequently Asked Questions",
+      "faqSectionSubtitle": "Have questions? We're here to help.",
+      "viewMoreFaqsText": "View more FAQs",
+      "viewMoreFaqsLink": "/faq"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about Yummy. Can't find the answer you're looking for?",
+      "contactPromptText": "Chat to our friendly team.",
+      "contactLinkHref": "/contact",
+      "categories": [
+        { "title": "Billing & Subscriptions", "order": 1, "questions": [{ "question": "What payment methods do you accept?", "answer": "We accept all major credit cards, Esewa, Khalti, and direct bank transfers. For annual plans, we also accept check payments.", "order": 1 }, { "question": "Can I change my plan later?", "answer": "Yes, you can upgrade or downgrade your plan at any time from your account settings. Prorated charges will apply automatically.", "order": 2 }, { "question": "Is there a refund policy?", "answer": "We offer a 14-day money-back guarantee for all new subscriptions. If you're not satisfied, just reach out to our support team.", "order": 3 }] },
+        { "title": "Features & Usage", "order": 2, "questions": [{ "question": "Does Yummy work offline?", "answer": "Yes! Our POS system has an offline mode that allows you to continue taking orders even if your internet connection drops. Data syncs automatically once you're back online.", "order": 1 }, { "question": "Can I use my own hardware?", "answer": "Absolutely. Yummy runs on any device with a web browser (iPad, Android tablet, Laptop). We support most standard thermal printers.", "order": 2 }, { "question": "How many staff accounts can I create?", "answer": "The Starter plan includes 5 accounts. Pro and Enterprise plans offer unlimited staff accounts with customizable permissions.", "order": 3 }] },
+        { "title": "Support & Security", "order": 3, "questions": [{ "question": "How secure is my data?", "answer": "We use bank-grade 256-bit SSL encryption. Your data is backed up daily to secure cloud servers, ensuring you never lose a single order.", "order": 1 }, { "question": "What kind of support is included?", "answer": "All plans include email support. Pro and Enterprise plans get priority chat and phone support with dedicated account managers.", "order": 2 }] }
+      ]
+    },
+    "careers": {
+      "badge": "WE ARE HIRING",
+      "title": "Join the Revolution",
+      "subtitle": "Help us build the operating system for modern restaurants. We are looking for dreamers, doers, and food lovers.",
+      "searchPlaceholder": "Search for roles (e.g. Engineer, Design)...",
+      "emptyState": { "title": "No positions found", "message": "We couldn't find any open roles matching your search. Try adjusting your filters or check back later!" },
+      "applicationEmail": "yummyever.np@gmail.com",
+      "categories": ["All", "Engineering", "Product", "Design", "Sales", "Marketing"],
+      "jobs": [
+        { "title": "Senior Frontend Engineer", "department": "Engineering", "type": "Full-time", "location": "Remote (Nepal)", "description": "We are looking for an experienced Frontend Engineer to lead our web team. You will be responsible for building scalable and performant UI components.", "order": 1 },
+        { "title": "Product Designer", "department": "Design", "type": "Full-time", "location": "Pokhara, Nepal", "description": "Join our design team to craft beautiful and intuitive user experiences. Ideally, you have a strong portfolio showcasing mobile and web apps.", "order": 2 },
+        { "title": "Sales Representative", "department": "Sales", "type": "Part-time", "location": "Kathmandu, Nepal", "description": "Drive growth by reaching out to potential restaurant partners. You should have excellent communication skills and a passion for food.", "order": 3 },
+        { "title": "Backend Developer (FastAPI)", "department": "Engineering", "type": "Full-time", "location": "Remote", "description": "Build robust APIs and microservices to power our platform. Experience with high-concurrency systems is a plus.", "order": 4 },
+        { "title": "Marketing Manager", "department": "Marketing", "type": "Full-time", "location": "Pokhara, Nepal", "description": "Lead our marketing initiatives to increase brand awareness and engagement. You will oversee social media, content, and events.", "order": 5 }
+      ]
+    },
+    "team": {
+      "title": "Meet the Team",
+      "subtitle": "Yummy Ever is the flagship product of Everacy. We are a passionate group of foodies, engineers, and designers on a mission to revolutionize the restaurant industry.",
+      "companyHighlight": "Everacy",
+      "values": [
+        { "icon": "FiTarget", "iconColor": "primary", "title": "Our Mission", "description": "To empower restaurant owners with world-class technology that simplifies operations and drives growth.", "order": 1 },
+        { "icon": "FiHeart", "iconColor": "red-500", "title": "Customer First", "description": "We believe in building relationships, not just software. Your success is our success, and we're with you every step.", "order": 2 },
+        { "icon": "FiUsers", "iconColor": "blue-500", "title": "Local Roots", "description": "Born in Nepal, for Nepal. We understand the unique challenges of the local market and build solutions that work here.", "order": 3 }
+      ],
+      "joinSection": { "title": "Want to join us?", "description": "We are always looking for talented individuals to join our growing team. Check out our open positions.", "ctaText": "View Careers", "ctaHref": "/careers" }
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "subtitle": "Have questions about pricing, features, or need a custom demo? We'd love to hear from you.",
+      "infoSectionTitle": "Contact Information",
+      "formTitle": "Send us a Message",
+      "contactItems": [
+        { "icon": "FiMapPin", "iconBgLight": "#ffedd5", "iconBgDark": "rgba(234, 88, 12, 0.3)", "iconColorLight": "#ea580c", "iconColorDark": "#fb923c", "title": "Our Office", "content": "Chhorepatan, Pokhara\nGandaki Province, Nepal", "order": 1 },
+        { "icon": "FiMail", "iconBgLight": "#dbeafe", "iconBgDark": "rgba(37, 99, 235, 0.3)", "iconColorLight": "#2563eb", "iconColorDark": "#60a5fa", "title": "Email Us", "emails": ["yummyever.np@gmail.com", "support@yummypos.com"], "order": 2 },
+        { "icon": "FiPhone", "iconBgLight": "#dcfce7", "iconBgDark": "rgba(22, 163, 74, 0.3)", "iconColorLight": "#16a34a", "iconColorDark": "#4ade80", "title": "Call Us", "phone": "+977 9807134097", "hours": "Sun-Fri, 9am - 6pm", "order": 3 }
+      ],
+      "formCategories": ["General Inquiry", "Sales & Pricing", "Technical Support", "Partnership"],
+      "submitButtonText": "Send Message",
+      "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14064.095068971437!2d83.95764720172605!3d28.204558506691523!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3995951d4512c1b7%3A0xc3c9484084f7b60e!2sChhorepatan%2C%20Pokhara%2033700!5e0!3m2!1sen!2snp!4v1704900000000!5m2!1sen!2snp"
+    },
+    "help": {
+      "title": "Help Center",
+      "subtitle": "How can we help you today?",
+      "searchPlaceholder": "Search for answers...",
+      "noResultsText": "No results found",
+      "linkColumns": [
+        { "order": 1, "links": [{ "label": "Billing", "href": "/faq", "order": 1 }, { "label": "Support", "href": "/contact", "order": 2 }, { "label": "Terms", "href": "/terms-and-conditions", "order": 3 }] },
+        { "order": 2, "links": [{ "label": "Features", "href": "/features/smart-inventory", "order": 1 }, { "label": "Contact us", "href": "/contact", "order": 2 }, { "label": "Blog", "href": "/blog", "order": 3 }] },
+        { "order": 3, "links": [{ "label": "Enterprise", "href": "/pricing", "order": 1 }, { "label": "Privacy", "href": "/privacy-policy", "order": 2 }, { "label": "Team", "href": "/team", "order": 3 }] }
+      ]
+    },
+    "blog": {
+      "title": "Latest from the Blog",
+      "subtitle": "Insights, tips, and stories from the restaurant industry.",
+      "posts": [
+        {
+          "slug": "restaurant-trends-2024",
+          "title": "Top 5 Restaurant Trends in Nepal for 2024",
+          "excerpt": "The restaurant industry in Nepal is evolving rapidly. From AI-driven menus to sustainable sourcing, discover the future.",
+          "date": "Jan 10, 2024",
+          "metaTitle": "Top 5 Restaurant Trends in Nepal 2024 | Yummy POS Blog",
+          "metaDescription": "Discover the latest restaurant industry trends in Nepal for 2024. From QR menus to cloud kitchens and sustainable sourcing, see what's shaping the future of dining in Kathmandu and beyond.",
+          "keywords": ["Restaurant Trends Nepal", "Digital Menu Nepal", "Cloud Kitchen Kathmandu", "Sustainable Dining Nepal", "Restaurant Technology 2024"],
+          "content": "<p>The culinary landscape in Nepal is undergoing a massive transformation. As we move through 2024, restaurant owners from Kathmandu to Pokhara are adopting new technologies and shifting towards more sustainable practices. Competition is fierce, and staying ahead means evolving with customer expectations.</p><p>Here are the top 5 trends defining the Nepalese restaurant industry this year, and how you can leverage them to grow your business.</p><h2>1. Digital Menus & QR Ordering</h2><p>Gone are the days of bulky, physical menus that need constant reprinting. <strong>QR code menus</strong> are becoming the standard in cafes around Thamel, Jhamsikhel, and Lakeside. They offer a hygienic, fast, and interactive way for customers to order, fitting perfectly with the tech-savvy younger generation in Nepal.</p><h2>2. Integrated POS Systems</h2><p>Managing a restaurant manually with a calculator and notebook is no longer feasible in a competitive market. Systems like <strong>Yummy POS</strong> are revolutionizing how businesses handle billing, inventory, and KOTs (Kitchen Order Tokens).</p><h2>3. Sustainable & Local Sourcing</h2><p>Nepali diners are becoming more conscious of where their food comes from. Restaurants maximizing the use of organic produce from local farms in Kavre or trusted suppliers in Kalimati are gaining customer loyalty.</p><h2>4. The Rise of Cloud Kitchens</h2><p>With the explosion of food delivery apps like <strong>Pathao Food</strong> and <strong>Foodmandu</strong>, cloud kitchens (delivery-only restaurants) are expanding rapidly.</p><h2>5. AI-Driven Personalization</h2><p>Imagine knowing exactly what your regular customer wants before they even order. Data analytics provided by modern POS systems help restaurant owners understand customer preferences.</p>",
+          "order": 1
+        },
+        {
+          "slug": "optimize-inventory",
+          "title": "How to Optimize Your Restaurant Inventory in Nepal",
+          "excerpt": "Food waste is a profit killer. Learn how smart inventory control can save your business thousands annually.",
+          "date": "Dec 15, 2023",
+          "metaTitle": "Restaurant Inventory Management Guide Nepal | Reduce Food Waste",
+          "metaDescription": "Learn expert tips to optimize your restaurant inventory in Nepal. Cut food waste, automate reordering, and boost profits with smart inventory management strategies.",
+          "keywords": ["Restaurant Inventory Management", "Reduce Food Waste Nepal", "Food Cost Control", "Inventory Tracking Software", "Yummy POS Inventory"],
+          "content": "<p>In the restaurant business, your inventory is your cash sitting on shelves. For many eateries in Nepal, improper inventory management leads to significant profit loss through wastage, spoilage, and even pilferage.</p><h2>1. Implement a First-In, First-Out (FIFO) System</h2><p>Ensure that older stock is used before newer shipments. This simple practice is essential for perishable goods like vegetables, dairy, and meat.</p><h2>2. Use Digital Tracking Tools</h2><p>Stop relying on manual notebooks that are prone to errors and damage. Digital inventory management tools allow you to track stock levels in real-time.</p><h2>3. Perform Regular Audits</h2><p>Even with digital tools, physical checks are vital. Perform spot checks on high-value items like imported liquors or premium meats.</p><h2>4. Automate Reordering with Low-Stock Alerts</h2><p>Running out of a key ingredient like onions during a shortage in Kathmandu can be a disaster. Modern POS systems can set automatic low-stock alerts.</p>",
+          "order": 2
+        },
+        {
+          "slug": "guide-qr-menus",
+          "title": "The Ultimate Guide to QR Menus for Nepali Cafes",
+          "excerpt": "Contactless ordering is here to stay. Discover the benefits of implementing QR technology in your venue.",
+          "date": "Nov 28, 2023",
+          "metaTitle": "QR Code Menu Guide for Nepal Restaurants | Contactless Ordering",
+          "metaDescription": "Switch to QR code menus for your cafe or restaurant in Nepal. Improve speed, accuracy, and customer satisfaction with our ultimate guide to contactless ordering.",
+          "keywords": ["QR Menu Nepal", "Contactless Ordering", "Digital Menu System", "Cafe Technology Kathmandu", "Restaurant Efficiency"],
+          "content": "<p>QR code menus have swiftly moved from a pandemic necessity to a standard expectation for convenience.</p><h2>Why Switch to QR Menus?</h2><ul><li><strong>Speed & Turnover:</strong> Guests can scan and order immediately upon seating, significantly reducing wait times during rush hours.</li><li><strong>Order Accuracy:</strong> When customers input their own orders, communication errors are virtually eliminated.</li><li><strong>Upsell Opportunities:</strong> Digital menus can prompt customers to add extra toppings, drinks, or desserts with appealing high-res visuals.</li></ul><h2>Implementation Tips for Nepal</h2><h3>1. Robust Wi-Fi is Key</h3><p>Ensure you offer free, reliable Wi-Fi so customers can load the digital menu instantly without frustration.</p><h3>2. Proper Placement</h3><p>Make sure your QR codes are placed visibly on every table, perhaps in a durable acrylic stand.</p><h3>3. Keep a Few Physical Menus</h3><p>While most young people and tourists prefer digital, older guests might still prefer a physical menu.</p>",
+          "order": 3
+        },
+        {
+          "slug": "boosting-turnover",
+          "title": "Boosting Table Turnover Rates Without Rushing Guests",
+          "excerpt": "Turn tables faster and serve more customers without compromising the famous Nepali hospitality.",
+          "date": "Nov 12, 2023",
+          "metaTitle": "Increase Table Turnover Rate | Restaurant Tips Nepal",
+          "metaDescription": "Maximize revenue by boosting table turnover rates without sacrificing hospitality. Learn efficient service strategies for busy Nepali restaurants.",
+          "keywords": ["Table Turnover Rate", "Restaurant Efficiency", "Hospitality Management Nepal", "Guest Experience", "Restaurant Revenue Tips"],
+          "content": "<p>High table turnover means more revenue, but in a culture that values <em>\"Atithi Devo Bhava\"</em> (Guest is God), rushing customers is a major faux pas. So how do you balance business efficiency with warm Nepali hospitality?</p><h2>1. Streamline the Ordering Process</h2><p>Using handheld POS devices for captains allows orders to be sent to the kitchen instantly from the table side.</p><h2>2. Serve Efficiently & Together</h2><p>Train staff to serve dishes immediately when they are ready. Also, try to serve all mains at once so one guest isn't waiting while others eat.</p><h2>3. Proactive Billing</h2><p>Drop the bill promptly when the meal is clearly finished. Offering payment at the table via digital wallets speeds this up.</p><h2>4. Optimize Your Floor Plan</h2><p>Ensure your floor plan allows for easy movement. A smooth flow usually means faster service and natural turnover.</p>",
+          "order": 4
+        },
+        {
+          "slug": "managing-staff",
+          "title": "Managing Restaurant Staff Efficiently in Nepal",
+          "excerpt": "Scheduling, training, and retaining top talent in a competitive hospitality market.",
+          "date": "Oct 30, 2023",
+          "metaTitle": "Restaurant Staff Management Guide Nepal | HR Tips",
+          "metaDescription": "Overcome staff retention challenges in Nepal's hospitality sector. Tips for scheduling, training, and motivating your restaurant team for long-term success.",
+          "keywords": ["Restaurant Staff Management", "Employee Retention Nepal", "Hospitality Training", "Staff Scheduling", "Restaurant HR"],
+          "content": "<p>Staff retention is widely cited as the number one challenge in the Nepali hospitality sector.</p><h2>1. Clear Communication & Briefings</h2><p>Regular pre-shift briefings help align the team. Discuss daily specials, out-of-stock items, and any VIP reservations.</p><h2>2. Tech Empowerment</h2><p>Give your staff the right tools to succeed. User-friendly tools make their jobs easier, reducing stress and burnout.</p><h2>3. Invest in Training & Growth</h2><p>Invest in your staff's future. Teach them about wine pairing, coffee brewing techniques, or customer service excellence.</p><h2>4. Fair Scheduling</h2><p>Burnout is real. Ensure shifts are distributed fairly and that overtime is respected or compensated.</p>",
+          "order": 5
+        },
+        {
+          "slug": "reducing-food-waste",
+          "title": "Reducing Food Waste & Costs in Your Kitchen",
+          "excerpt": "Practical, eco-friendly tips to save money and the environment.",
+          "date": "Oct 15, 2023",
+          "metaTitle": "Reduce Food Waste in Restaurants | Cost Control Tips",
+          "metaDescription": "Cut costs and help the environment by reducing food waste in your restaurant. Practical tips on portion control, smart purchasing, and menu planning.",
+          "keywords": ["Food Waste Reduction", "Restaurant Cost Control", "Sustainable Restaurant Nepal", "Kitchen Management", "Menu Engineering"],
+          "content": "<p>Food waste is not just an environmental issue; it's a massive financial leak.</p><h2>1. Exact Portion Control</h2><p>Standardize your recipes. Every plate of momo should have the same number of pieces and the same amount of chutney. Use scales and standardized ladles.</p><h2>2. Creative Use of Scraps</h2><p>Vegetable trimmings can make excellent vegetable stocks for soups. Day-old bread can become croutons or bread pudding.</p><h2>3. Smart Purchasing Decisions</h2><p>Don't overbuy. Analyze your sales reports to predict occupancy. Buying in bulk saves money only if you use it all.</p><h2>4. Menu Engineering</h2><p>Identify items that often result in waste because they use unique ingredients not used elsewhere. Try to design a menu where perishable ingredients are used across multiple dishes.</p>",
+          "order": 6
+        }
+      ]
+    }
+  },
+
+  "seo": {
+    "globalDefaults": {
+      "titleTemplate": "%s | Yummy POS",
+      "defaultDescription": "Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.",
+      "defaultKeywords": "restaurant POS Nepal, restaurant management software, IRD billing Nepal, KOT system, inventory management",
+      "twitterHandle": "@yummypos",
+      "canonicalDomain": "https://yummypos.com"
+    },
+    "pageSEO": [
+      { "page": "home", "metaTitle": "Yummy POS - Best Restaurant Management Software in Nepal", "metaDescription": "Manage your restaurant effortlessly with Yummy POS. IRD approved billing, smart inventory, KOT system, and analytics. Start your free trial today!", "metaKeywords": "restaurant POS Nepal, restaurant management, IRD billing, KOT system, Yummy POS" },
+      { "page": "pricing", "metaTitle": "Pricing Plans - Yummy POS", "metaDescription": "Simple, transparent pricing for restaurant management software. Start free, upgrade when ready. No hidden fees.", "metaKeywords": "Yummy POS pricing, restaurant software cost Nepal, POS pricing" },
+      { "page": "faq", "metaTitle": "Frequently Asked Questions - Yummy POS", "metaDescription": "Get answers to common questions about Yummy POS. Learn about billing, features, support, and security.", "metaKeywords": "Yummy POS FAQ, restaurant POS questions, billing questions" },
+      { "page": "careers", "metaTitle": "Careers - Join Yummy Team", "metaDescription": "Join the revolution in restaurant technology. View open positions at Yummy and become part of Nepal's best POS team.", "metaKeywords": "Yummy careers, jobs at Yummy, Nepal tech jobs" },
+      { "page": "team", "metaTitle": "Meet Our Team - Yummy POS", "metaDescription": "Meet the passionate team behind Yummy POS. Foodies, engineers, and designers building the future of restaurant tech in Nepal.", "metaKeywords": "Yummy team, Everacy, restaurant tech Nepal" },
+      { "page": "contact", "metaTitle": "Contact Us - Yummy POS", "metaDescription": "Get in touch with Yummy POS. Have questions about pricing, features, or need a demo? We'd love to hear from you.", "metaKeywords": "contact Yummy POS, Yummy support, restaurant software help" },
+      { "page": "help", "metaTitle": "Help Center - Yummy POS", "metaDescription": "Find answers and get support for Yummy POS. Browse help topics, FAQs, and contact our support team.", "metaKeywords": "Yummy help, POS support, restaurant software help" },
+      { "page": "blog", "metaTitle": "Blog - Restaurant Tips & Insights | Yummy POS", "metaDescription": "Read the latest insights, tips, and stories from the restaurant industry in Nepal. Expert advice for restaurant owners.", "metaKeywords": "restaurant blog Nepal, restaurant tips, hospitality insights" },
+      { "page": "features", "metaTitle": "Features - Yummy POS", "metaDescription": "Explore all features of Yummy POS. Smart inventory, IRD billing, QR menus, analytics, and more.", "metaKeywords": "Yummy features, POS features, restaurant software features" }
+    ]
+  }
+}

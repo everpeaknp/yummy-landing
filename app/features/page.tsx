@@ -4,17 +4,47 @@ import { Navbar, Footer } from "@/components/layout";
 import { useTheme } from "@/hooks/useTheme";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { getFeaturesList, type FeaturePageData, useRefetchOnFocus } from "@/lib/api";
 
-const allFeatures = [
-    { slug: "smart-inventory", title: "Smart Inventory", icon: "inventory_2", color: "text-green-500", bg: "bg-green-100 dark:bg-green-900/30", description: "Ingredients are deducted automatically as you sell." },
-    { slug: "ird-billing", title: "IRD Approved Billing", icon: "receipt_long", color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/30", description: "Fully compliant with Tax Rules of Nepal." },
-    { slug: "qr-menu", title: "Digital QR Menu", icon: "qr_code_2", color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/30", description: "Contactless ordering for superior guest experience." },
-    { slug: "reports", title: "Real-time Reports", icon: "analytics", color: "text-pink-500", bg: "bg-pink-100 dark:bg-pink-900/30", description: "Track sales and performance from anywhere." },
+const colorPalette = [
+  { color: "text-green-500", bg: "bg-green-100 dark:bg-green-900/30" },
+  { color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/30" },
+  { color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/30" },
+  { color: "text-pink-500", bg: "bg-pink-100 dark:bg-pink-900/30" },
+  { color: "text-orange-500", bg: "bg-orange-100 dark:bg-orange-900/30" },
+  { color: "text-red-500", bg: "bg-red-100 dark:bg-red-900/30" },
+];
+
+// Fallback data
+const fallbackFeatures: Partial<FeaturePageData>[] = [
+    { slug: "smart-inventory", title: "Smart Inventory", icon: "inventory_2", subtitle: "Ingredients are deducted automatically as you sell." },
+    { slug: "ird-billing", title: "IRD Approved Billing", icon: "receipt_long", subtitle: "Fully compliant with Tax Rules of Nepal." },
+    { slug: "qr-menu", title: "Digital QR Menu", icon: "qr_code_2", subtitle: "Contactless ordering for superior guest experience." },
+    { slug: "reports", title: "Real-time Reports", icon: "analytics", subtitle: "Track sales and performance from anywhere." },
 ];
 
 export default function FeaturesIndexPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [features, setFeatures] = useState<Partial<FeaturePageData>[]>(fallbackFeatures);
+
+  const fetchData = useCallback(async () => {
+    try {
+      const apiData = await getFeaturesList();
+      if (apiData && apiData.length > 0) {
+        setFeatures(apiData);
+      }
+    } catch (error) {
+       console.error("Failed to fetch features list:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useRefetchOnFocus(fetchData);
 
   return (
     <>
@@ -32,8 +62,10 @@ export default function FeaturesIndexPage() {
             </h1>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {allFeatures.map((feature, idx) => (
-                    <Link href={`/features/${feature.slug}`} key={feature.slug}>
+                {features.map((feature, idx) => {
+                    const style = colorPalette[idx % colorPalette.length];
+                    return (
+                    <Link href={`/features/${feature.slug}`} key={feature.slug || idx}>
                         <motion.div 
                           initial={{ opacity: 0, scale: 0.9, y: 30 }}
                           whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -44,7 +76,7 @@ export default function FeaturesIndexPage() {
                             border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e2e8f0'
                         }}>
                              <div 
-                                className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${feature.bg} ${feature.color}`}
+                                className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${style.bg} ${style.color}`}
                             >
                                 <span className="material-symbols-outlined">{feature.icon}</span>
                             </div>
@@ -52,11 +84,11 @@ export default function FeaturesIndexPage() {
                                 {feature.title}
                             </h3>
                              <p style={{ color: isDark ? '#94a3b8' : '#475569' }}>
-                                {feature.description}
+                                {feature.subtitle || (feature as any).description}
                             </p>
                         </motion.div>
                     </Link>
-                ))}
+                )})}
             </div>
          </div>
       </motion.main>

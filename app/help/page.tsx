@@ -2,16 +2,66 @@
 
 import { Navbar, Footer } from "@/components/layout";
 import { useTheme } from "@/hooks/useTheme";
-import { FiSearch, FiArrowRight } from "react-icons/fi";
+import { FiSearch } from "react-icons/fi";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { faqCategories, helpLinks } from "@/lib/data";
 import { motion, AnimatePresence, Variants } from "framer-motion";
+import { getHelpPage, type HelpPageData } from "@/lib/api";
+
+const fallbackLinkGroups = {
+  col1: [
+    { label: "Billing", href: "/faq" },
+    { label: "Support", href: "/contact" },
+    { label: "Terms", href: "/terms-and-conditions" },
+  ],
+  col2: [
+    { label: "Features", href: "/features/smart-inventory" },
+    { label: "Contact us", href: "/contact" },
+    { label: "Blog", href: "/blog" },
+  ],
+  col3: [
+    { label: "Enterprise", href: "/pricing" },
+    { label: "Privacy", href: "/privacy-policy" },
+    { label: "Team", href: "/team" },
+  ]
+};
+
+const fallbackData: Partial<HelpPageData> = {
+  title: "Help Center",
+  subtitle: "How can we help you today?",
+  searchPlaceholder: "Search for answers...",
+  noResultsText: "No results found",
+};
 
 export default function HelpCenterPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [query, setQuery] = useState("");
+  const [data, setData] = useState<Partial<HelpPageData>>(fallbackData);
+  const [linkGroups, setLinkGroups] = useState(fallbackLinkGroups);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const apiData = await getHelpPage();
+        setData(apiData);
+        // Map linkColumns from API to our format if available
+        if (apiData.linkColumns && apiData.linkColumns.length >= 3) {
+          const sorted = apiData.linkColumns.sort((a, b) => a.order - b.order);
+          setLinkGroups({
+            col1: sorted[0]?.links.sort((a, b) => a.order - b.order).map(l => ({ label: l.label, href: l.href })) || fallbackLinkGroups.col1,
+            col2: sorted[1]?.links.sort((a, b) => a.order - b.order).map(l => ({ label: l.label, href: l.href })) || fallbackLinkGroups.col2,
+            col3: sorted[2]?.links.sort((a, b) => a.order - b.order).map(l => ({ label: l.label, href: l.href })) || fallbackLinkGroups.col3,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch help page data:", error);
+        // Keep fallback data
+      }
+    }
+    fetchData();
+  }, []);
 
   const container: Variants = {
     hidden: { opacity: 0 },
@@ -31,7 +81,7 @@ export default function HelpCenterPage() {
     cat.questions.map(q => ({
       type: 'FAQ',
       label: q.q,
-      href: '/faq', // Ideally anchor link
+      href: '/faq',
       desc: q.a
     }))
   );
@@ -52,26 +102,6 @@ export default function HelpCenterPage() {
       ).slice(0, 5)
     : [];
 
-  const linkGroups = [
-    {
-      col1: [
-        { label: "Billing", href: "/faq" },
-        { label: "Support", href: "/contact" },
-        { label: "Terms", href: "/terms-and-conditions" },
-      ],
-      col2: [
-        { label: "Features", href: "/features/smart-inventory" },
-        { label: "Contact us", href: "/contact" },
-        { label: "Blog", href: "/blog" },
-      ],
-      col3: [
-        { label: "Enterprise", href: "/pricing" },
-        { label: "Privacy", href: "/privacy-policy" },
-        { label: "Team", href: "/team" },
-      ]
-    }
-  ];
-
   return (
     <>
       <Navbar />
@@ -88,8 +118,12 @@ export default function HelpCenterPage() {
         <section className="w-full max-w-6xl px-4 md:p-8">
             <div className="container flex flex-col items-center p-4 mx-auto md:p-8 rounded-3xl relative" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#f3f4f6' }}>
                 
-                <motion.h1 variants={item} className="text-3xl font-bold leading-none text-center sm:text-4xl mb-2">Help Center</motion.h1>
-                <motion.p variants={item} className="mb-8 opacity-70">How can we help you today?</motion.p>
+                <motion.h1 variants={item} className="text-3xl font-bold leading-none text-center sm:text-4xl mb-2">
+                  {data.title || "Help Center"}
+                </motion.h1>
+                <motion.p variants={item} className="mb-8 opacity-70">
+                  {data.subtitle || "How can we help you today?"}
+                </motion.p>
                 
                 <motion.div variants={item} className="relative mt-2 mb-12 w-full max-w-lg z-50">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
@@ -100,7 +134,7 @@ export default function HelpCenterPage() {
                         name="Search" 
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Search for answers..." 
+                        placeholder={data.searchPlaceholder || "Search for answers..."} 
                         className="w-full py-4 pl-12 text-sm rounded-full focus:outline-none shadow-sm transition-shadow focus:shadow-md"
                         style={{ 
                             backgroundColor: isDark ? '#171717' : '#ffffff',
@@ -139,7 +173,7 @@ export default function HelpCenterPage() {
                                     </ul>
                                 ) : (
                                     <div className="p-6 text-center text-sm opacity-60">
-                                        No results found for "{query}"
+                                        {data.noResultsText || "No results found"} for &quot;{query}&quot;
                                     </div>
                                 )}
                             </motion.div>
@@ -149,21 +183,21 @@ export default function HelpCenterPage() {
 
                 <motion.div variants={item} className="flex flex-col w-full divide-y sm:flex-row sm:divide-y-0 sm:divide-x sm:px-8 lg:px-12 xl:px-32 relative z-10" style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db' }}>
                     <div className="flex flex-col w-full divide-y" style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db' }}>
-                        {linkGroups[0].col1.map((link, i) => (
+                        {linkGroups.col1.map((link, i) => (
                             <Link key={i} href={link.href} className="flex items-center justify-center p-4 sm:py-8 lg:py-12 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                                 {link.label}
                             </Link>
                         ))}
                     </div>
                     <div className="flex flex-col w-full divide-y" style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db' }}>
-                        {linkGroups[0].col2.map((link, i) => (
+                        {linkGroups.col2.map((link, i) => (
                              <Link key={i} href={link.href} className="flex items-center justify-center p-4 sm:py-8 lg:py-12 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                                 {link.label}
                             </Link>
                         ))}
                     </div>
                     <div className="flex flex-col w-full divide-y" style={{ borderColor: isDark ? 'rgba(255,255,255,0.1)' : '#d1d5db' }}>
-                        {linkGroups[0].col3.map((link, i) => (
+                        {linkGroups.col3.map((link, i) => (
                              <Link key={i} href={link.href} className="flex items-center justify-center p-4 sm:py-8 lg:py-12 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                                 {link.label}
                             </Link>

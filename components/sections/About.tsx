@@ -1,8 +1,37 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 import { useTheme } from "@/hooks/useTheme";
+import { get } from "@/lib/api/client";
+import { useRefetchOnFocus } from "@/lib/api";
+import { InlineHTMLContent } from "@/components/ui/HTMLContent";
+
+interface AboutData {
+  title: {
+    prefix: string;
+    highlight: string;
+    suffix: string;
+  };
+  description: string;
+  videoUrl: string;
+  thumbnailUrl?: string;
+  videoCardShadow?: {
+    light: string;
+    dark: string;
+  };
+}
+
+const fallbackData: AboutData = {
+  title: { prefix: "What is", highlight: "Yummy", suffix: "?" },
+  description: "Discover Yummy through this presentation video which will show you its innovative functioning and how it can transform your experience.",
+  videoUrl: "https://cruip-tutorials.vercel.app/modal-video/video.mp4",
+  thumbnailUrl: undefined,
+  videoCardShadow: {
+    light: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+    dark: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+  }
+};
 
 export function About() {
   const { theme } = useTheme();
@@ -10,6 +39,24 @@ export function About() {
   const [modalOpen, setModalOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<AboutData>(fallbackData);
+
+  // Fetch data from API
+  const fetchData = useCallback(async () => {
+    try {
+      const apiData = await get<AboutData>('/pages/home/about/');
+      setData(apiData);
+    } catch (error) {
+      console.error("Failed to fetch about data:", error);
+    }
+  }, []);
+
+  // Fetch data from API
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useRefetchOnFocus(fetchData);
 
   // Scroll animation for the video card
   const { scrollYProgress } = useScroll({
@@ -32,7 +79,23 @@ export function About() {
 
   // Text scroll animation
   const textY = useTransform(scrollYProgress, [0, 0.5], [0, -100]);
-  // Removed textOpacity as requested
+
+  const title = data.title || fallbackData.title;
+  const description = data.description || fallbackData.description;
+  // Handle video URL - if it's a broken /media/https%3A... URL, use the actual URL
+  let videoUrl = data.videoUrl || fallbackData.videoUrl;
+  if (videoUrl.includes('%3A') || videoUrl.includes('https%3A')) {
+    // Decode and extract the actual URL
+    try {
+      const decoded = decodeURIComponent(videoUrl.replace('/media/', ''));
+      if (decoded.startsWith('http')) {
+        videoUrl = decoded;
+      }
+    } catch {
+      videoUrl = fallbackData.videoUrl;
+    }
+  }
+  const shadow = data.videoCardShadow || fallbackData.videoCardShadow!;
 
   return (
     <section 
@@ -51,15 +114,13 @@ export function About() {
             className="text-4xl md:text-5xl font-black font-display mb-4"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            What is <span style={{ 
-              color: '#ff6929'
-            }}>Yummy</span> ?
+            {title.prefix} <span style={{ color: '#ff6929' }}>{title.highlight}</span> {title.suffix}
           </h2>
           <p 
             className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
             style={{ color: isDark ? '#94a3b8' : '#475569' }}
           >
-           Discover Yummy through this presentation video which will show you its innovative functioning and how it can transform your experience.
+           <InlineHTMLContent html={description} />
           </p>
         </motion.div>
 
@@ -76,7 +137,7 @@ export function About() {
               tabIndex={0}
               aria-label="Watch presentation video"
               style={{
-                boxShadow: isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.5)' : '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+                boxShadow: isDark ? shadow.dark : shadow.light,
                 transformStyle: 'preserve-3d',
                 transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
@@ -90,7 +151,7 @@ export function About() {
                   playsInline
                   className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
                 >
-                    <source src="https://cruip-tutorials.vercel.app/modal-video/video.mp4" type="video/mp4" />
+                    <source src={videoUrl} type="video/mp4" />
                 </video>
               </div>
             </div>
@@ -132,7 +193,7 @@ export function About() {
                         autoPlay
                         className="w-full h-full object-contain"
                     >
-                        <source src="https://cruip-tutorials.vercel.app/modal-video/video.mp4" type="video/mp4" />
+                        <source src={videoUrl} type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                 </div>

@@ -1,11 +1,34 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar, Footer } from "@/components/layout";
 import { useTheme } from "@/hooks/useTheme";
 import { FiSearch, FiBriefcase, FiMapPin, FiClock, FiArrowRight } from "react-icons/fi";
-import { jobPositions, jobCategories } from "@/lib/data";
+import { jobPositions as fallbackJobPositions, jobCategories as fallbackJobCategories } from "@/lib/data";
+import { getCareersPage, type CareersPageData, type JobPosition } from "@/lib/api";
+
+// Map fallback job data to API format
+const fallbackJobs: JobPosition[] = fallbackJobPositions.map((job, idx) => ({
+  title: job.title,
+  department: job.department,
+  type: job.type,
+  location: job.location,
+  description: job.description,
+  isActive: true,
+  order: idx + 1,
+}));
+
+const fallbackData: Partial<CareersPageData> = {
+  badge: "WE ARE HIRING",
+  title: "Join the Revolution",
+  subtitle: "Help us build the operating system for modern restaurants. We are looking for dreamers, doers, and food lovers.",
+  searchPlaceholder: "Search for roles (e.g. Engineer, Design)...",
+  applicationEmail: "yummyever.np@gmail.com",
+  emptyState: { title: "No positions found", message: "We couldn't find any open roles matching your search." },
+  categories: fallbackJobCategories,
+  jobs: fallbackJobs,
+};
 
 export default function CareersPage() {
   const { theme } = useTheme();
@@ -13,15 +36,40 @@ export default function CareersPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [data, setData] = useState<Partial<CareersPageData>>(fallbackData);
+  const [jobs, setJobs] = useState<JobPosition[]>(fallbackJobs);
+  const [categories, setCategories] = useState<string[]>(fallbackJobCategories);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const apiData = await getCareersPage();
+        setData(apiData);
+        if (apiData.jobs) {
+          setJobs(apiData.jobs.filter(j => j.isActive));
+        }
+        if (apiData.categories) {
+          setCategories(apiData.categories);
+        }
+      } catch (error) {
+        console.error("Failed to fetch careers data:", error);
+        // Keep fallback data
+      }
+    }
+    fetchData();
+  }, []);
 
   // Filtering Logic
-  const filteredJobs = jobPositions.filter((job) => {
+  const filteredJobs = jobs.filter((job) => {
     const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           job.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || job.department === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
+
+  const emptyState = data.emptyState || fallbackData.emptyState!;
+  const applicationEmail = data.applicationEmail || fallbackData.applicationEmail!;
 
   return (
     <>
@@ -34,13 +82,13 @@ export default function CareersPage() {
            {/* Hero Section */}
            <div className="text-center mb-16">
               <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold text-sm mb-4 tracking-wider shadow-sm">
-                  WE ARE HIRING
+                  {data.badge || "WE ARE HIRING"}
               </span>
               <h1 className="text-4xl md:text-5xl font-black font-display mb-6" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
-                 Join the Revolution
+                 {data.title || "Join the Revolution"}
               </h1>
               <p className="text-xl max-w-2xl mx-auto" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-                 Help us build the operating system for modern restaurants. We are looking for dreamers, doers, and food lovers.
+                 {data.subtitle || "Help us build the operating system for modern restaurants. We are looking for dreamers, doers, and food lovers."}
               </p>
            </div>
 
@@ -53,7 +101,7 @@ export default function CareersPage() {
                  </div>
                  <input 
                     type="text"
-                    placeholder="Search for roles (e.g. Engineer, Design)..."
+                    placeholder={data.searchPlaceholder || "Search for roles (e.g. Engineer, Design)..."}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-12 pr-4 py-4 rounded-2xl border outline-none transition-all focus:ring-2 focus:ring-primary/20"
@@ -67,7 +115,7 @@ export default function CareersPage() {
 
               {/* Categories */}
               <div className="flex flex-wrap justify-center gap-3">
-                 {jobCategories.map((cat) => (
+                 {categories.map((cat) => (
                     <button
                        key={cat}
                        onClick={() => setSelectedCategory(cat)}
@@ -99,9 +147,9 @@ export default function CareersPage() {
                    }
                  }}
                >
-                  {filteredJobs.map((job) => (
+                  {filteredJobs.sort((a, b) => a.order - b.order).map((job, idx) => (
                       <motion.div 
-                        key={job.id}
+                        key={idx}
                         variants={{
                           hidden: { opacity: 0, y: 20 },
                           show: { opacity: 1, y: 0 }
@@ -143,7 +191,7 @@ export default function CareersPage() {
                             </p>
 
                             <a 
-                                href={`mailto:yummyever.np@gmail.com?subject=Application for ${job.title}`} 
+                                href={`mailto:${applicationEmail}?subject=Application for ${job.title}`} 
                                 className="flex items-center gap-2 text-primary font-bold group-hover:translate-x-1 transition-transform"
                             >
                                 Apply Now <FiArrowRight />
@@ -159,10 +207,10 @@ export default function CareersPage() {
                        <FiSearch className="text-4xl text-gray-400" />
                    </div>
                    <h3 className="text-xl font-bold mb-2" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
-                       No positions found
+                       {emptyState.title}
                    </h3>
                    <p style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-                       We couldn't find any open roles matching your search "{searchQuery}" in {selectedCategory}.
+                       {emptyState.message || `We couldn't find any open roles matching your search "${searchQuery}" in ${selectedCategory}.`}
                        <br/>Try adjusting your filters or check back later!
                    </p>
                </div>
