@@ -188,14 +188,18 @@ export function Pricing() {
             className="text-4xl sm:text-5xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            {data.title || 'Simple, Transparent Pricing'}
+            <InlineHTMLContent html={data.title || 'Simple, Transparent Pricing'} />
           </h2>
           <p
             className="text-xl mb-8 max-w-2xl mx-auto"
             style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
           >
-            {data.subtitle ||
-              'Choose the plan that fits your business stage. No hidden fees, cancel anytime.'}
+            <InlineHTMLContent
+              html={
+                data.subtitle ||
+                'Choose the plan that fits your business stage. No hidden fees, cancel anytime.'
+              }
+            />
           </p>
 
           {/* Toggle */}

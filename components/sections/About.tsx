@@ -1,137 +1,204 @@
-"use client";
+'use client'
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
-import { useTheme } from "@/hooks/useTheme";
-import { get } from "@/lib/api/client";
-import { useRefetchOnFocus } from "@/lib/api";
-import { InlineHTMLContent } from "@/components/ui/HTMLContent";
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { useScroll, useTransform, motion } from 'framer-motion'
+import { useTheme } from '@/hooks/useTheme'
+import { get } from '@/lib/api/client'
+import { useRefetchOnFocus } from '@/lib/api'
+import { InlineHTMLContent } from '@/components/ui/HTMLContent'
+import { Icon } from '@/components/ui/Icon'
 
 interface AboutData {
   title: {
-    prefix: string;
-    highlight: string;
-    suffix: string;
-  };
-  description: string;
-  videoUrl: string;
-  thumbnailUrl?: string;
+    prefix: string
+    highlight: string
+    suffix: string
+  }
+  description: string
+  videoUrl: string
+  thumbnailUrl?: string
   videoCardShadow?: {
-    light: string;
-    dark: string;
-  };
+    light: string
+    dark: string
+  }
 }
 
 const fallbackData: AboutData = {
-  title: { prefix: "What is", highlight: "Yummy", suffix: "?" },
-  description: "Discover Yummy through this presentation video which will show you its innovative functioning and how it can transform your experience.",
-  videoUrl: "https://cruip-tutorials.vercel.app/modal-video/video.mp4",
+  title: { prefix: 'What is', highlight: 'Yummy', suffix: '?' },
+  description:
+    'Discover Yummy through this presentation video which will show you its innovative functioning and how it can transform your experience.',
+  videoUrl: 'https://cruip-tutorials.vercel.app/modal-video/video.mp4',
   thumbnailUrl: undefined,
   videoCardShadow: {
-    light: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
-    dark: "0 25px 50px -12px rgba(0, 0, 0, 0.5)"
-  }
-};
+    light: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+    dark: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+  },
+}
 
 export function About() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-  const [modalOpen, setModalOpen] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [data, setData] = useState<AboutData>(fallbackData);
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+  const [modalOpen, setModalOpen] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(false)
+  const [isVideoVisible, setIsVideoVisible] = useState(false)
+  const [previewLoaded, setPreviewLoaded] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const previewVideoRef = useRef<HTMLVideoElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [data, setData] = useState<AboutData>(fallbackData)
 
   // Fetch data from API
   const fetchData = useCallback(async () => {
     try {
-      const apiData = await get<AboutData>('/pages/home/about/');
-      setData(apiData);
+      const apiData = await get<AboutData>('/pages/home/about/')
+      setData(apiData)
     } catch (error) {
-      console.error("Failed to fetch about data:", error);
+      console.error('Failed to fetch about data:', error)
     }
-  }, []);
+  }, [])
 
   // Fetch data from API
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchData()
+  }, [fetchData])
 
-  useRefetchOnFocus(fetchData);
+  useRefetchOnFocus(fetchData)
+
+  // Intersection Observer for video performance
+  useEffect(() => {
+    const container = containerRef.current
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVideoVisible(entry.isIntersecting)
+        if (entry.isIntersecting && previewVideoRef.current && !previewLoaded) {
+          previewVideoRef.current.load()
+          setPreviewLoaded(true)
+        }
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    )
+
+    if (container) {
+      observer.observe(container)
+    }
+
+    return () => {
+      if (container) {
+        observer.unobserve(container)
+      }
+    }
+  }, [previewLoaded])
 
   // Scroll animation for the video card
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"],
-  });
-  
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 1.35, 0.6]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.4, 1, 0.4]);
+    offset: ['start end', 'end start'],
+  })
+
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 1.35, 0.6])
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.4, 1, 0.4])
+
+  // Optimized video control based on visibility and modal state
+  useEffect(() => {
+    const handleVideoPlayback = async () => {
+      if (previewVideoRef.current && previewLoaded) {
+        try {
+          if (isVideoVisible && !modalOpen) {
+            await previewVideoRef.current.play()
+          } else {
+            previewVideoRef.current.pause()
+          }
+        } catch (error) {
+          console.log('Video autoplay prevented:', error)
+        }
+      }
+    }
+
+    handleVideoPlayback()
+  }, [isVideoVisible, modalOpen, previewLoaded])
 
   useEffect(() => {
     if (videoRef.current) {
       if (modalOpen) {
-        videoRef.current.play();
+        videoRef.current.play().catch((e) => console.log('Modal video play prevented:', e))
       } else {
-        videoRef.current.pause();
+        videoRef.current.pause()
       }
     }
-  }, [modalOpen]);
+  }, [modalOpen])
+
+  // Throttled sound toggle for better performance
+  useEffect(() => {
+    const updateSound = () => {
+      if (previewVideoRef.current) {
+        previewVideoRef.current.muted = !soundEnabled
+      }
+      if (videoRef.current) {
+        videoRef.current.muted = !soundEnabled
+      }
+    }
+
+    // Small delay to batch updates
+    const timeoutId = setTimeout(updateSound, 10)
+    return () => clearTimeout(timeoutId)
+  }, [soundEnabled])
 
   // Text scroll animation
-  const textY = useTransform(scrollYProgress, [0, 0.5], [0, -100]);
+  const textY = useTransform(scrollYProgress, [0, 0.5], [0, -100])
 
-  const title = data.title || fallbackData.title;
-  const description = data.description || fallbackData.description;
+  const title = data.title || fallbackData.title
+  const description = data.description || fallbackData.description
   // Handle video URL - if it's a broken /media/https%3A... URL, use the actual URL
-  let videoUrl = data.videoUrl || fallbackData.videoUrl;
+  let videoUrl = data.videoUrl || fallbackData.videoUrl
   if (videoUrl.includes('%3A') || videoUrl.includes('https%3A')) {
     // Decode and extract the actual URL
     try {
-      const decoded = decodeURIComponent(videoUrl.replace('/media/', ''));
+      const decoded = decodeURIComponent(videoUrl.replace('/media/', ''))
       if (decoded.startsWith('http')) {
-        videoUrl = decoded;
+        videoUrl = decoded
       }
     } catch {
-      videoUrl = fallbackData.videoUrl;
+      videoUrl = fallbackData.videoUrl
     }
   }
-  const shadow = data.videoCardShadow || fallbackData.videoCardShadow!;
+  const shadow = data.videoCardShadow || fallbackData.videoCardShadow!
 
   return (
-    <section 
-      id="about" 
+    <section
+      id="about"
       ref={containerRef}
       className="relative isolate overflow-hidden py-24 sm:py-32"
       style={{ backgroundColor: isDark ? '#050505' : '#f8fafc' }}
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Animated Text Container */}
-        <motion.div 
-          style={{ y: textY }}
-          className="text-center mb-16 relative z-10"
-        >
-          <h2 
+        <motion.div style={{ y: textY }} className="text-center mb-16 relative z-10">
+          <h2
             className="text-4xl md:text-5xl font-black font-display mb-4"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            {title.prefix} <span style={{ color: '#ff6929' }}>{title.highlight}</span> {title.suffix}
+            <InlineHTMLContent html={title.prefix} />{' '}
+            <span style={{ color: '#ff6929' }}>
+              <InlineHTMLContent html={title.highlight} />
+            </span>{' '}
+            <InlineHTMLContent html={title.suffix} />
           </h2>
-          <p 
+          <p
             className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
             style={{ color: isDark ? '#94a3b8' : '#475569' }}
           >
-           <InlineHTMLContent html={description} />
+            <InlineHTMLContent html={description} />
           </p>
         </motion.div>
 
         {/* Enhanced 3D Video Component */}
         <div>
-          <motion.div 
+          <motion.div
             style={{ scale, opacity }}
             className="max-w-5xl mx-auto perspective-1000 px-4 sm:px-0"
           >
-            <div 
-              className="w-full h-full relative group cursor-pointer rounded-3xl overflow-hidden shadow-2xl video-card-wrapper" 
+            <div
+              className="w-full h-full relative group cursor-pointer rounded-3xl overflow-hidden shadow-2xl video-card-wrapper"
               onClick={() => setModalOpen(true)}
               role="button"
               tabIndex={0}
@@ -145,14 +212,38 @@ export function About() {
               {/* Autoplay Video Loop acting as thumbnail to avoid play button overlay requirement */}
               <div className="relative aspect-video w-full bg-slate-900">
                 <video
-                  autoPlay
-                  muted
+                  ref={previewVideoRef}
+                  key={videoUrl}
+                  muted={!soundEnabled}
                   loop
                   playsInline
+                  preload="none"
+                  poster={data.thumbnailUrl}
                   className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                  onLoadedData={() => setPreviewLoaded(true)}
+                  onError={(e) => console.log('Preview video error:', e)}
                 >
-                    <source src={videoUrl} type="video/mp4" />
+                  <source src={videoUrl} type="video/mp4" />
+                  <source src={videoUrl.replace('.mp4', '.webm')} type="video/webm" />
                 </video>
+                {/* Loading indicator for video */}
+                {!previewLoaded && isVideoVisible && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
+                    <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  </div>
+                )}
+
+                {/* Sound Toggle Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setSoundEnabled(!soundEnabled)
+                  }}
+                  className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-white/20 shadow-lg"
+                  aria-label={soundEnabled ? 'Mute video' : 'Unmute video'}
+                >
+                  <Icon name={soundEnabled ? 'volume_up' : 'volume_off'} size={18} />
+                </button>
               </div>
             </div>
           </motion.div>
@@ -175,27 +266,42 @@ export function About() {
             >
               <div className="max-w-6xl mx-auto w-full h-full flex items-center justify-center pointer-events-auto">
                 <div className="w-full relative aspect-video bg-black rounded-2xl shadow-2xl overflow-hidden">
-                    <button 
-                        onClick={() => setModalOpen(false)}
-                        className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                        aria-label="Close video"
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
+                    aria-label="Close video"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                    <video 
-                        ref={videoRef}
-                        width="1920" 
-                        height="1080" 
-                        controls
-                        autoPlay
-                        className="w-full h-full object-contain"
-                    >
-                        <source src={videoUrl} type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                  <video
+                    key={videoUrl}
+                    ref={videoRef}
+                    width="1920"
+                    height="1080"
+                    controls
+                    autoPlay
+                    muted={!soundEnabled}
+                    preload="metadata"
+                    className="w-full h-full object-contain"
+                    onError={(e) => console.log('Modal video error:', e)}
+                  >
+                    <source src={videoUrl} type="video/mp4" />
+                    <source src={videoUrl.replace('.mp4', '.webm')} type="video/webm" />
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               </div>
             </div>
@@ -203,5 +309,5 @@ export function About() {
         </div>
       </div>
     </section>
-  );
+  )
 }

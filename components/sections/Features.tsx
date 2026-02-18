@@ -248,7 +248,7 @@ export function Features() {
             className="text-4xl sm:text-5xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            {data.title || 'Everything you need.'}
+            <InlineHTMLContent html={data.title || 'Everything you need.'} />
           </h2>
           <p
             className="text-lg max-w-2xl mx-auto leading-relaxed"

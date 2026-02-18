@@ -101,7 +101,7 @@ export function Process() {
             className="text-4xl md:text-5xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            {data.title}
+            <InlineHTMLContent html={data.title || ''} />
           </h2>
           <p
             className="text-xl max-w-2xl mx-auto"

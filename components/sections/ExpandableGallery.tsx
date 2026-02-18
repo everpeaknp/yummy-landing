@@ -98,13 +98,13 @@ export function ExpandableGallery() {
             className="text-4xl sm:text-6xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
           >
-            {data.title}
+            <InlineHTMLContent html={data.title || ''} />
           </h2>
           <p
             className="text-xl max-w-2xl mx-auto"
             style={{ color: isDark ? '#94a3b8' : '#64748b' }}
           >
-            {data.subtitle}
+            <InlineHTMLContent html={data.subtitle || ''} />
           </p>
         </div>
 
@@ -138,7 +138,7 @@ export function ExpandableGallery() {
                           <Icon name={features[activeIdx].icon} size={32} />
                         </div>
                         <h3 className="text-3xl font-bold text-white font-display">
-                          {features[activeIdx].title}
+                          <InlineHTMLContent html={features[activeIdx].title} />
                         </h3>
                       </div>
                     </div>
@@ -196,7 +196,7 @@ export function ExpandableGallery() {
                               : 'text-slate-500'
                           }`}
                         >
-                          {feature.title}
+                          <InlineHTMLContent html={feature.title} />
                         </h3>
                         <motion.div
                           initial={false}
@@ -336,7 +336,7 @@ function MobileSlide({
           </div>
 
           <h3 className="text-2xl font-bold font-display leading-tight mb-2 text-white">
-            {feature.title}
+            <InlineHTMLContent html={feature.title} />
           </h3>
 
           <AnimatePresence>
