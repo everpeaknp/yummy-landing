@@ -1,98 +1,41 @@
-"use client";
+import type { Metadata } from 'next'
+import { getFeaturesList } from '@/lib/api/pages'
+import { FeaturesIndexClient } from '@/components/sections/FeaturesIndexClient'
 
-import { Navbar, Footer } from "@/components/layout";
-import { useTheme } from "@/hooks/useTheme";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
-import { getFeaturesList, type FeaturePageData, useRefetchOnFocus } from "@/lib/api";
+export const metadata: Metadata = {
+  title: 'Features | Yummy Restaurant Management System',
+  description:
+    'Discover our comprehensive restaurant management features including smart inventory, IRD billing, QR menus, and real-time reports.',
+  keywords: [
+    'restaurant management',
+    'POS system',
+    'inventory management',
+    'IRD billing',
+    'QR menu',
+    'restaurant software',
+  ],
+  openGraph: {
+    title: 'Features | Yummy Restaurant Management System',
+    description:
+      'Discover our comprehensive restaurant management features including smart inventory, IRD billing, QR menus, and real-time reports.',
+    type: 'website',
+    url: 'https://yummy.com.np/features',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Features | Yummy Restaurant Management System',
+    description:
+      'Discover our comprehensive restaurant management features including smart inventory, IRD billing, QR menus, and real-time reports.',
+  },
+}
 
-const colorPalette = [
-  { color: "text-green-500", bg: "bg-green-100 dark:bg-green-900/30" },
-  { color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/30" },
-  { color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/30" },
-  { color: "text-pink-500", bg: "bg-pink-100 dark:bg-pink-900/30" },
-  { color: "text-orange-500", bg: "bg-orange-100 dark:bg-orange-900/30" },
-  { color: "text-red-500", bg: "bg-red-100 dark:bg-red-900/30" },
-];
+export default async function FeaturesIndexPage() {
+  let initialFeatures = null
+  try {
+    initialFeatures = await getFeaturesList()
+  } catch (error) {
+    console.error('Failed to fetch features list:', error)
+  }
 
-// Fallback data
-const fallbackFeatures: Partial<FeaturePageData>[] = [
-    { slug: "smart-inventory", title: "Smart Inventory", icon: "inventory_2", subtitle: "Ingredients are deducted automatically as you sell." },
-    { slug: "ird-billing", title: "IRD Approved Billing", icon: "receipt_long", subtitle: "Fully compliant with Tax Rules of Nepal." },
-    { slug: "qr-menu", title: "Digital QR Menu", icon: "qr_code_2", subtitle: "Contactless ordering for superior guest experience." },
-    { slug: "reports", title: "Real-time Reports", icon: "analytics", subtitle: "Track sales and performance from anywhere." },
-];
-
-export default function FeaturesIndexPage() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-  const [features, setFeatures] = useState<Partial<FeaturePageData>[]>(fallbackFeatures);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const apiData = await getFeaturesList();
-      if (apiData && apiData.length > 0) {
-        setFeatures(apiData);
-      }
-    } catch (error) {
-       console.error("Failed to fetch features list:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useRefetchOnFocus(fetchData);
-
-  return (
-    <>
-      <Navbar />
-      <motion.main 
-        initial={{ opacity: 0, y: 40, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }}
-        className="pt-32 pb-20 min-h-screen" 
-        style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
-      >
-         <div className="max-w-7xl mx-auto px-6">
-            <h1 className="text-5xl md:text-7xl font-black font-display mb-16 text-center" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
-                All Features
-            </h1>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {features.map((feature, idx) => {
-                    const style = colorPalette[idx % colorPalette.length];
-                    return (
-                    <Link href={`/features/${feature.slug}`} key={feature.slug || idx}>
-                        <motion.div 
-                          initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                          whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                          viewport={{ once: true, margin: "-50px" }}
-                          transition={{ duration: 0.6, delay: idx * 0.1, ease: "easeOut" }}
-                          className="p-8 rounded-3xl h-full transition-transform hover:-translate-y-1" style={{ 
-                            backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#f8fafc',
-                            border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e2e8f0'
-                        }}>
-                             <div 
-                                className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${style.bg} ${style.color}`}
-                            >
-                                <span className="material-symbols-outlined">{feature.icon}</span>
-                            </div>
-                            <h3 className="text-2xl font-bold font-display mb-3" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
-                                {feature.title}
-                            </h3>
-                             <p style={{ color: isDark ? '#94a3b8' : '#475569' }}>
-                                {feature.subtitle || (feature as any).description}
-                            </p>
-                        </motion.div>
-                    </Link>
-                )})}
-            </div>
-         </div>
-      </motion.main>
-      <Footer />
-    </>
-  );
+  return <FeaturesIndexClient initialFeatures={initialFeatures} />
 }
