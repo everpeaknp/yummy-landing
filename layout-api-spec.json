@@ -1,0 +1,134 @@
+{
+  "apiSpecification": {
+    "version": "v1",
+    "baseUrl": "/api/v1",
+    "endpoints": [
+      {
+        "path": "/layout/config",
+        "method": "GET",
+        "description": "Fetches global layout configuration including site settings, theme options, navbar, and footer data.",
+        "response": {
+          "status": 200,
+          "data": {
+            "siteConfig": {
+              "siteName": "Yummy POS",
+              "tagline": "Yummy Ever",
+              "description": "Yummy is the best restaurant management software in Nepal.",
+              "productionUrl": "https://yummypos.com",
+              "appLoginUrl": "https://app.yummyever.com/",
+              "companyName": "Everacy",
+              "copyrightText": "© 2026 Yummy Ever. All rights reserved."
+            },
+            "themeConfig": {
+              "darkMode": {
+                "isEnabled": true,
+                "defaultTheme": "system",
+                "toggleVisible": true
+              }
+            },
+            "navbar": {
+              "logo": {
+                "lightModeSrc": "/images/logo-light.svg",
+                "darkModeSrc": "/images/logo-dark.svg",
+                "altText": "Yummy POS",
+                "width": 120,
+                "height": 40
+              },
+              "menu": [
+                {
+                  "type": "link",
+                  "label": "Features",
+                  "href": "/features",
+                  "megaMenu": true
+                },
+                {
+                  "type": "link",
+                  "label": "Pricing",
+                  "href": "/pricing",
+                  "megaMenu": false
+                },
+                {
+                  "type": "link",
+                  "label": "Company",
+                  "href": "/company",
+                  "megaMenu": true
+                }
+              ],
+              "actions": [
+                {
+                  "type": "button",
+                  "label": "Login",
+                  "href": "https://app.yummyever.com/login",
+                  "variant": "ghost",
+                  "isExternal": true
+                },
+                {
+                  "type": "button",
+                  "label": "Get Started",
+                  "href": "/pricing",
+                  "variant": "primary",
+                  "isExternal": false
+                }
+              ]
+            },
+            "footer": {
+              "brand": {
+                "logo": {
+                  "lightModeSrc": "/images/logo-light-footer.svg",
+                  "darkModeSrc": "/images/logo-dark-footer.svg",
+                  "altText": "Yummy Ever"
+                },
+                "tagline": "Building innovative restaurant solutions for the modern world."
+              },
+              "columns": [
+                {
+                  "title": "Quick Links",
+                  "links": [
+                    { "label": "Home", "href": "/" },
+                    { "label": "Features", "href": "/features" },
+                    { "label": "Pricing", "href": "/pricing" }
+                  ]
+                },
+                {
+                  "title": "Product",
+                  "links": [
+                    { "label": "Inventory", "href": "/features/inventory" },
+                    { "label": "Billing", "href": "/features/billing" }
+                  ]
+                },
+                {
+                  "title": "Legal",
+                  "links": [
+                    { "label": "Privacy Policy", "href": "/privacy-policy" },
+                    { "label": "Terms of Service", "href": "/terms-of-service" },
+                    { "label": "Cookies", "href": "/cookies" }
+                  ]
+                }
+              ],
+              "socials": [
+                { "platform": "facebook", "url": "https://facebook.com/yummypos", "icon": "facebook" },
+                { "platform": "twitter", "url": "https://twitter.com/yummypos", "icon": "twitter" },
+                { "platform": "linkedin", "url": "https://linkedin.com/company/yummypos", "icon": "linkedin" },
+                { "platform": "instagram", "url": "https://instagram.com/yummypos", "icon": "instagram" }
+              ],
+              "copyright": {
+                "text": "© 2026 Yummy Ever. All rights reserved.",
+                "poweredBy": {
+                  "text": "By Everacy",
+                  "link": "https://everacy.com"
+                }
+              }
+            }
+          }
+        },
+        "errorResponses": {
+          "500": {
+            "status": 500,
+            "message": "Internal Server Error",
+            "code": "INTERNAL_SERVER_ERROR"
+          }
+        }
+      }
+    ]
+  }
+}
