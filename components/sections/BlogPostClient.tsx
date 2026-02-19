@@ -116,7 +116,7 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
           </h1>
 
           <div className="w-full h-64 md:h-96 rounded-3xl mb-12 overflow-hidden shadow-xl relative">
-            <Image src={post.imageUrl} alt={post.title} fill className="object-cover" priority />
+            <Image src={post.image} alt={post.title} fill className="object-cover" priority />
           </div>
 
           <div
