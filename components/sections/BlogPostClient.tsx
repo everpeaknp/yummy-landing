@@ -54,7 +54,7 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
         slug: apiPost.slug,
         title: apiPost.title,
         date: apiPost.date,
-        image: apiPost.imageUrl || initialPost.image,
+        image: apiPost.imageUrl || initialPost.imageUrl,
         content: apiPost.content,
         keywords: apiPost.keywords
           ? typeof apiPost.keywords === 'string'
