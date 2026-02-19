@@ -48,7 +48,7 @@ export default function HelpCenterPage() {
         setData(apiData)
         // Map linkColumns from API to our format if available
         if (apiData.linkColumns && apiData.linkColumns.length >= 3) {
-          const sorted = apiData.linkColumns.sort((a, b) => a.order - b.order)
+          const sorted = (apiData.linkColumns || []).sort((a, b) => (a?.order || 0) - (b?.order || 0))
           setLinkGroups({
             col1:
               sorted[0]?.links

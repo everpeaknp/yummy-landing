@@ -100,7 +100,7 @@ export function ThreeSteps() {
     return colors[color] || colors.orange;
   };
 
-  const phases = data.phases.sort((a, b) => a.order - b.order);
+  const phases = (data.phases || []).sort((a, b) => a.order - b.order);
 
   return (
     <section className="py-24 px-4 overflow-hidden relative" style={{ backgroundColor: isDark ? '#000000' : '#f8fafc' }}>
@@ -115,7 +115,7 @@ export function ThreeSteps() {
         <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-16 lg:gap-24">
           {phases.map((phase) => {
             const colorClasses = getColorClasses(phase.color, isDark);
-            const sortedCards = phase.cards.sort((a, b) => a.order - b.order);
+            const sortedCards = (phase.cards || []).sort((a, b) => a.order - b.order);
             
             return (
               <div key={phase.order} className="flex flex-col items-center w-full max-w-[512px]">

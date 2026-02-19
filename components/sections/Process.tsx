@@ -113,8 +113,8 @@ export function Process() {
 
         {/* Steps Grid */}
         <div className="grid md:grid-cols-3 gap-8">
-          {steps
-            .sort((a, b) => a.order - b.order)
+          {(steps || [])
+            .sort((a, b) => (a?.order || 0) - (b?.order || 0))
             .map((step, idx) => (
               <motion.div
                 key={step.number}

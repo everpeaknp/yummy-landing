@@ -280,8 +280,8 @@ export function Pricing() {
 
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto mb-32">
-          {plans
-            .sort((a, b) => a.order - b.order)
+          {(plans || [])
+            .sort((a, b) => (a?.order || 0) - (b?.order || 0))
             .map((plan) => (
               <div
                 key={plan.name}

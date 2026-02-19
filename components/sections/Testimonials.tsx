@@ -128,8 +128,8 @@ export function Testimonials() {
         </div>
 
         <motion.div ref={contentRef} style={{ x }} className="flex gap-8 pl-[10vw] pr-[10vw]">
-          {cards
-            .sort((a, b) => a.order - b.order)
+          {(cards || [])
+            .sort((a, b) => (a?.order || 0) - (b?.order || 0))
             .map((card, idx) => {
               return <Card card={card} key={idx} isDark={isDark} />
             })}
@@ -161,8 +161,8 @@ export function Testimonials() {
           grabCursor={true}
           className="mySwiper w-full"
         >
-          {cards
-            .sort((a, b) => a.order - b.order)
+          {(cards || [])
+            .sort((a, b) => (a?.order || 0) - (b?.order || 0))
             .map((card, idx) => {
               return (
                 <SwiperSlide
