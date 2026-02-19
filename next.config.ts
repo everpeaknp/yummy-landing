@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         hostname: 'via.placeholder.com',
       },
       {
+        protocol: 'https',
+        hostname: 'yummy-backend-api-f3eycscsaqcbcugy.southeastasia-01.azurewebsites.net',
+      },
+      {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '8000',
@@ -26,11 +30,16 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
+    // Use different backend URL based on environment
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL 
+      ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '')
+      : 'http://127.0.0.1:8000';
+      
     return [
       // Proxy /media/ requests to Django backend
       {
         source: '/media/:path*',
-        destination: 'http://127.0.0.1:8000/media/:path*',
+        destination: `${backendUrl}/media/:path*`,
       },
     ]
   },

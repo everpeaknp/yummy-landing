@@ -5,7 +5,6 @@ import { useTheme } from '@/hooks/useTheme'
 import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 import { getBlogPost, useRefetchOnFocus, type BlogPostDetail } from '@/lib/api'
-import { type BlogPost as LocalBlogPost } from '@/lib/blog-data'
 import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 // Single-line class strings for prose styling - prevents hydration mismatch
@@ -23,7 +22,7 @@ interface DisplayPost {
 }
 
 interface BlogPostClientProps {
-  post: LocalBlogPost
+  post: BlogPostDetail
   jsonLd: any
   slug: string
 }
@@ -32,14 +31,18 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
   const { theme } = useTheme()
   const isDark = theme === 'dark'
 
-  // Convert initial local blog post to display format
+  // Convert BlogPostDetail to display format
   const [post, setPost] = useState<DisplayPost>({
     slug: initialPost.slug,
     title: initialPost.title,
     date: initialPost.date,
-    image: initialPost.image,
+    image: initialPost.imageUrl,
     content: initialPost.content,
-    keywords: initialPost.keywords || [],
+    keywords: initialPost.keywords 
+      ? typeof initialPost.keywords === 'string'
+        ? initialPost.keywords.split(',').map((k) => k.trim())
+        : []
+      : [],
   })
 
   const fetchData = useCallback(async () => {
