@@ -173,7 +173,6 @@ export type {
   FeaturesData,
   GalleryData,
   FeaturePageData,
-  HomePageData,
   LegalPageListItem,
   LegalPageData,
   LegalPageType,

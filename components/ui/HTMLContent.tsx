@@ -23,15 +23,13 @@ export function HTMLContent({ html, className = "", as: Tag = "span" }: HTMLCont
   const hasHtmlTags = /<[a-z][\s\S]*>/i.test(html);
   
   if (!hasHtmlTags) {
-    return <Tag className={className}>{html}</Tag>;
+    return React.createElement(Tag, { className }, html);
   }
 
-  return (
-    <Tag 
-      className={`html-content ${className}`}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  return React.createElement(Tag, {
+    className: `html-content ${className}`,
+    dangerouslySetInnerHTML: { __html: html }
+  });
 }
 
 /**
