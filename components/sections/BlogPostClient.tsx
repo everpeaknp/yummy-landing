@@ -59,8 +59,12 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
         keywords: apiPost.keywords
           ? typeof apiPost.keywords === 'string'
             ? apiPost.keywords.split(',').map((k) => k.trim())
-            : []
-          : initialPost.keywords || [],
+            : apiPost.keywords
+          : initialPost.keywords 
+            ? typeof initialPost.keywords === 'string'
+              ? initialPost.keywords.split(',').map((k) => k.trim())
+              : initialPost.keywords
+            : [],
       })
     } catch (error) {
       // Keep initial/fallback post on error - silent for 404s
