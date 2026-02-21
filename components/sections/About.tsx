@@ -233,16 +233,16 @@ export function About() {
                   </div>
                 )}
 
-                {/* Sound Toggle Button */}
+                {/* Minimal Sound Toggle */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
                     setSoundEnabled(!soundEnabled)
                   }}
-                  className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-all duration-300 backdrop-blur-sm border border-white/10 hover:border-white/20 shadow-lg"
+                  className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-30 p-1.5 bg-black/30 hover:bg-black/50 rounded-full text-white transition-all hover:scale-105"
                   aria-label={soundEnabled ? 'Mute video' : 'Unmute video'}
                 >
-                  <Icon name={soundEnabled ? 'volume_up' : 'volume_off'} size={18} />
+                  <Icon name={soundEnabled ? 'volume_up' : 'volume_off'} size={14} />
                 </button>
               </div>
             </div>
