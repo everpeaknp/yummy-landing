@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'yummymedia2026ram.blob.core.windows.net',
+      },
+      {
+        protocol: 'https',
         hostname: 'yummy-backend-api-f3eycscsaqcbcugy.southeastasia-01.azurewebsites.net',
       },
       {
