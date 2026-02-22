@@ -131,6 +131,7 @@ export function Pricing() {
   const fetchData = useCallback(async () => {
     try {
       const apiData = await getPricingPage()
+      console.log("Fetched Pricing Data from API:", apiData); // Temporary debug log
       setData(apiData)
 
       // Map API plans to component format
@@ -139,7 +140,7 @@ export function Pricing() {
           ...p,
           features: p.features.map((f) => (typeof f === 'string' ? f : f.text)),
         }))
-        setPlans(mappedPlans as typeof fallbackPlans)
+        setPlans(mappedPlans as Array<Omit<PricingPlan, 'features'> & { features: string[] }>)
       }
 
       if (apiData.faqs) {
@@ -340,8 +341,10 @@ export function Pricing() {
                   <div className="flex flex-col items-center justify-center">
                     {/* Optional Strikethrough Original Price */}
                     {(isAnnual && plan.originalPriceYearly) || (!isAnnual && plan.originalPriceMonthly) ? (
-                      <div className="flex items-center gap-1 text-gray-400 dark:text-gray-500 line-through text-sm font-semibold mb-1">
-                        {isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly}
+                      <div className="flex items-center gap-1.5 text-orange-500 dark:text-orange-400 text-sm font-semibold mb-1 opacity-90">
+                        <span className="line-through decoration-orange-500/50 dark:decoration-orange-400/50 decoration-2">
+                          {isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly}
+                        </span>
                       </div>
                     ) : null}
                     

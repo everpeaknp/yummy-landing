@@ -32,7 +32,9 @@ export class ApiError extends Error {
  * Base fetch wrapper with error handling
  */
 export async function apiClient<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = `${API_BASE_URL}${endpoint}`
+  // Add cache-busting timestamp to prevent Next.js from aggressively caching local Django data
+  const separator = endpoint.includes('?') ? '&' : '?'
+  const url = `${API_BASE_URL}${endpoint}${separator}_t=${Date.now()}`
 
   const defaultHeaders: HeadersInit = {
     'Content-Type': 'application/json',
