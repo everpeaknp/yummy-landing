@@ -7,9 +7,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { getBlogPost, useRefetchOnFocus, type BlogPostDetail } from '@/lib/api'
 import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 
-// Single-line class strings for prose styling - prevents hydration mismatch
-const proseClasses =
-  'max-w-none [&_h2]:text-3xl md:[&_h2]:text-4xl [&_h2]:font-black [&_h2]:font-display [&_h2]:mt-12 [&_h2]:mb-6 [&_h2]:leading-tight [&_h3]:text-2xl [&_h3]:font-bold [&_h3]:font-display [&_h3]:mt-10 [&_h3]:mb-4 [&_p]:text-lg [&_p]:leading-8 [&_p]:mb-8 [&_p]:text-gray-700 dark:[&_p]:text-gray-300 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-8 [&_li]:mb-3 [&_li]:leading-relaxed [&_li]:text-gray-700 dark:[&_li]:text-gray-300 [&_strong]:text-primary [&_strong]:font-bold [&_a]:text-primary [&_a]:underline [&_a]:font-medium [&_a]:decoration-2 [&_a]:underline-offset-4'
+// Leverage Tailwind Typography plugin for consistent HTML rendering logic
+const proseClasses = 
+  'prose prose-slate dark:prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:font-black prose-a:text-primary prose-a:no-underline hover:prose-a:underline'
 
 // Internal type used for display
 interface DisplayPost {

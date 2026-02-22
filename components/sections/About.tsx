@@ -38,13 +38,34 @@ const fallbackData: AboutData = {
 export function About() {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
-  const [modalOpen, setModalOpen] = useState(false)
   const [soundEnabled, setSoundEnabled] = useState(false)
-  const [isVideoVisible, setIsVideoVisible] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [tempIcon, setTempIcon] = useState<'play' | 'pause' | null>(null)
   const [previewLoaded, setPreviewLoaded] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const previewVideoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const togglePlay = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation()
+    if (previewVideoRef.current) {
+      if (isPlaying) {
+        previewVideoRef.current.pause()
+        setIsPlaying(false)
+        showActionIcon('pause')
+      } else {
+        previewVideoRef.current.play()
+        setIsPlaying(true)
+        showActionIcon('play')
+      }
+    }
+  }
+
+  const showActionIcon = (icon: 'play' | 'pause') => {
+    setTempIcon(icon)
+    setTimeout(() => {
+      setTempIcon(null)
+    }, 600)
+  }
   const [data, setData] = useState<AboutData>(fallbackData)
 
   // Fetch data from API
@@ -64,77 +85,23 @@ export function About() {
 
   useRefetchOnFocus(fetchData)
 
-  // Intersection Observer for video performance
-  useEffect(() => {
-    const container = containerRef.current
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVideoVisible(entry.isIntersecting)
-        if (entry.isIntersecting && previewVideoRef.current && !previewLoaded) {
-          previewVideoRef.current.load()
-          setPreviewLoaded(true)
-        }
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    )
-
-    if (container) {
-      observer.observe(container)
-    }
-
-    return () => {
-      if (container) {
-        observer.unobserve(container)
-      }
-    }
-  }, [previewLoaded])
-
   // Scroll animation for the video card
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start'],
   })
 
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 1.35, 0.6])
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.4, 1, 0.4])
+  // Toned down the extreme scaling to prevent video decode stuttering during scroll
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.05, 0.9])
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.6, 1, 0.6])
 
-  // Optimized video control based on visibility and modal state
-  useEffect(() => {
-    const handleVideoPlayback = async () => {
-      if (previewVideoRef.current && previewLoaded) {
-        try {
-          if (isVideoVisible && !modalOpen) {
-            await previewVideoRef.current.play()
-          } else {
-            previewVideoRef.current.pause()
-          }
-        } catch (error) {
-          console.log('Video autoplay prevented:', error)
-        }
-      }
-    }
 
-    handleVideoPlayback()
-  }, [isVideoVisible, modalOpen, previewLoaded])
-
-  useEffect(() => {
-    if (videoRef.current) {
-      if (modalOpen) {
-        videoRef.current.play().catch((e) => console.log('Modal video play prevented:', e))
-      } else {
-        videoRef.current.pause()
-      }
-    }
-  }, [modalOpen])
 
   // Throttled sound toggle for better performance
   useEffect(() => {
     const updateSound = () => {
       if (previewVideoRef.current) {
         previewVideoRef.current.muted = !soundEnabled
-      }
-      if (videoRef.current) {
-        videoRef.current.muted = !soundEnabled
       }
     }
 
@@ -167,26 +134,19 @@ export function About() {
     <section
       id="about"
       ref={containerRef}
-      className="relative isolate overflow-hidden py-24 sm:py-32"
-      style={{ backgroundColor: isDark ? '#050505' : '#f8fafc' }}
+      className="relative isolate overflow-hidden py-24 sm:py-32 bg-slate-50 dark:bg-[#050505]"
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Animated Text Container */}
         <motion.div style={{ y: textY }} className="text-center mb-16 relative z-10">
-          <h2
-            className="text-4xl md:text-5xl font-black font-display mb-4"
-            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-          >
+          <h2 className="text-4xl md:text-5xl font-black font-display mb-4 text-slate-900 dark:text-white">
             <InlineHTMLContent html={title.prefix} />{' '}
-            <span style={{ color: '#ff6929' }}>
+            <span className="text-orange-500">
               <InlineHTMLContent html={title.highlight} />
             </span>{' '}
             <InlineHTMLContent html={title.suffix} />
           </h2>
-          <p
-            className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
-            style={{ color: isDark ? '#94a3b8' : '#475569' }}
-          >
+          <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed text-slate-600 dark:text-slate-400">
             <InlineHTMLContent html={description} />
           </p>
         </motion.div>
@@ -198,26 +158,26 @@ export function About() {
             className="max-w-5xl mx-auto perspective-1000 px-4 sm:px-0"
           >
             <div
-              className="w-full h-full relative group cursor-pointer rounded-3xl overflow-hidden shadow-2xl video-card-wrapper"
-              onClick={() => setModalOpen(true)}
+              className="w-full h-full relative group cursor-pointer rounded-3xl overflow-hidden shadow-2xl shadow-slate-300/50 dark:shadow-black/50 video-card-wrapper bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/50"
+              onClick={togglePlay}
               role="button"
               tabIndex={0}
               aria-label="Watch presentation video"
               style={{
-                boxShadow: isDark ? shadow.dark : shadow.light,
                 transformStyle: 'preserve-3d',
                 transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
             >
               {/* Autoplay Video Loop acting as thumbnail to avoid play button overlay requirement */}
-              <div className="relative aspect-video w-full bg-slate-900">
+              <div className="relative aspect-video w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/50 overflow-hidden rounded-2xl group-hover:border-orange-500/50 dark:group-hover:border-orange-500/30 transition-colors duration-500">
                 <video
                   ref={previewVideoRef}
                   key={videoUrl}
                   muted={!soundEnabled}
                   loop
+                  autoPlay
                   playsInline
-                  preload="none"
+                  preload="auto"
                   poster={data.thumbnailUrl}
                   className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
                   onLoadedData={() => setPreviewLoaded(true)}
@@ -227,85 +187,44 @@ export function About() {
                   <source src={videoUrl.replace('.mp4', '.webm')} type="video/webm" />
                 </video>
                 {/* Loading indicator for video */}
-                {!previewLoaded && isVideoVisible && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-                    <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                {!previewLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-slate-900">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-8 h-8 border-2 border-orange-500/20 border-t-orange-500 rounded-full animate-spin"></div>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">LOADING PREVIEW</span>
+                    </div>
                   </div>
                 )}
 
-                {/* Minimal Sound Toggle */}
+                {/* Temporary Action Icon (Play/Pause) */}
+                {tempIcon && (
+                  <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1.5 }}
+                      exit={{ opacity: 0, scale: 2 }}
+                      transition={{ duration: 0.4 }}
+                      className="w-20 h-20 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white"
+                    >
+                      <Icon name={tempIcon} size={40} />
+                    </motion.div>
+                  </div>
+                )}
+
+                {/* Sound Toggle (Icon Only) */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
                     setSoundEnabled(!soundEnabled)
                   }}
-                  className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-30 p-1.5 bg-black/30 hover:bg-black/50 rounded-full text-white transition-all hover:scale-105"
+                  className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-30 flex items-center justify-center p-2.5 sm:p-3 bg-black/60 hover:bg-black/80 backdrop-blur-sm shadow-lg border border-white/10 rounded-full text-white transition-all hover:scale-105"
                   aria-label={soundEnabled ? 'Mute video' : 'Unmute video'}
                 >
-                  <Icon name={soundEnabled ? 'volume_up' : 'volume_off'} size={14} />
+                  <Icon name={soundEnabled ? 'volume-2' : 'volume-x'} size={20} />
                 </button>
               </div>
             </div>
           </motion.div>
-
-          {/* Modal Backdrop */}
-          {modalOpen && (
-            <div
-              className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm transition-opacity"
-              onClick={() => setModalOpen(false)}
-              aria-hidden="true"
-            ></div>
-          )}
-
-          {/* Modal Dialog */}
-          {modalOpen && (
-            <div
-              className="fixed inset-0 z-[99999] flex px-4 md:px-6 py-6 items-center justify-center pointer-events-none"
-              role="dialog"
-              aria-modal="true"
-            >
-              <div className="max-w-6xl mx-auto w-full h-full flex items-center justify-center pointer-events-auto">
-                <div className="w-full relative aspect-video bg-black rounded-2xl shadow-2xl overflow-hidden">
-                  <button
-                    onClick={() => setModalOpen(false)}
-                    className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                    aria-label="Close video"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                  <video
-                    key={videoUrl}
-                    ref={videoRef}
-                    width="1920"
-                    height="1080"
-                    controls
-                    autoPlay
-                    muted={!soundEnabled}
-                    preload="metadata"
-                    className="w-full h-full object-contain"
-                    onError={(e) => console.log('Modal video error:', e)}
-                  >
-                    <source src={videoUrl} type="video/mp4" />
-                    <source src={videoUrl.replace('.mp4', '.webm')} type="video/webm" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </section>

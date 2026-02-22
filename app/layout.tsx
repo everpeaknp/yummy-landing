@@ -150,7 +150,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         {/* Tailwind CSS CDN - Guaranteed to work like original HTML */}
-        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" />
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography" />
         <script dangerouslySetInnerHTML={{ __html: tailwindConfigScript }} />
 
         {/* Theme script */}
