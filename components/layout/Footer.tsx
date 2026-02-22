@@ -98,12 +98,7 @@ export function Footer() {
   return (
 
       <footer 
-        className="pt-16 pb-12 transition-colors duration-300 border-t"
-        style={{ 
-          backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
-          color: isDark ? '#d4d4d4' : '#4b5563',
-          borderColor: isDark ? '#171717' : '#e5e7eb'
-        }}
+        className="pt-16 pb-12 transition-colors duration-300 border-t bg-white dark:bg-[#0a0a0a] text-slate-600 dark:text-[#d4d4d4] border-slate-200 dark:border-[#171717]"
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
@@ -117,7 +112,7 @@ export function Footer() {
                   height={40}
                   className="h-10 w-auto"
                 />
-                <span className="text-xl font-bold" style={{ color: isDark ? '#fff' : '#0f172a' }}>{brand.name}</span>
+                <span className="text-xl font-bold text-slate-900 dark:text-white transition-colors duration-300">{brand.name}</span>
               </div>
               <p className="leading-relaxed">{brand.tagline}</p>
               <div className="flex space-x-4">
@@ -133,7 +128,7 @@ export function Footer() {
             {/* Link Columns */}
             {columns.map((col, idx) => (
               <div key={idx} className="space-y-4">
-                <h3 className="text-lg font-bold" style={{ color: isDark ? '#fff' : '#0f172a' }}>{col.title}</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white transition-colors duration-300">{col.title}</h3>
                 <ul className="space-y-2">
                   {col.links.map((link, i) => (
                     <li key={i}>
@@ -146,7 +141,7 @@ export function Footer() {
 
             {/* Contact */}
             <div className="space-y-4">
-              <h3 className="text-lg font-bold" style={{ color: isDark ? '#fff' : '#0f172a' }}>{contact.title}</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white transition-colors duration-300">{contact.title}</h3>
               <address className="not-italic">
                 <p>{contact.address}</p>
                 <p className="mt-2">Email: <a href={`mailto:${contact.email}`} className="hover:text-[#ff6929] transition-colors">{contact.email}</a></p>
@@ -156,10 +151,7 @@ export function Footer() {
           </div>
 
           <div 
-            className="pt-6 flex flex-col md:flex-row justify-between items-center bg-transparent gap-4"
-             style={{ 
-              borderTop: isDark ? '1px solid #171717' : '1px solid #e5e7eb'
-            }}
+            className="pt-6 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-slate-200 dark:border-[#171717] transition-colors duration-300"
           >
             <div className="flex flex-col md:flex-row items-center gap-4">
                 <p className="text-sm">{copyright.text.replace('2024', new Date().getFullYear().toString())}</p>

@@ -134,7 +134,7 @@ export function About() {
     <section
       id="about"
       ref={containerRef}
-      className="relative isolate overflow-hidden py-24 sm:py-32 bg-slate-50 dark:bg-[#050505]"
+      className="relative isolate overflow-hidden py-24 sm:py-32 bg-slate-50 dark:bg-[#050505] transition-colors duration-300"
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         {/* Animated Text Container */}

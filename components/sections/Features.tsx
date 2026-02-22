@@ -219,10 +219,7 @@ export function Features() {
   return (
     <section
       id="features"
-      className="py-32"
-      style={{
-        backgroundColor: isDark ? '#0a0a0a' : '#f8fafc',
-      }}
+      className="py-32 bg-slate-50 dark:bg-[#0a0a0a] transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
@@ -234,25 +231,18 @@ export function Features() {
           className="text-center mb-24"
         >
           <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border"
-            style={{
-              backgroundColor: isDark ? 'rgba(30, 58, 138, 0.2)' : '#eff6ff',
-              color: isDark ? '#60a5fa' : '#2563eb',
-              borderColor: isDark ? 'rgba(30, 58, 138, 0.3)' : '#bfdbfe',
-            }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/30 transition-colors duration-300"
           >
             <Icon name={(data.badge as any)?.icon || 'bolt'} size={14} />
             <span>{(data.badge as any)?.text || 'Powerful Features'}</span>
           </div>
           <h2
-            className="text-4xl sm:text-5xl font-black font-display mb-6"
-            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            className="text-4xl sm:text-5xl font-black font-display mb-6 text-slate-900 dark:text-white transition-colors duration-300"
           >
             <InlineHTMLContent html={data.title || 'Everything you need.'} />
           </h2>
           <p
-            className="text-lg max-w-2xl mx-auto leading-relaxed"
-            style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+            className="text-lg max-w-2xl mx-auto leading-relaxed text-slate-500 dark:text-slate-400 transition-colors duration-300"
           >
             <InlineHTMLContent
               html={
@@ -274,11 +264,7 @@ export function Features() {
           {/* Card 1: Smart Inventory (Wide) */}
           <motion.div
             variants={item}
-            className="group md:col-span-8 relative h-[450px] rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01]"
-            style={{
-              backgroundColor: isDark ? '#171717' : '#ffffff',
-              border: isDark ? '1px solid #262626' : '1px solid #e5e7eb',
-            }}
+            className="group md:col-span-8 relative h-[450px] rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01] bg-white dark:bg-[#171717] border border-gray-200 dark:border-[#262626]"
           >
             {/* Background Decor */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-green-500/5 dark:bg-green-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-all duration-700 group-hover:bg-green-500/10 dark:group-hover:bg-green-500/20"></div>
@@ -286,11 +272,7 @@ export function Features() {
             {/* Content */}
             <div className="absolute top-0 left-0 p-10 z-20 max-w-md">
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10"
-                style={{
-                  backgroundColor: isDark ? 'rgba(34, 197, 94, 0.1)' : '#f0fdf4',
-                  color: '#16a34a',
-                }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10 bg-green-50 dark:bg-green-500/10 text-green-600 transition-colors duration-300"
               >
                 <Icon
                   name={inventory.icon}
@@ -299,14 +281,12 @@ export function Features() {
                 />
               </div>
               <h3
-                className="text-3xl font-bold font-display mb-3"
-                style={{ color: isDark ? '#fff' : '#0f172a' }}
+                className="text-3xl font-bold font-display mb-3 text-slate-900 dark:text-white transition-colors duration-300"
               >
                 {inventory.title}
               </h3>
               <p
-                className="text-lg leading-relaxed"
-                style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+                className="text-lg leading-relaxed text-slate-500 dark:text-[#a3a3a3] transition-colors duration-300"
               >
                 <InlineHTMLContent html={inventory.description} />
               </p>
@@ -443,11 +423,7 @@ export function Features() {
 
             <div className="absolute top-0 left-0 p-10 z-20">
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10"
-                style={{
-                  backgroundColor: isDark ? 'rgba(147, 51, 234, 0.1)' : '#faf5ff',
-                  color: '#9333ea',
-                }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10 bg-purple-50 dark:bg-purple-600/10 text-purple-600 transition-colors duration-300"
               >
                 <Icon
                   name={menu.icon}
@@ -456,12 +432,11 @@ export function Features() {
                 />
               </div>
               <h3
-                className="text-2xl font-bold font-display mb-2"
-                style={{ color: isDark ? '#fff' : '#0f172a' }}
+                className="text-2xl font-bold font-display mb-2 text-slate-900 dark:text-white transition-colors duration-300"
               >
                 {menu.title}
               </h3>
-              <p className="text-lg" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
+              <p className="text-lg text-slate-500 dark:text-[#a3a3a3] transition-colors duration-300">
                 <InlineHTMLContent html={menu.description} />
               </p>
             </div>
@@ -507,22 +482,14 @@ export function Features() {
           {/* Card 4: Reports */}
           <motion.div
             variants={item}
-            className="group md:col-span-6 relative h-[380px] rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01]"
-            style={{
-              backgroundColor: isDark ? '#171717' : '#ffffff',
-              border: isDark ? '1px solid #262626' : '1px solid #e5e7eb',
-            }}
+            className="group md:col-span-6 relative h-[380px] rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-[1.01] bg-white dark:bg-[#171717] border border-gray-200 dark:border-[#262626]"
           >
             {/* Decor */}
             <div className="absolute top-1/2 right-1/2 w-[300px] h-[300px] bg-pink-500/5 dark:bg-pink-500/10 rounded-full blur-3xl"></div>
 
             <div className="absolute top-0 left-0 p-10 z-20">
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10"
-                style={{
-                  backgroundColor: isDark ? 'rgba(219, 39, 119, 0.1)' : '#fce7f3',
-                  color: '#db2777',
-                }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-black/5 dark:ring-white/10 bg-pink-50 dark:bg-pink-600/10 text-pink-600 transition-colors duration-300"
               >
                 <Icon
                   name={analytics.icon}
@@ -531,12 +498,11 @@ export function Features() {
                 />
               </div>
               <h3
-                className="text-2xl font-bold font-display mb-2"
-                style={{ color: isDark ? '#fff' : '#0f172a' }}
+                className="text-2xl font-bold font-display mb-2 text-slate-900 dark:text-white transition-colors duration-300"
               >
                 {analytics.title}
               </h3>
-              <p className="text-lg" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
+              <p className="text-lg text-slate-500 dark:text-[#a3a3a3] transition-colors duration-300">
                 <InlineHTMLContent html={analytics.description} />
               </p>
             </div>

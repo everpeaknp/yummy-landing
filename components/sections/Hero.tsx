@@ -61,7 +61,7 @@ export function Hero() {
     <header className="pt-32 pb-20 lg:pt-48 lg:pb-32 text-center max-w-7xl mx-auto px-6">
       {/* Badge */}
       <div
-        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-8"
+        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-8 transition-colors duration-300"
         style={{
           backgroundColor: isDark
             ? (badgeColors as any).dark?.background
@@ -77,8 +77,7 @@ export function Hero() {
 
       {/* Headline */}
       <h1
-        className="text-5xl sm:text-7xl lg:text-8xl font-black font-display tracking-tight leading-[0.95] mb-8"
-        style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+        className="text-5xl sm:text-7xl lg:text-8xl font-black font-display tracking-tight leading-[0.95] mb-8 text-slate-900 dark:text-white transition-colors duration-300"
       >
         {headline.line1} <br />
         {headline.line2}{' '}
@@ -87,8 +86,7 @@ export function Hero() {
 
       {/* Subheadline */}
       <p
-        className="text-xl sm:text-2xl max-w-3xl mx-auto leading-relaxed mb-12"
-        style={{ color: isDark ? '#94a3b8' : '#475569' }}
+        className="text-xl sm:text-2xl max-w-3xl mx-auto leading-relaxed mb-12 text-slate-600 dark:text-slate-400 transition-colors duration-300"
       >
         <InlineHTMLContent html={subheadline} />
       </p>

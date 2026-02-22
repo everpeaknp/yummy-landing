@@ -80,8 +80,7 @@ export function Process() {
   return (
     <section
       id="process"
-      className="py-32 relative overflow-hidden"
-      style={{ backgroundColor: isDark ? '#050505' : '#ffffff' }}
+      className="py-32 relative overflow-hidden bg-white dark:bg-[#050505] transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
@@ -98,14 +97,12 @@ export function Process() {
             </span>
           </div>
           <h2
-            className="text-4xl md:text-5xl font-black font-display mb-6"
-            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            className="text-4xl md:text-5xl font-black font-display mb-6 text-slate-900 dark:text-white transition-colors duration-300"
           >
             <InlineHTMLContent html={data.title || ''} />
           </h2>
           <p
-            className="text-xl max-w-2xl mx-auto"
-            style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+            className="text-xl max-w-2xl mx-auto text-slate-500 dark:text-slate-400 transition-colors duration-300"
           >
             <InlineHTMLContent html={data.subtitle || fallbackData.subtitle || ''} />
           </p>
@@ -124,53 +121,33 @@ export function Process() {
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
                 whileHover={{ y: -8 }}
                 className={`
-                 relative p-8 rounded-[2rem] overflow-hidden group flex flex-col justify-start h-full
+                 relative p-8 rounded-[2rem] overflow-hidden group flex flex-col justify-start h-full transition-colors duration-300
                  ${
                    step.isHighlighted
-                     ? 'shadow-2xl shadow-blue-900/20'
-                     : 'shadow-lg hover:shadow-xl'
+                     ? 'shadow-2xl shadow-blue-900/20 bg-blue-600 dark:bg-slate-900 border-none'
+                     : 'shadow-lg hover:shadow-xl bg-white dark:bg-[#111] border border-slate-100 dark:border-[#222]'
                  }
               `}
-                style={{
-                  backgroundColor: step.isHighlighted
-                    ? isDark
-                      ? '#0f172a'
-                      : '#2563eb'
-                    : isDark
-                    ? '#111'
-                    : '#ffffff',
-                  border: step.isHighlighted
-                    ? 'none'
-                    : isDark
-                    ? '1px solid #222'
-                    : '1px solid #f1f5f9',
-                }}
               >
                 {/* Number - Top Right, Fully Visible */}
                 <div
-                  className="absolute top-8 right-8 text-5xl font-black opacity-100 transition-colors duration-300 z-0"
-                  style={{
-                    color: step.isHighlighted
-                      ? 'rgba(255,255,255,0.2)'
-                      : isDark
-                      ? '#333'
-                      : '#e2e8f0',
-                  }}
+                  className={`absolute top-8 right-8 text-5xl font-black opacity-100 transition-colors duration-300 z-0 ${
+                    step.isHighlighted 
+                      ? 'text-white/20' 
+                      : 'text-slate-200 dark:text-[#333]'
+                  }`}
                 >
                   {step.number}
                 </div>
 
                 {/* Icon */}
                 <div
-                  className="relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center mb-12 text-3xl shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-                  style={{
-                    backgroundColor: step.isHighlighted
-                      ? 'rgba(255,255,255,0.2)'
-                      : isDark
-                      ? '#1a1a1a'
-                      : '#f8fafc',
-                    color: step.isHighlighted ? '#ffffff' : getColorValue(step.iconColor, isDark),
-                  }}
+                  className={`relative z-10 w-16 h-16 rounded-2xl flex items-center justify-center mb-12 text-3xl shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${
+                    step.isHighlighted 
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-slate-50 dark:bg-[#1a1a1a]'
+                  }`}
+                  style={!step.isHighlighted ? { color: getColorValue(step.iconColor, isDark) } : {}}
                 >
                   <Icon name={step.icon} size={24} />
                 </div>
@@ -178,22 +155,16 @@ export function Process() {
                 {/* Content */}
                 <div className="relative z-10 mt-auto">
                   <h3
-                    className="text-2xl font-bold font-display mb-3"
-                    style={{
-                      color: step.isHighlighted ? '#ffffff' : isDark ? '#ffffff' : '#0f172a',
-                    }}
+                    className={`text-2xl font-bold font-display mb-3 transition-colors duration-300 ${
+                      step.isHighlighted ? 'text-white' : 'text-slate-900 dark:text-white'
+                    }`}
                   >
                     {step.title}
                   </h3>
                   <p
-                    className="leading-relaxed text-base"
-                    style={{
-                      color: step.isHighlighted
-                        ? 'rgba(255,255,255,0.8)'
-                        : isDark
-                        ? '#94a3b8'
-                        : '#64748b',
-                    }}
+                    className={`leading-relaxed text-base transition-colors duration-300 ${
+                      step.isHighlighted ? 'text-white/80' : 'text-slate-500 dark:text-slate-400'
+                    }`}
                   >
                     <InlineHTMLContent html={step.description} />
                   </p>

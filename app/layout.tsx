@@ -101,25 +101,7 @@ const themeScript = `
   })();
 `
 
-// Tailwind config script (same as original HTML)
-const tailwindConfigScript = `
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          primary: "#ff6929",
-          dark: "#0a0a0a",
-          light: "#ffffff",
-        },
-        fontFamily: {
-          display: ["Outfit", "sans-serif"],
-          body: ["Inter", "sans-serif"],
-        },
-      },
-    },
-  };
-`
+// Removed tailwind inline script configuration.
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -149,9 +131,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Tailwind CSS CDN - Guaranteed to work like original HTML */}
-        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography" />
-        <script dangerouslySetInnerHTML={{ __html: tailwindConfigScript }} />
+        {/* Removed Tailwind CDN script for massive performance boost */}
 
         {/* Theme script */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

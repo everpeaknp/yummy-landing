@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Explicit dark variant for class-based toggling in Tailwind v4 */
+@custom-variant dark (&:is(.dark *));
+
 /* ========================================
    CSS Variables & Theme Configuration
    ======================================== */

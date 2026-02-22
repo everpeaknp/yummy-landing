@@ -28,30 +28,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const newTheme = prevTheme === "light" ? "dark" : "light";
       localStorage.setItem("theme", newTheme);
 
-      // Disable CSS transitions temporarily to prevent lag spikes when swapping 1000+ DOM node colors
-      const css = document.createElement("style");
-      css.appendChild(
-        document.createTextNode(
-          `* {
-            -webkit-transition: none !important;
-            -moz-transition: none !important;
-            -o-transition: none !important;
-            -ms-transition: none !important;
-            transition: none !important;
-          }`
-        )
-      );
-      document.head.appendChild(css);
-
       if (newTheme === "dark") {
         document.documentElement.classList.add("dark");
       } else {
         document.documentElement.classList.remove("dark");
       }
-
-      // Force a reflow so the new colors apply instantly, then re-enable transitions
-      window.getComputedStyle(css).opacity;
-      document.head.removeChild(css);
 
       return newTheme;
     });
