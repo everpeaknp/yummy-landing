@@ -40,6 +40,8 @@ const fallbackPlans: Array<Omit<PricingPlan, 'features'> & { features: string[] 
     name: 'Pro',
     priceMonthly: 'Rs. 1,500',
     priceYearly: 'Rs. 12,000',
+    originalPriceMonthly: 'Rs. 2,000',
+    originalPriceYearly: 'Rs. 20,000',
     description: 'Everything a growing restaurant needs to scale efficiently.',
     features: [
       'Unlimited Inventory Items',
@@ -335,25 +337,35 @@ export function Pricing() {
                   className="mb-8 p-6 -mx-2 rounded-2xl"
                   style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#f1f5f9' }}
                 >
-                  <div className="flex items-baseline justify-center gap-1">
-                    {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
-                      <span className="text-lg font-medium text-gray-400">Rs.</span>
-                    )}
+                  <div className="flex flex-col items-center justify-center">
+                    {/* Optional Strikethrough Original Price */}
+                    {(isAnnual && plan.originalPriceYearly) || (!isAnnual && plan.originalPriceMonthly) ? (
+                      <div className="flex items-center gap-1 text-gray-400 dark:text-gray-500 line-through text-sm font-semibold mb-1">
+                        {isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly}
+                      </div>
+                    ) : null}
+                    
+                    {/* Active Price */}
+                    <div className="flex items-baseline justify-center gap-1">
+                      {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
+                        <span className="text-lg font-medium text-gray-400">Rs.</span>
+                      )}
 
-                    <span
-                      className={`font-black tracking-tight ${
-                        plan.name === 'Pro' ? 'text-4xl' : 'text-3xl'
-                      }`}
-                      style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-                    >
-                      {isAnnual
-                        ? plan.priceYearly.replace('Rs. ', '')
-                        : plan.priceMonthly.replace('Rs. ', '')}
-                    </span>
+                      <span
+                        className={`font-black tracking-tight ${
+                          plan.name === 'Pro' ? 'text-4xl' : 'text-3xl'
+                        }`}
+                        style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+                      >
+                        {isAnnual
+                          ? plan.priceYearly.replace('Rs. ', '')
+                          : plan.priceMonthly.replace('Rs. ', '')}
+                      </span>
 
-                    {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
-                      <span className="text-sm text-gray-500">{isAnnual ? '/yr' : '/mo'}</span>
-                    )}
+                      {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
+                        <span className="text-sm text-gray-500">{isAnnual ? '/yr' : '/mo'}</span>
+                      )}
+                    </div>
                   </div>
                   {isAnnual && plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
                     <p className="text-xs text-center mt-2 text-green-600 dark:text-green-400 font-medium">
