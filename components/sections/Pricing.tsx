@@ -21,6 +21,8 @@ const fallbackPlans: Array<Omit<PricingPlan, 'features'> & { features: string[] 
     name: 'Starter',
     priceMonthly: 'Free',
     priceYearly: 'Free',
+    originalPriceMonthly: '100',
+    originalPriceYearly: '100',
     description: 'Perfect for small cafes and food trucks just getting started.',
     features: [
       'Single Outlet',
@@ -40,6 +42,8 @@ const fallbackPlans: Array<Omit<PricingPlan, 'features'> & { features: string[] 
     name: 'Pro',
     priceMonthly: 'Rs. 1,500',
     priceYearly: 'Rs. 12,000',
+    originalPriceMonthly: '1500',
+    originalPriceYearly: '20,000',
     description: 'Everything a growing restaurant needs to scale efficiently.',
     features: [
       'Unlimited Inventory Items',
@@ -123,7 +127,7 @@ export function Pricing() {
   const isDark = theme === 'dark'
   const [isAnnual, setIsAnnual] = useState(true)
   const [data, setData] = useState<Partial<PricingPageData>>(fallbackData)
-  const [plans, setPlans] = useState(fallbackPlans)
+  const [plans, setPlans] = useState<any[]>(fallbackPlans)
   const [faqs, setFaqs] = useState(fallbackFaqs)
 
   const fetchData = useCallback(async () => {
@@ -135,9 +139,21 @@ export function Pricing() {
       if (apiData.plans) {
         const mappedPlans = apiData.plans.map((p) => ({
           ...p,
-          features: p.features.map((f) => (typeof f === 'string' ? f : f.text)),
+          features: Array.isArray(p.features) 
+            ? p.features.map((f: any) => {
+                if (typeof f === 'string') {
+                  // If it looks like a Python stringified object, skip or handle it
+                  if (f.trim().startsWith('{') && f.trim().endsWith('}') && f.includes(':')) {
+                    return null;
+                  }
+                  return f;
+                }
+                if (f && typeof f === 'object' && f.text) return f.text;
+                return String(f || '');
+              }).filter((f): f is string => f !== null && f !== '')
+            : []
         }))
-        setPlans(mappedPlans as typeof fallbackPlans)
+        setPlans(mappedPlans as any[])
       }
 
       if (apiData.faqs) {
@@ -291,13 +307,19 @@ export function Pricing() {
                 style={
                   plan.isPopular
                     ? {
-                        backgroundColor: isDark ? '#171717' : '#ffffff',
-                        borderColor: '#f97316',
+                        backgroundColor: isDark
+                          ? (data.cardColors as any)?.popularBgDark || '#171717'
+                          : (data.cardColors as any)?.bgLight || '#ffffff',
+                        borderColor: (data.cardColors as any)?.popularBorderColor || '#f97316',
                         transform: 'scale(1.02)',
                       }
                     : {
-                        backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
-                        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e2e8f0',
+                        backgroundColor: isDark
+                          ? (data.cardColors as any)?.bgDark || '#0a0a0a'
+                          : (data.cardColors as any)?.bgLight || '#ffffff',
+                        border: isDark
+                          ? `1px solid ${(data.cardColors as any)?.borderDark || 'rgba(255,255,255,0.1)'}`
+                          : `1px solid ${(data.cardColors as any)?.borderLight || '#e2e8f0'}`,
                       }
                 }
               >
@@ -319,13 +341,23 @@ export function Pricing() {
                 <div className="mb-8">
                   <h3
                     className="font-bold text-2xl mb-2"
-                    style={{ color: plan.isPopular ? '#f97316' : isDark ? '#ffffff' : '#0f172a' }}
+                    style={{
+                      color: plan.isPopular
+                        ? (data.cardColors as any)?.popularNameColor || '#f97316'
+                        : isDark
+                        ? (data.cardColors as any)?.nameDark || '#ffffff'
+                        : (data.cardColors as any)?.nameLight || '#0f172a',
+                    }}
                   >
                     {plan.name}
                   </h3>
                   <p
                     className="text-sm min-h-[40px]"
-                    style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+                    style={{
+                      color: isDark
+                        ? (data.cardColors as any)?.descDark || '#a3a3a3'
+                        : (data.cardColors as any)?.descLight || '#64748b',
+                    }}
                   >
                     <InlineHTMLContent html={plan.description} />
                   </p>
@@ -333,8 +365,21 @@ export function Pricing() {
 
                 <div
                   className="mb-8 p-6 -mx-2 rounded-2xl"
-                  style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#f1f5f9' }}
+                  style={{
+                    backgroundColor: isDark
+                      ? (data.cardColors as any)?.priceBoxBgDark || 'rgba(255,255,255,0.03)'
+                      : (data.cardColors as any)?.priceBoxBgLight || '#f1f5f9',
+                  }}
                 >
+                  {/* Original Price (Strikethrough) */}
+                  {(isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly) && (
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <span className="text-sm line-through decoration-orange-500 text-orange-500 font-bold">
+                        Rs. {isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly}
+                      </span>
+                    </div>
+                  )}
+
                   <div className="flex items-baseline justify-center gap-1">
                     {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
                       <span className="text-lg font-medium text-gray-400">Rs.</span>
@@ -344,7 +389,11 @@ export function Pricing() {
                       className={`font-black tracking-tight ${
                         plan.name === 'Pro' ? 'text-4xl' : 'text-3xl'
                       }`}
-                      style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+                      style={{
+                        color: isDark
+                          ? (data.cardColors as any)?.nameDark || '#ffffff'
+                          : (data.cardColors as any)?.nameLight || '#0f172a',
+                      }}
                     >
                       {isAnnual
                         ? plan.priceYearly.replace('Rs. ', '')
@@ -357,7 +406,7 @@ export function Pricing() {
                   </div>
                   {isAnnual && plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
                     <p className="text-xs text-center mt-2 text-green-600 dark:text-green-400 font-medium">
-                      Billed Annually (Save Rs. 6000/yr)
+                      Billed Annually ({data.annualSavingsLabel || 'Save Rs. 6000/yr'})
                     </p>
                   )}
                 </div>
@@ -366,16 +415,18 @@ export function Pricing() {
                 <div className="flex-grow mb-8">
                   <p className="sr-only">Features:</p>
                   <ul className="space-y-4 text-sm text-left">
-                    {plan.features.map((feature, idx) => (
+                    {plan.features.map((feature: string, idx: number) => (
                       <li key={idx} className="flex gap-3 items-start">
                         <span
                           className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full mt-0.5"
                           style={{
                             backgroundColor: plan.isPopular
-                              ? 'rgba(249, 115, 22, 0.1)'
+                              ? (data.cardColors as any)?.checkIconBgPopular ||
+                                'rgba(249, 115, 22, 0.1)'
                               : isDark
-                              ? 'rgba(255,255,255,0.1)'
-                              : '#e2e8f0',
+                              ? (data.cardColors as any)?.checkIconBgDark ||
+                                'rgba(255,255,255,0.1)'
+                              : (data.cardColors as any)?.checkIconBgLight || '#e2e8f0',
                           }}
                         >
                           <Icon
@@ -383,14 +434,25 @@ export function Pricing() {
                             size={16}
                             className={
                               plan.isPopular
-                                ? 'text-orange-500'
-                                : isDark
-                                ? 'text-white'
-                                : 'text-slate-600'
+                                ? ''
+                                : ''
                             }
+                            style={{
+                              color: plan.isPopular
+                                ? (data.cardColors as any)?.checkIconColorPopular || '#f97316'
+                                : isDark
+                                ? (data.cardColors as any)?.checkIconColorDark || '#ffffff'
+                                : (data.cardColors as any)?.checkIconColorLight || '#475569',
+                            }}
                           />
                         </span>
-                        <span style={{ color: isDark ? '#d4d4d4' : '#475569' }}>
+                        <span
+                          style={{
+                            color: isDark
+                              ? (data.cardColors as any)?.featureTextDark || '#d4d4d4'
+                              : (data.cardColors as any)?.featureTextLight || '#475569',
+                          }}
+                        >
                           {typeof feature === 'string' ? feature : feature}
                         </span>
                       </li>
@@ -448,18 +510,29 @@ export function Pricing() {
                 <div key={i} className="group">
                   <h4
                     className="flex items-start gap-3 text-lg font-bold mb-3"
-                    style={{ color: isDark ? '#e5e5e5' : '#1e293b' }}
+                    style={{
+                      color: isDark
+                        ? (data.faqColors as any)?.questionDark || '#f1f5f9'
+                        : (data.faqColors as any)?.questionLight || '#1e293b',
+                    }}
                   >
                     <Icon
                       name="help"
                       size={20}
-                      className="mt-0.5 opacity-60 group-hover:opacity-100 transition-opacity cursor-help"
+                      className="mt-0.5 transition-opacity cursor-help"
+                      style={{
+                        color: (data.faqColors as any)?.iconColorDefault || '#9ca3af',
+                      }}
                     />
                     {faq.question}
                   </h4>
                   <p
                     className="pl-8 text-base leading-relaxed"
-                    style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+                    style={{
+                      color: isDark
+                        ? (data.faqColors as any)?.answerDark || '#94a3b8'
+                        : (data.faqColors as any)?.answerLight || '#64748b',
+                    }}
                   >
                     {faq.answer}
                   </p>
