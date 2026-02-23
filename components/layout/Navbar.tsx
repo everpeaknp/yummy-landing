@@ -97,7 +97,11 @@ export function Navbar() {
   return (
     <>
       <nav
-        className="fixed top-0 w-full z-[100] backdrop-blur-md transition-colors duration-300 bg-white/80 dark:bg-[#0a0a0a]/80 border-b border-slate-200 dark:border-white/5"
+        className="fixed top-0 w-full z-[100] backdrop-blur-md transition-colors duration-300"
+        style={{
+          backgroundColor: isDark ? 'rgba(10, 10, 10, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+          borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : '#e2e8f0'}`,
+        }}
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}
@@ -110,7 +114,8 @@ export function Navbar() {
               className="h-8 w-auto"
             />
             <span
-              className="text-xl font-bold font-display tracking-tight leading-none text-slate-900 dark:text-white transition-colors duration-300"
+              className="text-xl font-bold font-display tracking-tight leading-none"
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
             >
               {logo.text}
             </span>
@@ -127,7 +132,8 @@ export function Navbar() {
             {themeToggleConfig.visible && (
               <button
                 onClick={toggleTheme}
-                className="p-2 transition-colors duration-300 rounded-full text-slate-500 dark:text-slate-400"
+                className="p-2 transition-colors rounded-full"
+                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
                 aria-label="Toggle theme"
               >
                 {mounted && (
@@ -144,7 +150,7 @@ export function Navbar() {
               <Link
                 href={loginBtn.href}
                 target="_blank"
-                className="px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-all duration-300"
+                className="px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-opacity"
                 style={{
                   backgroundColor: isDark
                     ? loginBtn.darkBackground || '#ffffff'
@@ -161,7 +167,8 @@ export function Navbar() {
           <div className="flex md:hidden items-center gap-4">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 transition-colors duration-300 relative z-50 text-slate-900 dark:text-white"
+              className="p-2 transition-colors relative z-50"
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
             >
               {mobileMenuOpen ? <Icon name="close" size={24} /> : <Icon name="menu" size={24} />}
             </button>
@@ -176,18 +183,21 @@ export function Navbar() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 px-6 pt-24 pb-10 flex flex-col bg-white dark:bg-[#0a0a0a] transition-colors duration-300"
+            className="fixed inset-0 z-40 px-6 pt-24 pb-10 flex flex-col"
+            style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
           >
             <div className="flex flex-col gap-6 text-xl font-medium">
               {dynamicCols.map((t) => (
                 <div
                   key={t.id}
-                  className="border-b pb-4 border-slate-200 dark:border-[#262626] transition-colors duration-300"
+                  className="border-b pb-4"
+                  style={{ borderColor: isDark ? '#262626' : '#e2e8f0' }}
                 >
                   <Link
                     href={t.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block mb-2 text-slate-900 dark:text-white transition-colors duration-300"
+                    className="block mb-2"
+                    style={{ color: isDark ? '#fff' : '#0f172a' }}
                   >
                     {t.title}
                   </Link>
@@ -195,16 +205,17 @@ export function Navbar() {
               ))}
 
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-slate-500 dark:text-slate-400 transition-colors duration-300">Appearance</span>
+                <span style={{ color: isDark ? '#94a3b8' : '#64748b' }}>Appearance</span>
                 <button
                   onClick={toggleTheme}
-                  className="p-2 rounded-full border border-slate-200 dark:border-[#262626] transition-colors duration-300"
+                  className="p-2 rounded-full border"
+                  style={{ borderColor: isDark ? '#262626' : '#e2e8f0' }}
                 >
                   {mounted && (
                     <Icon
                       name={isDark ? 'light_mode' : 'dark_mode'}
                       size={24}
-                      className="text-slate-900 dark:text-white transition-colors duration-300"
+                      style={{ color: isDark ? '#fff' : '#0f172a' }}
                     />
                   )}
                 </button>
@@ -213,7 +224,7 @@ export function Navbar() {
               <Link
                 href={loginBtn.href}
                 target="_blank"
-                className="mt-auto w-full py-4 text-center rounded-xl font-bold text-lg transition-all duration-300"
+                className="mt-auto w-full py-4 text-center rounded-xl font-bold text-lg"
                 style={{
                   backgroundColor: isDark
                     ? loginBtn.darkBackground || '#ffffff'
@@ -253,7 +264,10 @@ const Tabs = ({ tabs, isDark }: { tabs: any[]; isDark: boolean }) => {
             <Link
               key={t.id}
               href={t.href}
-              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-slate-500 dark:text-slate-400 transition-colors duration-300"
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors"
+              style={{
+                color: isDark ? '#94a3b8' : '#64748b',
+              }}
               onMouseEnter={() => handleSetSelected(null)}
             >
               {t.title}
@@ -302,7 +316,7 @@ const Tab = ({
       id={`shift-tab-${tab}`}
       onMouseEnter={() => handleSetSelected(tab)}
       onClick={() => handleSetSelected(null)}
-      className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors duration-300`}
+      className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-sm transition-colors`}
       style={{
         backgroundColor:
           selected === tab ? (isDark ? 'rgba(255,255,255,0.1)' : '#f1f5f9') : 'transparent',
@@ -357,7 +371,11 @@ const Content = ({
         opacity: 0,
         y: 8,
       }}
-      className="absolute top-[calc(100%_+_24px)] w-96 rounded-lg p-4 border shadow-xl -translate-x-1/2 bg-white dark:bg-[#171717] border-slate-200 dark:border-[#262626] transition-colors duration-300"
+      className="absolute top-[calc(100%_+_24px)] w-96 rounded-lg p-4 border shadow-xl -translate-x-1/2"
+      style={{
+        backgroundColor: isDark ? '#171717' : '#ffffff',
+        borderColor: isDark ? '#262626' : '#e2e8f0',
+      }}
     >
       <Bridge />
       <Nub isDark={isDark} />
@@ -392,8 +410,10 @@ const Nub = ({ isDark }: { isDark: boolean }) => {
     <span
       style={{
         clipPath: 'polygon(0 0, 100% 0, 50% 50%, 0% 100%)',
+        backgroundColor: isDark ? '#171717' : '#ffffff',
+        borderColor: isDark ? '#262626' : '#e2e8f0',
       }}
-      className="absolute left-1/2 top-0 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-tl border-t border-l bg-white dark:bg-[#171717] border-slate-200 dark:border-[#262626] transition-colors duration-300"
+      className="absolute left-1/2 top-0 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-tl border-t border-l"
     />
   )
 }
@@ -422,7 +442,8 @@ const FeaturesMenu = ({ isDark }: { isDark: boolean }) => {
                 className="text-gray-400 group-hover:text-primary transition-colors"
               />
               <span
-                className="text-sm font-medium text-slate-800 dark:text-[#e5e5e5] transition-colors duration-300"
+                className="text-sm font-medium"
+                style={{ color: isDark ? '#e5e5e5' : '#1e293b' }}
               >
                 {item.name}
               </span>
@@ -455,10 +476,10 @@ const Blog = ({ isDark }: { isDark: boolean }) => {
               className="object-cover opacity-80 hover:opacity-100 transition-opacity"
             />
           </div>
-          <h4 className="mb-0.5 text-sm font-medium text-slate-900 dark:text-white transition-colors duration-300">
+          <h4 className={`mb-0.5 text-sm font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Restaurant Trends 2024
           </h4>
-          <p className="text-xs text-slate-500 dark:text-neutral-400 transition-colors duration-300">
+          <p className={`text-xs ${isDark ? 'text-neutral-400' : 'text-slate-500'}`}>
             Top 5 trends shaping the food industry in Nepal.
           </p>
         </Link>
@@ -471,10 +492,10 @@ const Blog = ({ isDark }: { isDark: boolean }) => {
               className="object-cover opacity-80 hover:opacity-100 transition-opacity"
             />
           </div>
-          <h4 className="mb-0.5 text-sm font-medium text-slate-900 dark:text-white transition-colors duration-300">
+          <h4 className={`mb-0.5 text-sm font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Optimize Inventory
           </h4>
-          <p className="text-xs text-slate-500 dark:text-neutral-400 transition-colors duration-300">
+          <p className={`text-xs ${isDark ? 'text-neutral-400' : 'text-slate-500'}`}>
             How to reduce waste and increase profit.
           </p>
         </Link>
@@ -515,11 +536,12 @@ const CompanyMenu = ({ isDark }: { isDark: boolean }) => {
             </div>
             <div>
               <span
-                className="block text-sm font-semibold mb-0.5 text-slate-800 dark:text-[#e5e5e5] transition-colors duration-300"
+                className="block text-sm font-semibold mb-0.5"
+                style={{ color: isDark ? '#e5e5e5' : '#1e293b' }}
               >
                 {item.name}
               </span>
-              <span className="block text-xs text-slate-500 dark:text-[#a3a3a3] transition-colors duration-300">
+              <span className="block text-xs" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
                 {item.desc}
               </span>
             </div>
@@ -528,23 +550,27 @@ const CompanyMenu = ({ isDark }: { isDark: boolean }) => {
       </div>
 
       <div
-        className="mt-4 pt-3 flex items-center gap-6 border-t border-dashed border-slate-200 dark:border-[#262626] transition-colors duration-300"
+        className="mt-4 pt-3 flex items-center gap-6 border-t border-dashed"
+        style={{ borderColor: isDark ? '#262626' : '#e2e8f0' }}
       >
         <Link
           href="/privacy-policy"
-          className="text-xs hover:text-primary transition-colors duration-300 text-slate-500 dark:text-[#a3a3a3]"
+          className="text-xs hover:text-primary transition-colors"
+          style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
         >
           Privacy Policy
         </Link>
         <Link
           href="/terms-and-conditions"
-          className="text-xs hover:text-primary transition-colors duration-300 text-slate-500 dark:text-[#a3a3a3]"
+          className="text-xs hover:text-primary transition-colors"
+          style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
         >
           Terms of Service
         </Link>
         <Link
           href="/delete-account"
-          className="text-xs hover:text-primary transition-colors duration-300 text-slate-500 dark:text-[#a3a3a3]"
+          className="text-xs hover:text-primary transition-colors"
+          style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
         >
           Delete Account
         </Link>

@@ -40,8 +40,6 @@ const fallbackPlans: Array<Omit<PricingPlan, 'features'> & { features: string[] 
     name: 'Pro',
     priceMonthly: 'Rs. 1,500',
     priceYearly: 'Rs. 12,000',
-    originalPriceMonthly: 'Rs. 2,000',
-    originalPriceYearly: 'Rs. 20,000',
     description: 'Everything a growing restaurant needs to scale efficiently.',
     features: [
       'Unlimited Inventory Items',
@@ -131,7 +129,6 @@ export function Pricing() {
   const fetchData = useCallback(async () => {
     try {
       const apiData = await getPricingPage()
-      console.log("Fetched Pricing Data from API:", apiData); // Temporary debug log
       setData(apiData)
 
       // Map API plans to component format
@@ -140,7 +137,7 @@ export function Pricing() {
           ...p,
           features: p.features.map((f) => (typeof f === 'string' ? f : f.text)),
         }))
-        setPlans(mappedPlans as Array<Omit<PricingPlan, 'features'> & { features: string[] }>)
+        setPlans(mappedPlans as typeof fallbackPlans)
       }
 
       if (apiData.faqs) {
@@ -164,21 +161,39 @@ export function Pricing() {
   return (
     <section
       id="pricing"
-      className="py-24 relative overflow-hidden bg-slate-50 dark:bg-white/5 border-t border-slate-200 dark:border-white/5"
+      className="py-24 relative overflow-hidden"
+      style={{
+        backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : '#f8fafc',
+        borderTop: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid #e2e8f0',
+      }}
     >
       {/* Background Gradients */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-3xl opacity-5 bg-orange-300 dark:bg-orange-500" />
-        <div className="absolute top-[40%] -left-[10%] w-[500px] h-[500px] rounded-full blur-3xl opacity-5 bg-blue-300 dark:bg-blue-500" />
+        <div
+          className={`absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-3xl opacity-5 ${
+            isDark ? 'bg-orange-500' : 'bg-orange-300'
+          }`}
+        />
+        <div
+          className={`absolute top-[40%] -left-[10%] w-[500px] h-[500px] rounded-full blur-3xl opacity-5 ${
+            isDark ? 'bg-blue-500' : 'bg-blue-300'
+          }`}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
         {/* Header */}
         <div className="mb-12">
-          <h2 className="text-4xl sm:text-5xl font-black font-display mb-6 text-slate-900 dark:text-white">
+          <h2
+            className="text-4xl sm:text-5xl font-black font-display mb-6"
+            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+          >
             <InlineHTMLContent html={data.title || 'Simple, Transparent Pricing'} />
           </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto text-slate-500 dark:text-neutral-400">
+          <p
+            className="text-xl mb-8 max-w-2xl mx-auto"
+            style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+          >
             <InlineHTMLContent
               html={
                 data.subtitle ||
@@ -192,16 +207,21 @@ export function Pricing() {
             <div className="flex items-center justify-center gap-4">
               <span
                 className={`text-sm font-medium ${
-                  !isAnnual ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-neutral-500'
+                  !isAnnual
+                    ? isDark
+                      ? 'text-white'
+                      : 'text-slate-900'
+                    : isDark
+                    ? 'text-neutral-500'
+                    : 'text-slate-500'
                 }`}
               >
                 {toggle.monthlyLabel}
               </span>
               <button
                 onClick={() => setIsAnnual(!isAnnual)}
-                className={`relative w-16 h-8 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                  isAnnual ? 'bg-orange-500' : 'bg-slate-300 dark:bg-neutral-700'
-                }`}
+                className="relative w-16 h-8 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                style={{ backgroundColor: isAnnual ? '#f97316' : isDark ? '#404040' : '#cbd5e1' }}
                 aria-label="Toggle pricing period"
               >
                 <motion.div
@@ -213,7 +233,13 @@ export function Pricing() {
               <div className="flex items-center gap-2">
                 <span
                   className={`text-sm font-medium ${
-                    isAnnual ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-neutral-500'
+                    isAnnual
+                      ? isDark
+                        ? 'text-white'
+                        : 'text-slate-900'
+                      : isDark
+                      ? 'text-neutral-500'
+                      : 'text-slate-500'
                   }`}
                 >
                   {toggle.yearlyLabel}
@@ -238,7 +264,10 @@ export function Pricing() {
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
                   <Icon name={promo.icon} size={24} />
                 </span>
-                <span className="text-sm font-medium text-slate-700 dark:text-neutral-200">
+                <span
+                  className="text-sm font-medium"
+                  style={{ color: isDark ? '#e5e5e5' : '#334155' }}
+                >
                   {promo.text}{' '}
                   <span className="font-bold text-orange-600 dark:text-orange-500">
                     {promo.highlightText}
@@ -257,60 +286,74 @@ export function Pricing() {
               <div
                 key={plan.name}
                 className={`p-8 rounded-[2rem] relative flex flex-col transition-all duration-300 ${
-                  plan.isPopular
-                    ? 'shadow-2xl ring-2 ring-orange-500 bg-white dark:bg-neutral-900 scale-[1.02]'
-                    : 'hover:shadow-xl bg-white dark:bg-neutral-950 border border-slate-200 dark:border-white/10'
+                  plan.isPopular ? 'shadow-2xl ring-2 ring-orange-500' : 'hover:shadow-xl'
                 }`}
+                style={
+                  plan.isPopular
+                    ? {
+                        backgroundColor: isDark ? '#171717' : '#ffffff',
+                        borderColor: '#f97316',
+                        transform: 'scale(1.02)',
+                      }
+                    : {
+                        backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
+                        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e2e8f0',
+                      }
+                }
               >
                 {/* Popular Badge */}
                 {plan.isPopular && (
                   <div className="absolute -top-5 inset-x-0 flex justify-center">
-                    <span className="text-xs uppercase font-bold px-4 py-1.5 rounded-full shadow-lg bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+                    <span
+                      className="text-xs uppercase font-bold px-4 py-1.5 rounded-full shadow-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                        color: '#ffffff',
+                      }}
+                    >
                       {plan.popularLabel || 'Most Popular'}
                     </span>
                   </div>
                 )}
 
                 <div className="mb-8">
-                  <h3 className={`font-bold text-2xl mb-2 ${plan.isPopular ? 'text-orange-500' : 'text-slate-900 dark:text-white'}`}>
+                  <h3
+                    className="font-bold text-2xl mb-2"
+                    style={{ color: plan.isPopular ? '#f97316' : isDark ? '#ffffff' : '#0f172a' }}
+                  >
                     {plan.name}
                   </h3>
-                  <p className="text-sm min-h-[40px] text-slate-500 dark:text-neutral-400">
+                  <p
+                    className="text-sm min-h-[40px]"
+                    style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+                  >
                     <InlineHTMLContent html={plan.description} />
                   </p>
                 </div>
 
-                <div className="mb-8 p-6 -mx-2 rounded-2xl bg-slate-100 dark:bg-white/5">
-                  <div className="flex flex-col items-center justify-center">
-                    {/* Optional Strikethrough Original Price */}
-                    {(isAnnual && plan.originalPriceYearly) || (!isAnnual && plan.originalPriceMonthly) ? (
-                      <div className="flex items-center gap-1.5 text-orange-500 dark:text-orange-400 text-sm font-semibold mb-1 opacity-90">
-                        <span className="line-through decoration-orange-500/50 dark:decoration-orange-400/50 decoration-2">
-                          {isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly}
-                        </span>
-                      </div>
-                    ) : null}
-                    
-                    {/* Active Price */}
-                    <div className="flex items-baseline justify-center gap-1">
-                      {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
-                        <span className="text-lg font-medium text-gray-400">Rs.</span>
-                      )}
+                <div
+                  className="mb-8 p-6 -mx-2 rounded-2xl"
+                  style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#f1f5f9' }}
+                >
+                  <div className="flex items-baseline justify-center gap-1">
+                    {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
+                      <span className="text-lg font-medium text-gray-400">Rs.</span>
+                    )}
 
-                      <span
-                        className={`font-black tracking-tight text-slate-900 dark:text-white ${
-                          plan.name === 'Pro' ? 'text-4xl' : 'text-3xl'
-                        }`}
-                      >
-                        {isAnnual
-                          ? plan.priceYearly.replace('Rs. ', '')
-                          : plan.priceMonthly.replace('Rs. ', '')}
-                      </span>
+                    <span
+                      className={`font-black tracking-tight ${
+                        plan.name === 'Pro' ? 'text-4xl' : 'text-3xl'
+                      }`}
+                      style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+                    >
+                      {isAnnual
+                        ? plan.priceYearly.replace('Rs. ', '')
+                        : plan.priceMonthly.replace('Rs. ', '')}
+                    </span>
 
-                      {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
-                        <span className="text-sm text-gray-500">{isAnnual ? '/yr' : '/mo'}</span>
-                      )}
-                    </div>
+                    {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
+                      <span className="text-sm text-gray-500">{isAnnual ? '/yr' : '/mo'}</span>
+                    )}
                   </div>
                   {isAnnual && plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
                     <p className="text-xs text-center mt-2 text-green-600 dark:text-green-400 font-medium">
@@ -326,9 +369,14 @@ export function Pricing() {
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex gap-3 items-start">
                         <span
-                          className={`flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full mt-0.5 ${
-                            plan.isPopular ? 'bg-orange-500/10' : 'bg-slate-200 dark:bg-white/10'
-                          }`}
+                          className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full mt-0.5"
+                          style={{
+                            backgroundColor: plan.isPopular
+                              ? 'rgba(249, 115, 22, 0.1)'
+                              : isDark
+                              ? 'rgba(255,255,255,0.1)'
+                              : '#e2e8f0',
+                          }}
                         >
                           <Icon
                             name="check"
@@ -336,11 +384,13 @@ export function Pricing() {
                             className={
                               plan.isPopular
                                 ? 'text-orange-500'
-                                : 'text-slate-600 dark:text-white'
+                                : isDark
+                                ? 'text-white'
+                                : 'text-slate-600'
                             }
                           />
                         </span>
-                        <span className="text-slate-600 dark:text-neutral-300">
+                        <span style={{ color: isDark ? '#d4d4d4' : '#475569' }}>
                           {typeof feature === 'string' ? feature : feature}
                         </span>
                       </li>
@@ -354,9 +404,21 @@ export function Pricing() {
                     href={plan.ctaHref}
                     className={`block w-full py-4 rounded-xl font-bold transition-all duration-300 text-center ${
                       plan.isPopular
-                        ? 'hover:shadow-lg hover:shadow-orange-500/20 bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-[0_4px_14px_0_rgba(249,115,22,0.39)]'
-                        : 'hover:opacity-90 bg-slate-900 dark:bg-white text-white dark:text-slate-900'
+                        ? 'hover:shadow-lg hover:shadow-orange-500/20'
+                        : 'hover:opacity-90'
                     }`}
+                    style={
+                      plan.isPopular
+                        ? {
+                            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                            color: '#ffffff',
+                            boxShadow: '0 4px 14px 0 rgba(249, 115, 22, 0.39)',
+                          }
+                        : {
+                            backgroundColor: isDark ? '#ffffff' : '#0f172a',
+                            color: isDark ? '#0f172a' : '#ffffff',
+                          }
+                    }
                   >
                     {plan.ctaText}
                   </Link>
@@ -368,10 +430,13 @@ export function Pricing() {
         {/* FAQ Section */}
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-slate-900 dark:text-white">
+            <h2
+              className="text-3xl font-bold mb-4"
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            >
               Frequently Asked Questions
             </h2>
-            <p className="text-slate-500 dark:text-neutral-400">
+            <p style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
               Have questions? We&apos;re here to help.
             </p>
           </div>
@@ -381,7 +446,10 @@ export function Pricing() {
               .sort((a, b) => a.order - b.order)
               .map((faq, i) => (
                 <div key={i} className="group">
-                  <h4 className="flex items-start gap-3 text-lg font-bold mb-3 text-slate-800 dark:text-neutral-200">
+                  <h4
+                    className="flex items-start gap-3 text-lg font-bold mb-3"
+                    style={{ color: isDark ? '#e5e5e5' : '#1e293b' }}
+                  >
                     <Icon
                       name="help"
                       size={20}
@@ -389,7 +457,10 @@ export function Pricing() {
                     />
                     {faq.question}
                   </h4>
-                  <p className="pl-8 text-base leading-relaxed text-slate-500 dark:text-neutral-400">
+                  <p
+                    className="pl-8 text-base leading-relaxed"
+                    style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+                  >
                     {faq.answer}
                   </p>
                 </div>

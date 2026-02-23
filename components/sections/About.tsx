@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useScroll, useTransform, motion } from 'framer-motion'
+import { useScroll, useTransform, motion, useInView } from 'framer-motion'
 import { useTheme } from '@/hooks/useTheme'
 import { get } from '@/lib/api/client'
 import { useRefetchOnFocus } from '@/lib/api'
@@ -38,9 +38,10 @@ const fallbackData: AboutData = {
 export function About() {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
-  const [soundEnabled, setSoundEnabled] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(true)
+  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(false)
   const [tempIcon, setTempIcon] = useState<'play' | 'pause' | null>(null)
+  const [hasManuallyPaused, setHasManuallyPaused] = useState(false)
   const [previewLoaded, setPreviewLoaded] = useState(false)
   const previewVideoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -51,10 +52,12 @@ export function About() {
       if (isPlaying) {
         previewVideoRef.current.pause()
         setIsPlaying(false)
+        setHasManuallyPaused(true)
         showActionIcon('pause')
       } else {
         previewVideoRef.current.play()
         setIsPlaying(true)
+        setHasManuallyPaused(false)
         showActionIcon('play')
       }
     }
@@ -90,6 +93,41 @@ export function About() {
     target: containerRef,
     offset: ['start end', 'end start'],
   })
+
+  // Autoplay video when in view
+  const isVideoInView = useInView(containerRef, { margin: "-20% 0px" })
+
+  useEffect(() => {
+    if (previewVideoRef.current && !hasManuallyPaused) {
+      if (isVideoInView) {
+        // Reset sound to ON every time video enters view as per user request
+        setSoundEnabled(true)
+        
+        // Attempt to play with current sound state
+        const playPromise = previewVideoRef.current.play()
+        
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log('Autoplay with sound prevented, falling back to muted:', error)
+            // Fallback: Mute the video and try playing again to avoid getting "stuck"
+            if (previewVideoRef.current) {
+              previewVideoRef.current.muted = true
+              setSoundEnabled(false)
+              previewVideoRef.current.play().catch(e => {
+                console.error('Muted autoplay also failed:', e)
+              })
+            }
+          })
+        }
+        setIsPlaying(true)
+      } else {
+        previewVideoRef.current.pause()
+        setIsPlaying(false)
+        // Automatically mute when scrolling out of view - "later should be muted"
+        setSoundEnabled(false)
+      }
+    }
+  }, [isVideoInView, hasManuallyPaused])
 
   // Toned down the extreme scaling to prevent video decode stuttering during scroll
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.05, 0.9])
@@ -158,7 +196,7 @@ export function About() {
             className="max-w-5xl mx-auto perspective-1000 px-4 sm:px-0"
           >
             <div
-              className="w-full h-full relative group cursor-pointer rounded-3xl overflow-hidden shadow-2xl shadow-slate-300/50 dark:shadow-black/50 video-card-wrapper bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/50"
+              className="w-full h-full relative group cursor-pointer rounded-3xl overflow-hidden shadow-none dark:shadow-black/50 video-card-wrapper bg-transparent dark:bg-slate-900 ring-1 ring-slate-900/10 dark:ring-0 dark:border dark:border-slate-800/50"
               onClick={togglePlay}
               role="button"
               tabIndex={0}
@@ -169,17 +207,18 @@ export function About() {
               }}
             >
               {/* Autoplay Video Loop acting as thumbnail to avoid play button overlay requirement */}
-              <div className="relative aspect-video w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/50 overflow-hidden rounded-2xl group-hover:border-orange-500/50 dark:group-hover:border-orange-500/30 transition-colors duration-500">
+              <div className="relative aspect-video w-full bg-transparent dark:bg-slate-900 ring-1 ring-slate-900/10 dark:ring-0 dark:border dark:border-slate-800/50 overflow-hidden rounded-2xl group-hover:ring-orange-500/50 dark:group-hover:border-orange-500/30 transition-all duration-500">
+                <link rel="preload" as="video" href={videoUrl} type="video/mp4" />
+                <link rel="preload" as="video" href={videoUrl.replace('.mp4', '.webm')} type="video/webm" />
                 <video
                   ref={previewVideoRef}
                   key={videoUrl}
                   muted={!soundEnabled}
                   loop
-                  autoPlay
                   playsInline
                   preload="auto"
                   poster={data.thumbnailUrl}
-                  className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                  className="w-full h-full object-cover scale-[1.03] opacity-90 group-hover:opacity-100 transition-opacity duration-500"
                   onLoadedData={() => setPreviewLoaded(true)}
                   onError={(e) => console.log('Preview video error:', e)}
                 >
