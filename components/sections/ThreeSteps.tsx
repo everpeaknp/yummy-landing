@@ -6,7 +6,7 @@ import { get } from "@/lib/api/client";
 import { useRefetchOnFocus } from "@/lib/api";
 import { InlineHTMLContent } from "@/components/ui/HTMLContent";
 
-interface LaunchCard {
+interface LaunchSubPhase {
   title: string;
   description: string;
   imageUrl: string;
@@ -18,7 +18,7 @@ interface LaunchPhase {
   title: string;
   color: string;
   order: number;
-  cards: LaunchCard[];
+  subphases: LaunchSubPhase[];
   badgeColors?: {
     light?: { background: string; text: string };
     dark?: { background: string; text: string };
@@ -38,7 +38,7 @@ const fallbackData: LaunchPhasesData = {
       title: "Setup",
       color: "orange",
       order: 1,
-      cards: [
+      subphases: [
         { title: "Create Profile", description: "Sign up in seconds. No credit card needed.", imageUrl: "https://images.unsplash.com/photo-1556742049-09379e9c8502?q=80&w=1000&auto=format&fit=crop", order: 1 },
         { title: "Digital Menu", description: "Upload items, photos, and set prices.", imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop", order: 2 },
         { title: "Floor Plan", description: "Configure tables and staff roles.", imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1000&auto=format&fit=crop", order: 3 }
@@ -49,7 +49,7 @@ const fallbackData: LaunchPhasesData = {
       title: "Go Live",
       color: "blue",
       order: 2,
-      cards: [
+      subphases: [
         { title: "Smart POS", description: "Take orders and payments instantly.", imageUrl: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1000&auto=format&fit=crop", order: 1 },
         { title: "Kitchen Sync", description: "Orders sent directly to chefs.", imageUrl: "https://images.unsplash.com/photo-1556910103-1c02745a30bf?q=80&w=1000&auto=format&fit=crop", order: 2 },
         { title: "Live Stats", description: "Monitor sales and stock in real-time.", imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop", order: 3 }
@@ -66,7 +66,9 @@ export function ThreeSteps() {
   const fetchData = useCallback(async () => {
     try {
       const apiData = await get<LaunchPhasesData>('/pages/home/launch-phases/');
-      setData(apiData);
+      if (apiData && apiData.phases) {
+        setData(apiData);
+      }
     } catch (error) {
       console.error("Failed to fetch launch phases:", error);
     }
@@ -115,7 +117,7 @@ export function ThreeSteps() {
         <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start gap-16 lg:gap-24">
           {phases.map((phase) => {
             const colorClasses = getColorClasses(phase.color, isDark);
-            const sortedCards = (phase.cards || []).sort((a, b) => a.order - b.order);
+            const sortedSubPhases = (phase.subphases || []).sort((a, b) => a.order - b.order);
             
             return (
               <div key={phase.order} className="flex flex-col items-center w-full max-w-[512px]">
@@ -126,10 +128,10 @@ export function ThreeSteps() {
                   <h3 className={`text-4xl font-bold ${colorClasses.title}`}>{phase.title}</h3>
                 </div>
                 <InteractiveWidget 
-                  cards={sortedCards.map(card => ({
-                    title: card.title,
-                    desc: card.description,
-                    img: card.imageUrl
+                  cards={sortedSubPhases.map(sub => ({
+                    title: sub.title || '',
+                    desc: sub.description || '',
+                    img: sub.imageUrl || 'https://via.placeholder.com/400'
                   }))}
                 />
               </div>
