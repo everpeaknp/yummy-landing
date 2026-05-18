@@ -208,8 +208,6 @@ export function About() {
             >
               {/* Autoplay Video Loop acting as thumbnail to avoid play button overlay requirement */}
               <div className="relative aspect-video w-full bg-transparent dark:bg-slate-900 ring-1 ring-slate-900/10 dark:ring-0 dark:border dark:border-slate-800/50 overflow-hidden rounded-2xl group-hover:ring-orange-500/50 dark:group-hover:border-orange-500/30 transition-all duration-500">
-                <link rel="preload" as="video" href={videoUrl} type="video/mp4" />
-                <link rel="preload" as="video" href={videoUrl.replace('.mp4', '.webm')} type="video/webm" />
                 <video
                   ref={previewVideoRef}
                   key={videoUrl}
