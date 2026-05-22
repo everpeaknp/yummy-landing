@@ -13,7 +13,7 @@ const fallbackData: Partial<NavbarData> = {
   logo: {
     lightModeSrc: '/images/yummy_logo_orange.png',
     darkModeSrc: '/images/yummy_logo.png',
-    text: 'Yummy Ever',
+    text: 'Yummyever',
     href: '/',
   },
   themeToggle: {

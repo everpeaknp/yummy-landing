@@ -44,6 +44,19 @@ const fallbackData: Partial<HeroData> = {
 }
 
 export function Hero() {
+  // Helper to render emoji or convert 2-letter country codes (e.g. 'np' -> 🇳🇵)
+  function renderEmoji(e?: string | null) {
+    if (!e) return ''
+    // If it's a two-letter country code like 'np' or 'NP', convert to flag
+    if (/^[A-Za-z]{2}$/.test(e)) {
+      return e
+        .toUpperCase()
+        .split('')
+        .map((ch) => String.fromCodePoint(127397 + ch.charCodeAt(0)))
+        .join('')
+    }
+    return e
+  }
   const { theme } = useTheme()
   const isDark = theme === 'dark'
   const { data } = useHeroData(fallbackData)
@@ -71,7 +84,8 @@ export function Hero() {
       >
         <Icon name={badge.icon} size={14} />
         <span>
-          {badge.text} {badge.emoji}
+          {badge.text}{' '}
+          {renderEmoji(badge.emoji)}
         </span>
       </div>
 

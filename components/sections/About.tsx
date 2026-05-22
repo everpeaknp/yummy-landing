@@ -101,30 +101,21 @@ export function About() {
   useEffect(() => {
     if (previewVideoRef.current && !hasManuallyPaused) {
       if (isVideoInView) {
-        // Reset sound to ON every time video enters view as per user request
-        setSoundEnabled(true)
-        
-        // Attempt to play with current sound state
+        // Use muted autoplay first (more reliable across browsers)
+        previewVideoRef.current.muted = true
+        setSoundEnabled(false)
+
         const playPromise = previewVideoRef.current.play()
-        
         if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            console.log('Autoplay with sound prevented, falling back to muted:', error)
-            // Fallback: Mute the video and try playing again to avoid getting "stuck"
-            if (previewVideoRef.current) {
-              previewVideoRef.current.muted = true
-              setSoundEnabled(false)
-              previewVideoRef.current.play().catch(e => {
-                console.error('Muted autoplay also failed:', e)
-              })
-            }
+          playPromise.catch((error) => {
+            console.log('Muted autoplay prevented or failed:', error)
           })
         }
         setIsPlaying(true)
       } else {
         previewVideoRef.current.pause()
         setIsPlaying(false)
-        // Automatically mute when scrolling out of view - "later should be muted"
+        // Keep video muted when out of view
         setSoundEnabled(false)
       }
     }
