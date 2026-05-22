@@ -35,7 +35,15 @@ export async function getTeamPage(): Promise<TeamPageData> {
 // Contact Page
 // ============================================
 export async function getContactPage(): Promise<ContactPageData> {
-  return get<ContactPageData>('/pages/contact/')
+  interface ContactApiResponse {
+    config?: Partial<ContactPageData>
+    categories?: Array<{ name?: string } | string>
+  }
+  const response = await get<ContactApiResponse>('/pages/contact/')
+  return {
+    ...(response.config || {}),
+    formCategories: (response.categories || []).map((c) => (typeof c === 'string' ? c : (c.name || ''))).filter(Boolean),
+  } as ContactPageData
 }
 
 // ============================================
@@ -49,7 +57,15 @@ export async function getPricingPage(): Promise<PricingPageData> {
 // FAQ Page
 // ============================================
 export async function getFaqPage(): Promise<FaqPageData> {
-  return get<FaqPageData>('/pages/faq/')
+  interface FaqApiResponse {
+    config?: Partial<FaqPageData>
+    categories?: FaqPageData['categories']
+  }
+  const response = await get<FaqApiResponse>('/pages/faq/')
+  return {
+    ...(response.config || {}),
+    categories: response.categories || [],
+  } as FaqPageData
 }
 
 // ============================================
@@ -73,7 +89,15 @@ export async function getCareersPage(): Promise<CareersPageData> {
 // Help Page
 // ============================================
 export async function getHelpPage(): Promise<HelpPageData> {
-  return get<HelpPageData>('/pages/help/')
+  interface HelpApiResponse {
+    config?: Partial<HelpPageData>
+    linkColumns?: HelpPageData['linkColumns']
+  }
+  const response = await get<HelpApiResponse>('/pages/help/')
+  return {
+    ...(response.config || {}),
+    linkColumns: response.linkColumns || [],
+  } as HelpPageData
 }
 
 // ============================================
