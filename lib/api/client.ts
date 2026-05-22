@@ -3,8 +3,9 @@
  * Base URL and fetch wrapper for Django backend
  */
 
-// Use direct backend URL for all requests
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'
+// Use direct backend URL for all requests, normalized to avoid `//` issues
+const RAW_API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'
+const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '')
 
 /**
  * Generic API response wrapper
@@ -32,9 +33,10 @@ export class ApiError extends Error {
  * Base fetch wrapper with error handling
  */
 export async function apiClient<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
   // Add cache-busting timestamp to prevent Next.js from aggressively caching local Django data
-  const separator = endpoint.includes('?') ? '&' : '?'
-  const url = `${API_BASE_URL}${endpoint}${separator}_t=${Date.now()}`
+  const separator = normalizedEndpoint.includes('?') ? '&' : '?'
+  const url = `${API_BASE_URL}${normalizedEndpoint}${separator}_t=${Date.now()}`
 
   const defaultHeaders: HeadersInit = {
     'Content-Type': 'application/json',
