@@ -18,6 +18,7 @@ import type {
   TestimonialsData,
   FeaturesData,
   GalleryData,
+  CustomersSectionData,
   FeaturePageData,
   LegalPageData,
   LegalPageListItem,
@@ -145,6 +146,10 @@ export async function getGallerySection(): Promise<GalleryData> {
   return get<GalleryData>('/pages/home/gallery/')
 }
 
+export async function getCustomersSection(): Promise<CustomersSectionData> {
+  return get<CustomersSectionData>('/pages/home/customers/')
+}
+
 // ============================================
 // Combined Home Page
 // ============================================
@@ -154,18 +159,20 @@ export interface HomePageData {
   testimonials: TestimonialsData
   features: FeaturesData
   gallery: GalleryData
+  customers: CustomersSectionData
 }
 
 export async function getHomePage(): Promise<HomePageData> {
-  const [hero, process, testimonials, features, gallery] = await Promise.all([
+  const [hero, process, testimonials, features, gallery, customers] = await Promise.all([
     getHeroSection(),
     getProcessSection(),
     getTestimonialsSection(),
     getFeaturesSection(),
     getGallerySection(),
+    getCustomersSection(),
   ])
 
-  return { hero, process, testimonials, features, gallery }
+  return { hero, process, testimonials, features, gallery, customers }
 }
 
 // ============================================
@@ -196,6 +203,7 @@ export type {
   TestimonialsData,
   FeaturesData,
   GalleryData,
+  CustomersSectionData,
   FeaturePageData,
   LegalPageListItem,
   LegalPageData,

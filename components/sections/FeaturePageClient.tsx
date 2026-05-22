@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { FiArrowRight, FiCheck } from 'react-icons/fi'
 import React from 'react'
 import { type FeaturePageData, type FeatureSectionCta } from '@/lib/api'
+import { HTMLContent, InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 // Type definition for a feature section
 type FeatureSection = {
@@ -45,15 +46,15 @@ const FeatureContent = ({
         className="col-span-1 text-3xl font-bold md:col-span-4"
         style={{ color: isDark ? '#fff' : '#0f172a' }}
       >
-        {title}
+        <InlineHTMLContent html={title} />
       </h2>
       <div className="col-span-1 md:col-span-8">
-        <p
-          className="mb-8 text-xl leading-relaxed"
+        <HTMLContent
+          as="div"
+          html={description}
+          className="mb-8 text-xl leading-relaxed [&_p]:mb-4 [&_p:last-child]:mb-0 [&_strong]:font-bold [&_a]:text-primary [&_a]:underline"
           style={{ color: isDark ? '#a3a3a3' : '#475569' }}
-        >
-          {description}
-        </p>
+        />
 
         {features && (
           <ul className="mb-8 space-y-3">
@@ -63,7 +64,7 @@ const FeatureContent = ({
                   <FiCheck size={14} />
                 </span>
                 <span className="text-lg" style={{ color: isDark ? '#d4d4d4' : '#334155' }}>
-                  {f}
+                  <InlineHTMLContent html={f} />
                 </span>
               </li>
             ))}
@@ -73,11 +74,11 @@ const FeatureContent = ({
         {quote && (
           <blockquote className="mb-10 rounded-2xl p-6 border-l-4 border-primary bg-gray-50 dark:bg-zinc-900/50">
             <p className="text-lg italic mb-4" style={{ color: isDark ? '#d4d4d4' : '#334155' }}>
-              "{quote.text}"
+              &quot;<InlineHTMLContent html={quote.text} />&quot;
             </p>
             <footer className="text-sm font-bold text-primary flex items-center gap-2">
               <span className="w-8 h-0.5 bg-primary"></span>
-              {quote.author}
+              <InlineHTMLContent html={quote.author} />
             </footer>
           </blockquote>
         )}

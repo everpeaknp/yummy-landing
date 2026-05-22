@@ -464,6 +464,17 @@ export interface GalleryData {
   stepIndicatorColors?: Record<string, unknown>
 }
 
+export interface CustomerLogoData {
+  name: string
+  logoUrl: string
+  order: number
+}
+
+export interface CustomersSectionData {
+  title: string
+  logos: CustomerLogoData[]
+}
+
 export interface FeatureSectionCta {
   visible: boolean
   text?: string

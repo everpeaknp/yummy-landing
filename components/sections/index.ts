@@ -8,6 +8,6 @@ export * from "./About";
 export * from "./SpeedGrid";
 export * from "./ExpandableGallery";
 export * from "./ThreeSteps";
-
+export * from "./OurCustomers";
 
 

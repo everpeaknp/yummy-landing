@@ -25,6 +25,7 @@ export {
   getFeaturesSection,
 
   getGallerySection,
+  getCustomersSection,
   getHomePage,
   getFeaturesList,
   getFeatureDetail,

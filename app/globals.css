@@ -1,4 +1,17 @@
 @import "tailwindcss";
+
+@keyframes logo-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-logo-marquee {
+  animation: logo-marquee 26s linear infinite;
+}
 @plugin "@tailwindcss/typography";
 
 /* Explicit dark variant for class-based toggling in Tailwind v4 */
@@ -261,5 +274,4 @@ body {
 .animate-pop-in {
   animation: popIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
 

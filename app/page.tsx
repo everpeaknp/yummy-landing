@@ -9,6 +9,7 @@ import {
   Pricing,
   Testimonials,
   About,
+  OurCustomers,
 } from "@/components/sections";
 
 export default function Home() {
@@ -17,9 +18,10 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
+        <About />
+        <OurCustomers />
         <Process />
         <Testimonials />
-        <About />
         <Features />
         {/* <SpeedGrid /> */}
         <ExpandableGallery />
