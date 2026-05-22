@@ -264,9 +264,9 @@ export function About() {
             </div>
           </motion.div>
         </div>
-
-        <OurCustomers />
       </div>
+
+      <OurCustomers />
     </section>
   )
 }

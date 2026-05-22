@@ -37,7 +37,7 @@ export function OurCustomers() {
     fetchData()
   }, [])
 
-  const items = [...data.logos, ...data.logos]
+  const items = [...data.logos, ...data.logos, ...data.logos]
 
   return (
     <div className="pt-12 md:pt-16 overflow-hidden">
@@ -50,26 +50,26 @@ export function OurCustomers() {
         </h2>
       </div>
 
-      <div className="relative w-full">
-        <div className="flex w-max animate-logo-marquee gap-4 md:gap-6 px-6">
+      <div className="relative left-1/2 w-screen -translate-x-1/2 -mx-6 lg:-mx-8 overflow-hidden isolate">
+        <div className="flex animate-logo-marquee gap-4 md:gap-6 px-6 min-w-full items-center">
           {items.map((item, idx) => (
-            <div
-              key={`${item.name}-${idx}`}
-              className="shrink-0 rounded-2xl border px-5 py-3 md:px-6 md:py-4 flex items-center justify-center"
-              style={{
-                backgroundColor: isDark ? '#111111' : '#ffffff',
-                borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(15,23,42,0.12)',
-              }}
-            >
-              <div className="h-10 md:h-12 w-auto flex items-center justify-center">
-                <img
-                  src={item.logoUrl || '/images/logo-placeholder.jpg'}
-                  alt={item.name}
-                  className="h-full w-auto max-w-[180px] object-contain"
-                  loading="lazy"
-                />
+              <div
+                key={`${item.name}-${idx}`}
+                className="shrink-0 px-4 md:px-6 py-3 flex items-center justify-center"
+                style={{
+                  backgroundColor: 'transparent',
+                  borderColor: 'transparent',
+                }}
+              >
+                <div className="h-12 md:h-16 w-auto flex items-center justify-center">
+                  <img
+                    src={item.logoUrl || '/images/logo-placeholder.jpg'}
+                    alt={item.name}
+                    className="h-full w-auto max-w-[260px] object-contain bg-transparent block"
+                    loading="lazy"
+                  />
+                </div>
               </div>
-            </div>
           ))}
         </div>
       </div>
