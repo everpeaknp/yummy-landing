@@ -1,6 +1,7 @@
-'use client'
+ 'use client'
 
 import React, { ReactNode, useEffect, useState, useCallback } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -94,6 +95,29 @@ export function Navbar() {
   const loginBtn = data.loginButton || fallbackData.loginButton!
   const themeToggleConfig = data.themeToggle || fallbackData.themeToggle!
 
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    // If already on the homepage, just scroll to top smoothly
+    if (!pathname || pathname === '/') {
+      e.preventDefault()
+      if (typeof window !== 'undefined') {
+        const el = document.scrollingElement || document.documentElement || document.body
+        try {
+          el.scrollTo({ top: 0, behavior: 'smooth' })
+        } catch (_) {
+          el.scrollTop = 0
+        }
+      }
+      return
+    }
+
+    // If on another page, navigate to root
+    e.preventDefault()
+    router.push('/')
+  }
+
   return (
     <>
       <nav
@@ -105,7 +129,7 @@ export function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link href={logo.href} className="flex items-center gap-3 relative z-50">
+          <Link href={logo.href} onClick={handleLogoClick} className="flex items-center gap-3 relative z-50">
             <Image
               src={isDark ? logo.darkModeSrc : logo.lightModeSrc}
               alt={logo.text}
