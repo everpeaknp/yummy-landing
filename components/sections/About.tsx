@@ -7,6 +7,7 @@ import { get } from '@/lib/api/client'
 import { useRefetchOnFocus } from '@/lib/api'
 import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 import { Icon } from '@/components/ui/Icon'
+import { OurCustomers } from '@/components/sections/OurCustomers'
 
 interface AboutData {
   title: {
@@ -263,6 +264,8 @@ export function About() {
             </div>
           </motion.div>
         </div>
+
+        <OurCustomers />
       </div>
     </section>
   )

@@ -9,7 +9,6 @@ import {
   Pricing,
   Testimonials,
   About,
-  OurCustomers,
 } from "@/components/sections";
 
 export default function Home() {
@@ -19,7 +18,6 @@ export default function Home() {
       <main>
         <Hero />
         <About />
-        <OurCustomers />
         <Process />
         <Testimonials />
         <Features />

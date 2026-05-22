@@ -40,13 +40,7 @@ export function OurCustomers() {
   const items = [...data.logos, ...data.logos]
 
   return (
-    <section
-      className="py-12 md:py-16 overflow-hidden border-y"
-      style={{
-        backgroundColor: isDark ? '#050505' : '#fffaf4',
-        borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.08)',
-      }}
-    >
+    <div className="pt-12 md:pt-16 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-8">
         <h2
           className="text-4xl md:text-5xl font-black font-display text-center"
@@ -61,17 +55,17 @@ export function OurCustomers() {
           {items.map((item, idx) => (
             <div
               key={`${item.name}-${idx}`}
-              className="shrink-0 rounded-full border p-2 md:p-3 flex items-center justify-center"
+              className="shrink-0 rounded-2xl border px-5 py-3 md:px-6 md:py-4 flex items-center justify-center"
               style={{
                 backgroundColor: isDark ? '#111111' : '#ffffff',
                 borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(15,23,42,0.12)',
               }}
             >
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-white flex items-center justify-center">
+              <div className="h-10 md:h-12 w-auto flex items-center justify-center">
                 <img
                   src={item.logoUrl || '/images/logo-placeholder.jpg'}
                   alt={item.name}
-                  className="w-full h-full object-contain"
+                  className="h-full w-auto max-w-[180px] object-contain"
                   loading="lazy"
                 />
               </div>
@@ -79,6 +73,6 @@ export function OurCustomers() {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   )
 }
