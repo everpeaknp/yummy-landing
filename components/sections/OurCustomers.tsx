@@ -40,10 +40,10 @@ export function OurCustomers() {
   const items = [...data.logos, ...data.logos, ...data.logos]
 
   return (
-    <div className="pt-12 md:pt-16 overflow-hidden">
+    <div className="pt-8 md:pt-12 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-8">
         <h2
-          className="text-4xl md:text-5xl font-black font-display text-center"
+          className="text-2xl md:text-3xl font-bold font-display text-center"
           style={{ color: isDark ? '#ffffff' : '#0f172a' }}
         >
           {data.title || 'Our Customers'}

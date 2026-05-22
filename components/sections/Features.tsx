@@ -219,7 +219,7 @@ export function Features() {
   return (
     <section
       id="features"
-      className="py-32 bg-slate-50 dark:bg-[#0a0a0a] transition-colors duration-300"
+      className="py-16 bg-slate-50 dark:bg-[#0a0a0a] transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
@@ -228,7 +228,7 @@ export function Features() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-24"
+          className="text-center mb-12"
         >
           <div
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/30 transition-colors duration-300"

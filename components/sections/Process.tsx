@@ -80,8 +80,8 @@ export function Process() {
   return (
     <section
       id="process"
-      className="py-32 relative overflow-hidden"
-      style={{ backgroundColor: isDark ? '#050505' : '#ffffff' }}
+      className="py-8 relative overflow-hidden"
+      style={{ backgroundColor: isDark ? '#050505' : '#f8fafc' }}
     >
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
@@ -90,7 +90,7 @@ export function Process() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-24"
+          className="text-center mb-8"
         >
           <div className="inline-block mb-4">
             <span className="py-2 px-4 rounded-full text-xs font-bold tracking-widest uppercase bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800">

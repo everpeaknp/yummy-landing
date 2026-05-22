@@ -87,13 +87,13 @@ export function ExpandableGallery() {
   return (
     <section
       id="gallery"
-      className="py-24 lg:py-32 overflow-hidden"
+      className="py-12 lg:py-16 overflow-hidden"
       style={{
-        backgroundColor: isDark ? '#0a0a0a' : '#fff',
+        backgroundColor: isDark ? '#0a0a0a' : '#f8fafc',
       }}
     >
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
+        <div className="text-center mb-12">
           <h2
             className="text-4xl sm:text-6xl font-black font-display mb-6"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}

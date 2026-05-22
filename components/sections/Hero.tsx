@@ -58,7 +58,7 @@ export function Hero() {
   const secondaryButton = buttons.find((b) => b.type === 'secondary') || buttons[1]
 
   return (
-    <header className="pt-32 pb-20 lg:pt-48 lg:pb-32 text-center max-w-7xl mx-auto px-6">
+    <header className="pt-32 pb-12 lg:pt-48 lg:pb-20 text-center max-w-7xl mx-auto px-6">
       {/* Badge */}
       <div
         className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-8 transition-colors duration-300"
