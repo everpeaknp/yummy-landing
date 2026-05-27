@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { FiPlus, FiMinus } from 'react-icons/fi'
 import { faqCategories as fallbackFaqCategories } from '@/lib/data'
 import { getFaqPage, type FaqPageData, type FaqCategory } from '@/lib/api/pages'
+import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 const AccordionItem = ({ question, answer }: { question: string; answer: string }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -39,9 +40,9 @@ const AccordionItem = ({ question, answer }: { question: string; answer: string 
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <p className="pb-6 leading-relaxed" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
-              {answer}
-            </p>
+            <div className="pb-6 leading-relaxed" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+              <InlineHTMLContent html={answer} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

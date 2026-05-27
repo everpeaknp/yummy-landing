@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
         hostname: 'yummy-backend-api-f3eycscsaqcbcugy.southeastasia-01.azurewebsites.net',
       },
       {
+        protocol: 'https',
+        hostname: 'yummylanding.yummyever.com',
+      },
+      {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '8000',

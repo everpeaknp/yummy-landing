@@ -109,9 +109,9 @@ export function ExpandableGallery() {
         </div>
 
         {/* Desktop View (Two Column) */}
-        <div className="hidden lg:flex flex-row gap-20 items-stretch">
+        <div className="hidden lg:flex flex-row gap-16 xl:gap-24 items-center">
           {/* Left Side: Image */}
-          <div className="w-1/2 relative min-h-[600px] rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10 order-1">
+          <div className="relative w-[360px] xl:w-[440px] aspect-[612/1280] rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 order-1 shrink-0 bg-white dark:bg-zinc-900">
             <AnimatePresence mode="wait">
               <motion.div
                 key={features[activeIdx]?.id || 'loading'}
@@ -127,17 +127,17 @@ export function ExpandableGallery() {
                       src={features[activeIdx].imageUrl}
                       alt={features[activeIdx].title}
                       fill
-                      className="object-cover"
+                      className="object-cover object-center"
                       priority
                       unoptimized
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 p-12">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="p-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/10 text-white">
-                          <Icon name={features[activeIdx].icon} size={32} />
+                    <div className="absolute inset-0 dark:bg-gradient-to-t dark:from-black/95 dark:via-black/30 dark:to-transparent pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 p-8 w-full z-10">
+                      <div className="flex items-center gap-4 mb-2">
+                        <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/20 backdrop-blur-md border border-black/10 dark:border-white/20 text-slate-900 dark:text-white shadow-xl">
+                          <Icon name={features[activeIdx].icon} size={28} />
                         </div>
-                        <h3 className="text-3xl font-bold text-white font-display">
+                        <h3 className="text-2xl xl:text-3xl font-bold text-slate-900 dark:text-white font-display leading-tight drop-shadow-lg">
                           <InlineHTMLContent html={features[activeIdx].title} />
                         </h3>
                       </div>
@@ -150,7 +150,7 @@ export function ExpandableGallery() {
 
           {/* Right Side: Content */}
           <div
-            className="w-1/2 flex flex-col justify-center order-2"
+            className="flex-1 flex flex-col justify-center order-2"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
           >
@@ -278,7 +278,7 @@ function MobileAutoSlider({ features }: { features: GalleryFeature[] }) {
       {features.map((feature, idx) => (
         <div
           key={`${feature.id}-${idx}`}
-          className="min-w-[85vw] h-[70vh] relative flex-shrink-0 snap-center rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10"
+          className="min-w-[85vw] h-[78vh] relative flex-shrink-0 snap-center rounded-3xl overflow-hidden border border-gray-200 dark:border-white/10"
         >
           <MobileSlide feature={feature} index={idx} total={features.length} />
         </div>
@@ -299,7 +299,7 @@ function MobileSlide({
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <div className="w-full h-full relative bg-zinc-900" onClick={() => setIsExpanded(!isExpanded)}>
+    <div className="w-full h-full relative bg-white dark:bg-zinc-900" onClick={() => setIsExpanded(!isExpanded)}>
       {/* Image: Cover to fill gaps */}
       <div className="absolute inset-0">
         <Image
@@ -315,19 +315,19 @@ function MobileSlide({
       <div
         className={`absolute bottom-0 left-0 w-full z-10 transition-all duration-300 ${
           isExpanded
-            ? 'bg-black/95 h-3/4 border-t border-white/10'
-            : 'bg-gradient-to-t from-black via-black/90 to-transparent h-auto'
+            ? 'bg-white/95 dark:bg-black/95 h-3/4 border-t border-black/10 dark:border-white/10'
+            : 'dark:bg-gradient-to-t dark:from-black dark:via-black/90 dark:to-transparent h-auto'
         }`}
       >
         <div className="p-6">
           <div className="flex items-start justify-between mb-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/20 text-xs font-bold mb-3 text-slate-800 dark:text-white">
               <Icon name={feature.icon} size={14} />
               <span className="opacity-80">0{index + 1}</span>
             </div>
 
             <div
-              className={`p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-transform duration-300 ${
+              className={`p-2 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/20 text-slate-800 dark:text-white transition-transform duration-300 ${
                 isExpanded ? 'rotate-180' : ''
               }`}
             >
@@ -335,7 +335,7 @@ function MobileSlide({
             </div>
           </div>
 
-          <h3 className="text-2xl font-bold font-display leading-tight mb-2 text-white">
+          <h3 className="text-2xl font-bold font-display leading-tight mb-2 text-slate-900 dark:text-white">
             <InlineHTMLContent html={feature.title} />
           </h3>
 
@@ -348,14 +348,14 @@ function MobileSlide({
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <p className="text-gray-300 leading-relaxed mb-4 text-sm mt-2">
+                <p className="text-slate-600 dark:text-gray-300 leading-relaxed mb-4 text-sm mt-2">
                   <InlineHTMLContent html={feature.description} />
                 </p>
                 <div className="grid grid-cols-1 gap-2 pb-4">
                   {(feature.bulletPoints || []).map((point: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0"></span>
-                      <span className="text-xs font-medium text-gray-400">{point}</span>
+                      <span className="text-xs font-medium text-slate-500 dark:text-gray-400">{point}</span>
                     </div>
                   ))}
                 </div>
@@ -364,7 +364,7 @@ function MobileSlide({
           </AnimatePresence>
 
           {!isExpanded && (
-            <p className="text-xs text-white/50 mt-1 font-medium tracking-wide uppercase">
+            <p className="text-xs text-slate-500 dark:text-white/50 mt-1 font-medium tracking-wide uppercase">
               Tap to View Details
             </p>
           )}

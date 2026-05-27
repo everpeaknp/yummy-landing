@@ -10,6 +10,7 @@ import {
   jobCategories as fallbackJobCategories,
 } from '@/lib/data'
 import { getCareersPage, type CareersPageData, type JobPosition } from '@/lib/api/pages'
+import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 // Map fallback job data to API format
 const fallbackJobs: JobPosition[] = fallbackJobPositions.map((job, idx) => ({
@@ -98,13 +99,12 @@ export default function CareersPage() {
             >
               {data.title || 'Join the Revolution'}
             </h1>
-            <p
+            <div
               className="text-xl max-w-2xl mx-auto"
               style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
             >
-              {data.subtitle ||
-                'Help us build the operating system for modern restaurants. We are looking for dreamers, doers, and food lovers.'}
-            </p>
+              <InlineHTMLContent html={data.subtitle || 'Help us build the operating system for modern restaurants. We are looking for dreamers, doers, and food lovers.'} />
+            </div>
           </div>
 
           {/* Filter & Search Bar */}
@@ -213,12 +213,12 @@ export default function CareersPage() {
                         </div>
                       </div>
 
-                      <p
+                      <div
                         className="mb-8 line-clamp-2"
                         style={{ color: isDark ? '#737373' : '#94a3b8' }}
                       >
-                        {job.description}
-                      </p>
+                        <InlineHTMLContent html={job.description} />
+                      </div>
 
                       <a
                         href={`mailto:${applicationEmail}?subject=Application for ${job.title}`}
@@ -242,12 +242,9 @@ export default function CareersPage() {
               >
                 {emptyState.title}
               </h3>
-              <p style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
-                {emptyState.message ||
-                  `We couldn't find any open roles matching your search "${searchQuery}" in ${selectedCategory}.`}
-                <br />
-                Try adjusting your filters or check back later!
-              </p>
+              <div style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
+                <InlineHTMLContent html={emptyState.message || `We couldn't find any open roles matching your search "${searchQuery}" in ${selectedCategory}.<br />Try adjusting your filters or check back later!`} />
+              </div>
             </div>
           )}
         </div>

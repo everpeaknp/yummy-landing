@@ -5,7 +5,7 @@ import {
   Features,
   SpeedGrid,
   ExpandableGallery,
-  ThreeSteps,
+  // ThreeSteps,
   Pricing,
   Testimonials,
   About,
@@ -19,11 +19,11 @@ export default function Home() {
         <Hero />
         <About />
         <Process />
-        <Testimonials />
+        {/* <Testimonials /> */}
         <Features />
-        {/* <SpeedGrid /> */}
+        <SpeedGrid />
         <ExpandableGallery />
-        <ThreeSteps />
+        {/* <ThreeSteps /> */}
         <Pricing />
       </main>
       <Footer />

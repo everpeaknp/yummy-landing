@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { useState, useEffect, useCallback } from 'react'
 import { getFeaturesList, type FeaturePageData, useRefetchOnFocus } from '@/lib/api'
 import { Icon } from '@/components/ui/Icon'
+import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 const colorPalette = [
   { color: 'text-green-500', bg: 'bg-green-100 dark:bg-green-900/30' },
@@ -137,12 +138,12 @@ export function FeaturesIndexClient({ initialFeatures }: FeaturesIndexClientProp
                       <h3 className="text-2xl font-bold mb-4 group-hover:text-primary transition-colors">
                         {feature.title}
                       </h3>
-                      <p
+                      <div
                         className="text-lg leading-relaxed"
                         style={{ color: isDark ? '#d4d4d4' : '#334155' }}
                       >
-                        {feature.subtitle}
-                      </p>
+                        <InlineHTMLContent html={feature.subtitle || ''} />
+                      </div>
                     </div>
 
                     {/* Hover Arrow */}

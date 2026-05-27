@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react'
 import { faqCategories, helpLinks } from '@/lib/data'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
 import { getHelpPage, type HelpPageData } from '@/lib/api/pages'
+import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 const fallbackLinkGroups = {
   col1: [
@@ -193,12 +194,12 @@ export default function HelpCenterPage() {
                                   {result.type}
                                 </span>
                               </span>
-                              <span
+                              <div
                                 className="text-xs truncate mt-1 opacity-70"
                                 style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
                               >
-                                {result.desc}
-                              </span>
+                                <InlineHTMLContent html={result.desc} />
+                              </div>
                             </Link>
                           </li>
                         ))}

@@ -7,6 +7,7 @@ import { motion, Variants } from 'framer-motion'
 import { Icon } from '@/components/ui/Icon'
 import { useEffect, useState, useCallback } from 'react'
 import { getTeamPage, type TeamPageData, type TeamValue, useRefetchOnFocus } from '@/lib/api'
+import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 // Color mapping utility
 const getColorValue = (colorString: string, isDark: boolean): string => {
@@ -152,28 +153,22 @@ export default function TeamPage() {
             />
           </motion.div>
 
-          <motion.p
+          <motion.div
             variants={item}
             className="text-xl mb-16 max-w-2xl mx-auto"
             style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
           >
             {data.subtitle ? (
-              <>
-                {data.subtitle.split(data.companyHighlight || 'Everacy')[0]}
-                <span className="font-bold text-orange-500">
-                  {data.companyHighlight || 'Everacy'}
-                </span>
-                {data.subtitle.split(data.companyHighlight || 'Everacy')[1]}
-              </>
+              <InlineHTMLContent html={data.subtitle} />
             ) : (
-              <>
+              <div>
                 Yummy Ever is the flagship product of{' '}
                 <span className="font-bold text-orange-500">Everacy</span>. We are a passionate
                 group of foodies, engineers, and designers on a mission to revolutionize the
                 restaurant industry.
-              </>
+              </div>
             )}
-          </motion.p>
+          </motion.div>
 
           {/* Loading skeleton */}
           {loading ? (
@@ -218,7 +213,9 @@ export default function TeamPage() {
                     >
                       {value.title}
                     </h3>
-                    <p style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>{value.description}</p>
+                    <div style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
+                      <InlineHTMLContent html={value.description} />
+                    </div>
                   </div>
                 ))}
             </motion.div>
@@ -237,12 +234,12 @@ export default function TeamPage() {
               >
                 {joinSection.title}
               </h2>
-              <p
+              <div
                 className="mb-8 max-w-xl mx-auto"
                 style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
               >
-                {joinSection.description}
-              </p>
+                <InlineHTMLContent html={joinSection.description} />
+              </div>
               <a
                 href={joinSection.ctaHref}
                 className="inline-block px-8 py-3 rounded-full bg-primary text-white font-bold hover:bg-orange-600 transition-colors"

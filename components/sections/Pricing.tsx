@@ -526,7 +526,7 @@ export function Pricing() {
                     />
                     {faq.question}
                   </h4>
-                  <p
+                  <div
                     className="pl-8 text-base leading-relaxed"
                     style={{
                       color: isDark
@@ -534,8 +534,8 @@ export function Pricing() {
                         : (data.faqColors as any)?.answerLight || '#64748b',
                     }}
                   >
-                    {faq.answer}
-                  </p>
+                    <InlineHTMLContent html={faq.answer} />
+                  </div>
                 </div>
               ))}
           </div>

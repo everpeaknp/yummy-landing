@@ -41,6 +41,20 @@ const fallbackData: Partial<NavbarData> = {
   buttons: [],
 }
 
+function resolveAssetUrl(src: string | undefined): string {
+  if (!src) return ''
+  if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('/images/')) return src
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'
+  const backendBase = apiUrl.replace(/\/api\/?$/, '')
+
+  if (src.startsWith('/')) {
+    return `${backendBase}${src}`
+  }
+
+  return `${backendBase}/${src}`
+}
+
 export function Navbar() {
   const { theme, toggleTheme, mounted } = useTheme()
   const isDark = theme === 'dark'
@@ -92,6 +106,8 @@ export function Navbar() {
   })
 
   const logo = data.logo || fallbackData.logo!
+  const logoSrc = isDark ? logo.darkModeSrc : logo.lightModeSrc
+  const resolvedLogoSrc = resolveAssetUrl(logoSrc) || (isDark ? fallbackData.logo!.darkModeSrc : fallbackData.logo!.lightModeSrc)
   const loginBtn = data.loginButton || fallbackData.loginButton!
   const themeToggleConfig = data.themeToggle || fallbackData.themeToggle!
 
@@ -131,7 +147,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href={logo.href} onClick={handleLogoClick} className="flex items-center gap-3 relative z-50">
             <Image
-              src={isDark ? logo.darkModeSrc : logo.lightModeSrc}
+              src={resolvedLogoSrc}
               alt={logo.text}
               width={50}
               height={50}

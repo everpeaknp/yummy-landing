@@ -28,7 +28,7 @@ const fallbackData: AboutData = {
   title: { prefix: 'What is', highlight: 'Yummy', suffix: '?' },
   description:
     'Discover Yummy through this presentation video which will show you its innovative functioning and how it can transform your experience.',
-  videoUrl: 'https://cruip-tutorials.vercel.app/modal-video/video.mp4',
+  videoUrl: '/videos/Yummylanding.mp4',
   thumbnailUrl: undefined,
   videoCardShadow: {
     light: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
