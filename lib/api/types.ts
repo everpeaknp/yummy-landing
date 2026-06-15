@@ -533,3 +533,46 @@ export interface LegalPageData {
   metaTitle?: string
   metaDescription?: string
 }
+
+// ============================================
+// SEO Types
+// ============================================
+
+export interface GlobalSEOResponse {
+  titleTemplate: string
+  defaultDescription: string
+  defaultKeywords: string
+  twitterHandle: string
+  canonicalDomain: string
+  googleAnalyticsId: string
+  googleTagManagerId: string
+  facebookPixelId: string
+  facebookPageId: string
+  linkedinCompanyUrl: string
+  defaultOgImage: string | null
+  organizationName: string
+  organizationLogo: string | null
+  organizationAddress: string
+  organizationPhone: string
+  organizationEmail: string
+  sitemapEnabled: boolean
+}
+
+export interface PageSEOResponse {
+  pageId: string
+  metaTitle: string
+  metaDescription: string
+  metaKeywords: string
+  canonicalUrl: string | null
+  ogTitle: string
+  ogDescription: string
+  ogType: string
+  ogImage: string | null
+  twitterCardType: string
+  robotsMeta: string
+  includeInSitemap: boolean
+  sitemapPriority: number
+  sitemapChangeFrequency: string
+  jsonLd: Record<string, unknown> | null
+}
+

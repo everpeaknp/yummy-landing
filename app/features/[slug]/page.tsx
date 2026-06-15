@@ -13,14 +13,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const feature = await getFeatureDetail(slug)
 
     return {
-      title: `${feature.title} | Yummy Restaurant Management System`,
-      description: feature.description,
+      title: feature.meta_title || `${feature.title} | Yummy Restaurant Management System`,
+      description: feature.meta_description || feature.description,
       keywords: feature.keywords,
       openGraph: {
-        title: feature.title,
-        description: feature.description,
+        title: feature.meta_title || feature.title,
+        description: feature.meta_description || feature.description,
         type: 'article',
-        url: `https://yummy.com.np/features/${slug}`,
+        url: `https://yummyever.com/features/${slug}`,
         images: feature.ogImage
           ? [
               {
@@ -34,8 +34,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
       twitter: {
         card: 'summary_large_image',
-        title: feature.title,
-        description: feature.description,
+        title: feature.meta_title || feature.title,
+        description: feature.meta_description || feature.description,
         images: feature.ogImage ? [feature.ogImage] : [],
       },
     }

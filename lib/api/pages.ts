@@ -186,6 +186,17 @@ export async function getLegalPage(type: LegalPageType): Promise<LegalPageData> 
   return get<LegalPageData>(`/pages/legal/${type}/`)
 }
 
+// ============================================
+// SEO
+// ============================================
+export async function getPageSEO(pageId: string): Promise<PageSEOResponse> {
+  return get<PageSEOResponse>(`/seo/page/${pageId}/`)
+}
+
+export async function getGlobalSEO(): Promise<GlobalSEOResponse> {
+  return get<GlobalSEOResponse>('/seo/global/')
+}
+
 // Re-export types for server components to import
 export type {
   TeamPageData,
@@ -208,4 +219,6 @@ export type {
   LegalPageListItem,
   LegalPageData,
   LegalPageType,
+  PageSEOResponse,
+  GlobalSEOResponse,
 } from './types'

@@ -1,28 +1,57 @@
-"use client";
+import { Metadata } from "next";
+import { PricingClient } from "@/components/sections/PricingClient";
 
-import { Navbar, Footer } from "@/components/layout";
-import { Pricing as PricingSection } from "@/components/sections";
-import { useTheme } from "@/hooks/useTheme";
+import { getPageSEO } from "@/lib/api/pages";
 
-import { motion } from "framer-motion";
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const seo = await getPageSEO("pricing");
+    return {
+      title: seo.metaTitle || "Simple, Transparent Pricing | Yummy POS",
+      description: seo.metaDescription || "Choose the plan that fits your restaurant. No hidden fees, cancel anytime.",
+      keywords: seo.metaKeywords,
+      openGraph: {
+        title: seo.ogTitle || seo.metaTitle || "Simple, Transparent Pricing | Yummy POS",
+        description: seo.ogDescription || seo.metaDescription || "Choose the plan that fits your restaurant. No hidden fees, cancel anytime.",
+        type: (seo.ogType as any) || "website",
+        url: seo.canonicalUrl || "https://yummyever.com/pricing",
+        images: seo.ogImage ? [{ url: seo.ogImage }] : [],
+      },
+      twitter: {
+        card: (seo.twitterCardType as any) || "summary_large_image",
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Simple, Transparent Pricing | Yummy POS",
+      description:
+        "Choose the plan that fits your restaurant. No hidden fees, cancel anytime. Free installation valid until February!",
+      openGraph: {
+        title: "Simple, Transparent Pricing | Yummy POS",
+        description:
+          "Choose the plan that fits your restaurant. No hidden fees, cancel anytime. Free installation valid until February!",
+        type: "website",
+        url: "https://yummyever.com/pricing",
+      },
+    };
+  }
+}
 
-export default function PricingPage() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+export default async function PricingPage() {
+  let seo = null;
+  try {
+    seo = await getPageSEO("pricing");
+  } catch (error) {}
 
   return (
     <>
-      <Navbar />
-      <motion.main 
-        initial={{ opacity: 0, y: 40, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }}
-        className="pt-20" 
-        style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
-      >
-        <PricingSection />
-      </motion.main>
-      <Footer />
+      {seo?.jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(seo.jsonLd) }}
+        />
+      )}
+      <PricingClient />
     </>
   );
 }

@@ -16,75 +16,139 @@ const outfit = Outfit({
   display: 'swap',
 })
 
-// SEO Metadata
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://yummyever.com'),
-  title: {
-    default: "Yummy POS – Nepal's #1 Restaurant POS",
-    template: '%s | Yummy POS',
-  },
-  applicationName: 'Yummy POS',
-  description:
-    'Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
-  keywords: [
-    'restaurant POS',
-    'Nepal',
-    'IRD billing',
-    'KOT',
-    'inventory management',
-    'restaurant software',
-    'restaurant billing software',
-    'best POS Nepal',
-    'restaurant management system',
-  ],
-  authors: [{ name: 'Everacy' }],
-  icons: {
-    icon: '/images/yummy_logo.png',
-    apple: '/images/yummy_logo.png',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  openGraph: {
-    title: {
-      default: "Yummy POS – Nepal's #1 Restaurant POS",
-      template: '%s | Yummy POS',
-    },
-    description:
-      'The best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
-    type: 'website',
-    locale: 'en_US',
-    siteName: 'Yummy POS',
-    images: [
-      {
-        url: '/images/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Yummy POS Banner',
+import { getGlobalSEO } from "@/lib/api/pages";
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const globalSEO = await getGlobalSEO();
+    return {
+      metadataBase: new URL(globalSEO.canonicalDomain || process.env.NEXT_PUBLIC_APP_URL || 'https://yummyever.com'),
+      title: {
+        default: globalSEO.organizationName || "Yummy POS – Nepal's #1 Restaurant POS",
+        template: globalSEO.titleTemplate || '%s | Yummy POS',
       },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: {
-      default: "Yummy POS – Nepal's #1 Restaurant POS",
-      template: '%s | Yummy POS',
-    },
-    description:
-      'The best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
-    images: ['/images/og-image.png'],
-  },
-  alternates: {
-    canonical: '/',
-  },
+      applicationName: globalSEO.organizationName || 'Yummy POS',
+      description: globalSEO.defaultDescription || 'Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
+      keywords: globalSEO.defaultKeywords || 'restaurant POS, Nepal, IRD billing, KOT, inventory management, restaurant software',
+      authors: [{ name: globalSEO.organizationName || 'Everacy' }],
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      },
+      openGraph: {
+        title: {
+          default: globalSEO.organizationName || "Yummy POS – Nepal's #1 Restaurant POS",
+          template: globalSEO.titleTemplate || '%s | Yummy POS',
+        },
+        description: globalSEO.defaultDescription || 'The best restaurant management software in Nepal.',
+        type: 'website',
+        locale: 'en_US',
+        siteName: globalSEO.organizationName || 'Yummy POS',
+        images: globalSEO.defaultOgImage ? [
+          {
+            url: globalSEO.defaultOgImage,
+            width: 1200,
+            height: 630,
+            alt: globalSEO.organizationName || 'Yummy POS Banner',
+          },
+        ] : [
+          {
+            url: '/images/og-image.png',
+            width: 1200,
+            height: 630,
+            alt: 'Yummy POS Banner',
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        site: globalSEO.twitterHandle || '@yummypos',
+        creator: globalSEO.twitterHandle || '@yummypos',
+        title: {
+          default: globalSEO.organizationName || "Yummy POS – Nepal's #1 Restaurant POS",
+          template: globalSEO.titleTemplate || '%s | Yummy POS',
+        },
+        description: globalSEO.defaultDescription || 'The best restaurant management software in Nepal.',
+        images: globalSEO.defaultOgImage ? [globalSEO.defaultOgImage] : ['/images/og-image.png'],
+      },
+      alternates: {
+        canonical: '/',
+      },
+    };
+  } catch (error) {
+    return {
+      metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://yummyever.com'),
+      title: {
+        default: "Yummy POS – Nepal's #1 Restaurant POS",
+        template: '%s | Yummy POS',
+      },
+      applicationName: 'Yummy POS',
+      description:
+        'Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
+      keywords: [
+        'restaurant POS',
+        'Nepal',
+        'IRD billing',
+        'KOT',
+        'inventory management',
+        'restaurant software',
+        'restaurant billing software',
+        'best POS Nepal',
+        'restaurant management system',
+      ],
+      authors: [{ name: 'Everacy' }],
+      robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          'max-video-preview': -1,
+          'max-image-preview': 'large',
+          'max-snippet': -1,
+        },
+      },
+      openGraph: {
+        title: {
+          default: "Yummy POS – Nepal's #1 Restaurant POS",
+          template: '%s | Yummy POS',
+        },
+        description:
+          'The best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
+        type: 'website',
+        locale: 'en_US',
+        siteName: 'Yummy POS',
+        images: [
+          {
+            url: '/images/og-image.png',
+            width: 1200,
+            height: 630,
+            alt: 'Yummy POS Banner',
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: {
+          default: "Yummy POS – Nepal's #1 Restaurant POS",
+          template: '%s | Yummy POS',
+        },
+        description:
+          'The best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
+        images: ['/images/og-image.png'],
+      },
+      alternates: {
+        canonical: '/',
+      },
+    };
+  }
 }
 
 // Inline script to prevent FOUC and set theme
@@ -92,7 +156,7 @@ const themeScript = `
   (function() {
     try {
       var theme = localStorage.getItem('theme');
-      if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      if (theme === 'dark') {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
@@ -103,43 +167,51 @@ const themeScript = `
 
 // Removed tailwind inline script configuration.
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Yummy POS',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web, Android, iOS',
-  description:
-    'Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'NPR',
-  },
-  author: {
-    '@type': 'Organization',
-    name: 'Everacy',
-    url: 'https://everacy.com',
-  },
-}
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  let globalSEO = null;
+  try {
+    globalSEO = await getGlobalSEO();
+  } catch (e) {}
+
+  const dynamicJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: globalSEO?.organizationName || 'Yummy POS',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web, Android, iOS',
+    description:
+      globalSEO?.defaultDescription ||
+      'Yummy is the best restaurant management software in Nepal. IRD approved billing, KOT, and Inventory management.',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'NPR',
+    },
+    author: {
+      '@type': 'Organization',
+      name: globalSEO?.organizationName || 'Everacy',
+      url: globalSEO?.canonicalDomain || 'https://everacy.com',
+      logo: globalSEO?.organizationLogo || undefined,
+      telephone: globalSEO?.organizationPhone || undefined,
+      email: globalSEO?.organizationEmail || undefined,
+      address: globalSEO?.organizationAddress || undefined,
+    },
+  }
+
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Removed Tailwind CDN script for massive performance boost */}
-
         {/* Theme script */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
 
-        {/* JSON-LD Structured Data */}
+        {/* Global JSON-LD Structured Data */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(dynamicJsonLd) }}
         />
       </head>
       <body
