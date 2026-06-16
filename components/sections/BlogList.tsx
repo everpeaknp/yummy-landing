@@ -225,7 +225,7 @@ function BlogCard({ blog, isLarge = false }: { blog: BlogDisplay, isLarge?: bool
                 {blog.title}
             </h2>
             <p className="text-sm mt-2 line-clamp-2" style={{ color: textColor, opacity: 0.85 }}>
-                {blog.excerpt}
+                <InlineHTMLContent html={blog.excerpt} />
             </p>
         </Link>
         <Link href={`/blog/${blog.slug}`} className="inline-flex items-center mt-4 hover:text-primary transition-colors text-sm font-bold" style={{ color: textColor }}>
