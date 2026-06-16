@@ -31,6 +31,7 @@ export {
   getFeatureDetail,
   getLegalPages,
   getLegalPage,
+  getGlobalSEO,
 } from './pages';
 
 export {

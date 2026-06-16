@@ -544,6 +544,7 @@ export interface GlobalSEOResponse {
   defaultKeywords: string
   twitterHandle: string
   canonicalDomain: string
+  robotsTxtContent: string
   googleAnalyticsId: string
   googleTagManagerId: string
   facebookPixelId: string
