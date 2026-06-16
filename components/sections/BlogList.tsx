@@ -74,8 +74,8 @@ export function BlogList() {
   // Auto-refetch on window focus
   useRefetchOnFocus(fetchData);
 
-  // Ensure we have at least 6 blogs for the layout
-  const displayBlogs = blogs.length >= 6 ? blogs.slice(0, 6) : [...blogs, ...fallbackBlogs.slice(blogs.length, 6)];
+  // Ensure we have at least 6 blogs for the layout, but keep all if more
+  const displayBlogs = blogs.length >= 6 ? blogs : [...blogs, ...fallbackBlogs.slice(blogs.length, 6)];
 
   return (
     <div className="flex justify-center items-center">
@@ -180,6 +180,24 @@ export function BlogList() {
           </div>
 
         </div>
+
+        {/* Standard Grid Layout for remaining blogs (> 6) */}
+        {displayBlogs.length > 6 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 xl:gap-8 mt-4 md:mt-6 lg:mt-8">
+            {displayBlogs.slice(6).map((blog, idx) => (
+              <motion.div
+                key={blog.slug || idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="w-full"
+              >
+                <BlogCard blog={blog} />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
