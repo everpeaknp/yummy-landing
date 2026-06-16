@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "@/hooks/useTheme";
 import { motion } from "framer-motion";
 import { blogList as fallbackBlogList, BlogPost as LocalBlogPost } from "@/lib/blog-data";
@@ -256,10 +257,12 @@ function BlogCard({ blog, isLarge = false }: { blog: BlogDisplay, isLarge?: bool
       
       {/* Image */}
       <div className="w-full h-full relative">
-         <img 
+         <Image 
             src={blog.imageUrl} 
             alt={blog.title} 
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
          />
       </div>
     </div>
