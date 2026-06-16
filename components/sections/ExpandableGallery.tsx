@@ -111,7 +111,7 @@ export function ExpandableGallery() {
         {/* Desktop View (Two Column) */}
         <div className="hidden lg:flex flex-row gap-16 xl:gap-24 items-center">
           {/* Left Side: Image */}
-          <div className="relative w-[360px] xl:w-[440px] aspect-[9/16] rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 order-1 shrink-0 bg-white dark:bg-zinc-900">
+          <div className="relative w-[360px] xl:w-[440px] aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 order-1 shrink-0 bg-white dark:bg-zinc-900">
             <AnimatePresence mode="wait">
               <motion.div
                 key={features[activeIdx]?.id || 'loading'}
