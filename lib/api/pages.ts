@@ -23,6 +23,8 @@ import type {
   LegalPageData,
   LegalPageListItem,
   LegalPageType,
+  PageSEOResponse,
+  GlobalSEOResponse,
 } from './types'
 
 // ============================================
