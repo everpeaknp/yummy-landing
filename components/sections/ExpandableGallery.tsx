@@ -131,17 +131,6 @@ export function ExpandableGallery() {
                       priority
                       unoptimized
                     />
-                    <div className="absolute inset-0 dark:bg-gradient-to-t dark:from-black/95 dark:via-black/30 dark:to-transparent pointer-events-none"></div>
-                    <div className="absolute bottom-0 left-0 p-8 w-full z-10">
-                      <div className="flex items-center gap-4 mb-2">
-                        <div className="p-3 rounded-2xl bg-black/5 dark:bg-white/20 backdrop-blur-md border border-black/10 dark:border-white/20 text-slate-900 dark:text-white shadow-xl">
-                          <Icon name={features[activeIdx].icon} size={28} />
-                        </div>
-                        <h3 className="text-2xl xl:text-3xl font-bold text-slate-900 dark:text-white font-display leading-tight drop-shadow-lg">
-                          <InlineHTMLContent html={features[activeIdx].title} />
-                        </h3>
-                      </div>
-                    </div>
                   </>
                 )}
               </motion.div>
