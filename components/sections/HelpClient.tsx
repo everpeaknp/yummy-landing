@@ -140,7 +140,7 @@ export function HelpClient() {
               {data.title || 'Help Center'}
             </motion.h1>
             <motion.p variants={item} className="mb-8 opacity-70">
-              {data.subtitle || 'How can we help you today?'}
+              <InlineHTMLContent html={data.subtitle || 'How can we help you today?'} />
             </motion.p>
 
             <motion.div variants={item} className="relative mt-2 mb-12 w-full max-w-lg z-50">

@@ -125,8 +125,7 @@ export function FaqClient() {
               className="text-xl max-w-2xl mx-auto"
               style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
             >
-              {data.subtitle ||
-                "Everything you need to know about Yummy. Can't find the answer you're looking for?"}
+              <InlineHTMLContent html={data.subtitle || "Everything you need to know about Yummy. Can't find the answer you're looking for?"} />
               <a
                 href={contactPrompt.linkHref}
                 className="text-primary font-bold hover:underline ml-2"
