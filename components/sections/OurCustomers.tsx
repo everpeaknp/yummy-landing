@@ -2,6 +2,7 @@
 
 import { useTheme } from '@/hooks/useTheme'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { getCustomersSection, type CustomersSectionData } from '@/lib/api'
 
 const fallbackData: CustomersSectionData = {
@@ -62,11 +63,12 @@ export function OurCustomers() {
                 }}
               >
                 <div className="h-12 md:h-16 w-auto flex items-center justify-center">
-                  <img
+                  <Image
                     src={item.logoUrl || '/images/logo-placeholder.jpg'}
                     alt={item.name}
+                    width={260}
+                    height={64}
                     className="h-full w-auto max-w-[260px] object-contain bg-transparent block"
-                    loading="lazy"
                   />
                 </div>
               </div>
