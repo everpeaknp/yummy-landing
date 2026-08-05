@@ -1,88 +1,26 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
-import { siteConfig } from '@/lib/constants'
 import { useTheme } from '@/hooks/useTheme'
-import { useState, useEffect, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   getPricingPage,
   type PricingPageData,
-  type PricingPlan,
   type PricingFaq,
   useRefetchOnFocus,
 } from '@/lib/api'
 import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 import { Icon } from '@/components/ui/Icon'
-
-// Fallback plans data
-const fallbackPlans: Array<Omit<PricingPlan, 'features'> & { features: string[] }> = [
-  {
-    name: 'Starter',
-    priceMonthly: 'Free',
-    priceYearly: 'Free',
-    originalPriceMonthly: '100',
-    originalPriceYearly: '100',
-    description: 'Perfect for small cafes and food trucks just getting started.',
-    features: [
-      'Single Outlet',
-      'Cloud POS System',
-      'Digital Menu (View Only)',
-      'Basic Inventory',
-      '5 Staff Accounts',
-      'Email Support',
-    ],
-    ctaText: 'Get Started',
-    ctaHref: siteConfig.links.app,
-    isPopular: false,
-    popularLabel: null,
-    order: 1,
-  },
-  {
-    name: 'Pro',
-    priceMonthly: 'Rs. 1,500',
-    priceYearly: 'Rs. 12,000',
-    originalPriceMonthly: '1500',
-    originalPriceYearly: '20,000',
-    description: 'Everything a growing restaurant needs to scale efficiently.',
-    features: [
-      'Unlimited Inventory Items',
-      'Table Management & KOT',
-      'Advanced Sales Reports',
-      'Recipe Costing & Profit Analysis',
-      'Customer Database (CRM)',
-      'Staff Performance Tracking',
-      'Waiter App Support',
-      'Priority Email & Chat Support',
-    ],
-    ctaText: 'Start Free Trial',
-    ctaHref: siteConfig.links.app,
-    isPopular: true,
-    popularLabel: 'Most Popular',
-    order: 2,
-  },
-  {
-    name: 'Enterprise',
-    priceMonthly: 'Custom',
-    priceYearly: 'Custom',
-    description: 'For multi-location chains and large franchises.',
-    features: [
-      'Multi-location Management',
-      'Central Kitchen Module',
-      'Custom ERP Integrations',
-      'API Access',
-      'White-label Options',
-      'Dedicated Account Manager',
-      'SLA Support',
-      'On-site Training',
-    ],
-    ctaText: 'Contact Sales',
-    ctaHref: '/contact',
-    isPopular: false,
-    popularLabel: null,
-    order: 3,
-  },
-]
+import { 
+  normalPlans, 
+  enterprisePlan, 
+  getPlanPrice, 
+  type Plan, 
+  type BillingPeriod,
+  type PlanFeature
+} from '@/lib/pricingPlans'
 
 const fallbackFaqs: PricingFaq[] = [
   {
@@ -111,6 +49,187 @@ const fallbackFaqs: PricingFaq[] = [
   },
 ]
 
+// ============================================
+// SHARED COMPONENTS - Used by ALL cards
+// ============================================
+
+interface FeatureRowProps {
+  icon: 'check' | 'close';
+  text: string;
+  included: boolean;
+  isDark: boolean;
+}
+
+function FeatureRow({ icon, text, included, isDark }: FeatureRowProps) {
+  return (
+    <li className="flex items-center gap-3">
+      <span
+        className="flex-shrink-0 flex items-center justify-center rounded-full"
+        style={{
+          width: '20px',
+          height: '20px',
+          backgroundColor: included 
+            ? (isDark ? 'rgba(34, 197, 94, 0.2)' : 'rgba(34, 197, 94, 0.15)')
+            : (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.15)'),
+        }}
+      >
+        <Icon
+          name={icon}
+          size={14}
+          style={{
+            color: included ? '#22c55e' : '#ef4444',
+          }}
+        />
+      </span>
+      <span
+        className={`text-sm text-left flex-1 ${!included ? 'line-through opacity-70' : ''}`}
+        style={{
+          color: isDark ? '#e2e8f0' : '#334155',
+        }}
+      >
+        {text}
+      </span>
+    </li>
+  );
+}
+
+interface PriceBlockProps {
+  oldPrice?: number;
+  newPrice: number;
+  period: string;
+  savePercent?: number;
+  isDark: boolean;
+  showLimitedOffer?: boolean; // New prop to control Limited Offer badge
+  renewalPrice?: number; // Renewal price (e.g., 12000 for Pro)
+  renewalDiscount?: number; // Renewal discount percentage (e.g., 40 for Pro)
+}
+
+function PriceBlock({ oldPrice, newPrice, period, savePercent, isDark, showLimitedOffer = true, renewalPrice, renewalDiscount }: PriceBlockProps) {
+  // Determine if we need smaller font for large numbers (5+ digits)
+  const isLargeNumber = newPrice >= 10000;
+  
+  return (
+    <div className="mb-6" style={{ minHeight: '200px' }}>
+      {/* Limited Offer Badge - only show if showLimitedOffer is true */}
+      <div style={{ minHeight: '26px' }} className="mb-2 flex justify-center">
+        {showLimitedOffer && (
+          <div
+            className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide"
+            style={{
+              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+              color: '#ffffff',
+              boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
+            }}
+          >
+            ⚡ Limited Offer
+          </div>
+        )}
+      </div>
+
+      {/* Old price with arrow */}
+      <div style={{ minHeight: '32px' }} className="mb-2">
+        {oldPrice && (
+          <div className="flex items-center gap-2 justify-center">
+            <span 
+              className="text-xl font-bold line-through"
+              style={{ color: isDark ? '#ef4444' : '#dc2626' }}
+            >
+              Rs. {oldPrice.toLocaleString()}
+            </span>
+            <Icon name="trending-down" size={20} style={{ color: '#22c55e' }} />
+          </div>
+        )}
+      </div>
+
+      {/* Current price */}
+      <div className="mb-3">
+        {newPrice > 0 ? (
+          <div className="flex items-baseline justify-center flex-nowrap">
+            <span 
+              className={`${isLargeNumber ? 'text-3xl' : 'text-4xl'} font-black whitespace-nowrap`}
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            >
+              Rs. {newPrice.toLocaleString()}
+            </span>
+            <span 
+              className="text-sm font-semibold ml-1 whitespace-nowrap"
+              style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+            >
+              {period}
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-baseline justify-center flex-nowrap">
+            <span 
+              className="text-4xl font-black whitespace-nowrap"
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            >
+              Rs. 0
+            </span>
+            <span 
+              className="text-sm font-semibold ml-1 whitespace-nowrap"
+              style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+            >
+              /Forever
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Next renewal line - only show for Pro and Premium */}
+      {renewalPrice && renewalDiscount && (
+        <div className="mb-2 flex justify-between items-center px-2">
+          <span 
+            className="text-sm font-medium"
+            style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+          >
+            Next renewal: Rs. {renewalPrice.toLocaleString()}/yr
+          </span>
+          <span 
+            className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold"
+            style={{
+              background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+              color: '#ffffff',
+            }}
+          >
+            {renewalDiscount}% OFF
+          </span>
+        </div>
+      )}
+
+      {/* Save badge */}
+      <div style={{ minHeight: '44px' }} className="flex justify-center">
+        {savePercent && (
+          <motion.div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg"
+            style={{
+              background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+              minWidth: '140px',
+            }}
+            animate={{
+              boxShadow: [
+                '0 4px 14px 0 rgba(34, 197, 94, 0.39)',
+                '0 6px 20px 0 rgba(34, 197, 94, 0.5)',
+                '0 4px 14px 0 rgba(34, 197, 94, 0.39)',
+              ],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <Icon name="arrow-down" size={16} style={{ color: '#ffffff' }} />
+            <span className="text-base font-bold text-white uppercase tracking-wide">
+              SAVE {savePercent}%
+            </span>
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const fallbackData: Partial<PricingPageData> = {
   title: 'Simple, Transparent Pricing',
   subtitle: 'Choose the plan that fits your business stage. No hidden fees, cancel anytime.',
@@ -126,8 +245,8 @@ export function Pricing() {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
   const [isAnnual, setIsAnnual] = useState(true)
+  const [activeTab, setActiveTab] = useState<'restaurant' | 'enterprise'>('restaurant')
   const [data, setData] = useState<Partial<PricingPageData>>(fallbackData)
-  const [plans, setPlans] = useState<any[]>(fallbackPlans)
   const [faqs, setFaqs] = useState(fallbackFaqs)
 
   const fetchData = useCallback(async () => {
@@ -135,32 +254,14 @@ export function Pricing() {
       const apiData = await getPricingPage()
       setData(apiData)
 
-      // Map API plans to component format
-      if (apiData.plans) {
-        const mappedPlans = apiData.plans.map((p) => ({
-          ...p,
-          features: Array.isArray(p.features) 
-            ? p.features.map((f: any) => {
-                if (typeof f === 'string') {
-                  // If it looks like a Python stringified object, skip or handle it
-                  if (f.trim().startsWith('{') && f.trim().endsWith('}') && f.includes(':')) {
-                    return null;
-                  }
-                  return f;
-                }
-                if (f && typeof f === 'object' && f.text) return f.text;
-                return String(f || '');
-              }).filter((f): f is string => f !== null && f !== '')
-            : []
-        }))
-        setPlans(mappedPlans as any[])
-      }
-
       if (apiData.faqs) {
         setFaqs(apiData.faqs)
       }
     } catch (error) {
-      console.error('Failed to fetch pricing data:', error)
+      // Silently use fallback data - error already logged by API client
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Pricing] Using fallback data due to API unavailability')
+      }
       // Keep fallback data
     }
   }, [])
@@ -173,6 +274,82 @@ export function Pricing() {
 
   const toggle = data.toggle || fallbackData.toggle!
   const promo = data.promotionBanner || fallbackData.promotionBanner!
+
+  // Memoize derived data - only recalculate when data or isAnnual changes
+  const plansToDisplay = useMemo(() => {
+    // Use API plans if available, otherwise fall back to hardcoded normalPlans
+    // Transform API data structure to match Plan type from pricingPlans.ts
+    return (data.plans && data.plans.length > 0) 
+      ? data.plans.map(apiPlan => {
+          // Parse yearly price - extract only the first number before any slashes or text
+          const yearlyMatch = apiPlan.priceYearly.match(/Rs\.\s*([\d,]+)/);
+          const yearlyAmount = yearlyMatch ? parseInt(yearlyMatch[1].replace(/,/g, ''), 10) : 0;
+          
+          // Parse 6-month price - extract only the first number before any slashes or text
+          const monthlyMatch = apiPlan.priceMonthly.match(/Rs\.\s*([\d,]+)/);
+          const monthlyAmount = monthlyMatch ? parseInt(monthlyMatch[1].replace(/,/g, ''), 10) : 0;
+          
+          // Parse original prices if present
+          const originalYearlyAmount = apiPlan.originalPriceYearly 
+            ? parseInt(apiPlan.originalPriceYearly.replace(/[^0-9]/g, ''), 10)
+            : undefined;
+          const originalMonthlyAmount = apiPlan.originalPriceMonthly 
+            ? parseInt(apiPlan.originalPriceMonthly.replace(/[^0-9]/g, ''), 10)
+            : undefined;
+          
+          return {
+            id: apiPlan.name.toLowerCase().replace(/\s+/g, '-') as any,
+            name: apiPlan.name,
+            // Strip HTML tags from description if present (e.g., <p></p>)
+            description: apiPlan.description.replace(/<\/?[^>]+(>|$)/g, ''),
+            prices: [
+              {
+                period: 'yearly' as BillingPeriod,
+                amount: yearlyAmount,
+                displayLabel: apiPlan.priceYearly,
+                originalAmount: originalYearlyAmount,
+              },
+              {
+                period: '6month' as BillingPeriod,
+                amount: monthlyAmount,
+                displayLabel: apiPlan.priceMonthly,
+                originalAmount: originalMonthlyAmount,
+              },
+            ],
+            features: apiPlan.features.map(f => ({ text: f.text, included: true })),
+            isPopular: apiPlan.isPopular,
+            ctaText: apiPlan.ctaText,
+            ctaHref: apiPlan.ctaHref,
+            order: apiPlan.order,
+          };
+        })
+      : normalPlans;
+  }, [data.plans]);
+
+  // Memoize visiblePlans - only recalculate when plansToDisplay or isAnnual changes
+  const visiblePlans = useMemo(() => {
+    return plansToDisplay.map(plan => {
+      const price = getPlanPrice(plan, isAnnual ? 'yearly' : '6month') || getPlanPrice(plan, 'yearly');
+      return { ...plan, currentPrice: price };
+    });
+  }, [plansToDisplay, isAnnual]);
+
+  // Memoize toggle handlers to prevent recreation on every render
+  const handleRestaurantClick = useCallback(() => {
+    console.time('Toggle to Restaurant')
+    setActiveTab('restaurant')
+    requestAnimationFrame(() => {
+      setTimeout(() => console.timeEnd('Toggle to Restaurant'), 500)
+    })
+  }, [])
+
+  const handleEnterpriseClick = useCallback(() => {
+    console.time('Toggle to Enterprise')
+    setActiveTab('enterprise')
+    requestAnimationFrame(() => {
+      setTimeout(() => console.timeEnd('Toggle to Enterprise'), 500)
+    })
+  }, [])
 
   return (
     <section
@@ -197,7 +374,7 @@ export function Pricing() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         {/* Header */}
         <div className="mb-12">
           <h2
@@ -237,7 +414,7 @@ export function Pricing() {
               <button
                 onClick={() => setIsAnnual(!isAnnual)}
                 className="relative w-16 h-8 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                style={{ backgroundColor: isAnnual ? '#f97316' : isDark ? '#404040' : '#cbd5e1' }}
+                style={{ backgroundColor: isAnnual ? '#c2410c' : isDark ? '#404040' : '#cbd5e1' }}
                 aria-label="Toggle pricing period"
               >
                 <motion.div
@@ -260,24 +437,20 @@ export function Pricing() {
                 >
                   {toggle.yearlyLabel}
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
                   {toggle.savingsLabel}
                 </span>
               </div>
             </div>
 
-            {/* Installation Offer Badge */}
+            {/* Installation Offer Badge - flat matte finish */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="relative group cursor-default"
+              className="relative cursor-default"
             >
-              {/* Glowing background blur */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 to-amber-500 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-
-              {/* Badge Content */}
-              <div className="relative px-6 py-2.5 bg-white dark:bg-[#0a0a0a] ring-1 ring-gray-900/5 dark:ring-white/10 rounded-full flex items-center gap-3 shadow-sm">
-                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+              <div className="relative px-6 py-2.5 bg-white dark:bg-[#0a0a0a] ring-1 ring-gray-200 dark:ring-white/10 rounded-full flex items-center gap-3 shadow-sm">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400">
                   <Icon name={promo.icon} size={24} />
                 </span>
                 <span
@@ -294,201 +467,221 @@ export function Pricing() {
           </div>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto mb-32">
-          {(plans || [])
-            .sort((a, b) => (a?.order || 0) - (b?.order || 0))
-            .map((plan) => (
-              <div
-                key={plan.name}
-                className={`p-8 rounded-[2rem] relative flex flex-col transition-all duration-300 ${
-                  plan.isPopular ? 'shadow-2xl ring-2 ring-orange-500' : 'hover:shadow-xl'
-                }`}
-                style={
-                  plan.isPopular
-                    ? {
-                        backgroundColor: isDark
-                          ? (data.cardColors as any)?.popularBgDark || '#171717'
-                          : (data.cardColors as any)?.bgLight || '#ffffff',
-                        borderColor: (data.cardColors as any)?.popularBorderColor || '#f97316',
-                        transform: 'scale(1.02)',
-                      }
-                    : {
-                        backgroundColor: isDark
-                          ? (data.cardColors as any)?.bgDark || '#0a0a0a'
-                          : (data.cardColors as any)?.bgLight || '#ffffff',
-                        border: isDark
-                          ? `1px solid ${(data.cardColors as any)?.borderDark || 'rgba(255,255,255,0.1)'}`
-                          : `1px solid ${(data.cardColors as any)?.borderLight || '#e2e8f0'}`,
-                      }
-                }
+        {/* SECTION 1: NORMAL PLANS */}
+        <div className="mb-20">
+          <h3 
+            className="text-2xl font-bold mb-8"
+            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+          >
+            Standard Plans
+          </h3>
+          
+          {/* Plan Type Toggle Switcher */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center mb-12"
+          >
+            <div 
+              className="relative inline-flex p-1 rounded-full"
+              style={{
+                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(226, 232, 240, 0.5)',
+                border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
+              }}
+            >
+              {/* Sliding background indicator */}
+              <motion.div
+                className="absolute top-1 bottom-1 rounded-full"
+                style={{
+                  backgroundColor: isDark ? '#ffffff' : '#0f172a',
+                  boxShadow: isDark 
+                    ? '0 4px 12px rgba(255,255,255,0.15)'
+                    : '0 4px 12px rgba(0,0,0,0.15)',
+                }}
+                animate={{
+                  left: activeTab === 'restaurant' ? '4px' : '50%',
+                  right: activeTab === 'restaurant' ? '50%' : '4px',
+                }}
+                transition={{
+                  duration: 0.15,
+                  ease: "easeOut"
+                }}
+              />
+              
+              {/* Restaurant Plans Button */}
+              <button
+                onClick={handleRestaurantClick}
+                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-200"
+                style={{
+                  color: activeTab === 'restaurant' 
+                    ? isDark ? '#0f172a' : '#ffffff'
+                    : isDark ? '#a3a3a3' : '#64748b',
+                }}
               >
-                {/* Popular Badge */}
-                {plan.isPopular && (
-                  <div className="absolute -top-5 inset-x-0 flex justify-center">
-                    <span
-                      className="text-xs uppercase font-bold px-4 py-1.5 rounded-full shadow-lg"
-                      style={{
-                        background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-                        color: '#ffffff',
-                      }}
-                    >
-                      {plan.popularLabel || 'Most Popular'}
-                    </span>
-                  </div>
-                )}
+                Restaurant Plans
+              </button>
+              
+              {/* Enterprise Button */}
+              <button
+                onClick={handleEnterpriseClick}
+                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-200"
+                style={{
+                  color: activeTab === 'enterprise' 
+                    ? isDark ? '#0f172a' : '#ffffff'
+                    : isDark ? '#a3a3a3' : '#64748b',
+                }}
+              >
+                Enterprise
+              </button>
+            </div>
+          </motion.div>
 
-                <div className="mb-8">
-                  <h3
-                    className="font-bold text-2xl mb-2"
-                    style={{
-                      color: plan.isPopular
-                        ? (data.cardColors as any)?.popularNameColor || '#f97316'
-                        : isDark
-                        ? (data.cardColors as any)?.nameDark || '#ffffff'
-                        : (data.cardColors as any)?.nameLight || '#0f172a',
-                    }}
-                  >
-                    {plan.name}
-                  </h3>
-                  <p
-                    className="text-sm min-h-[40px]"
-                    style={{
-                      color: isDark
-                        ? (data.cardColors as any)?.descDark || '#a3a3a3'
-                        : (data.cardColors as any)?.descLight || '#64748b',
-                    }}
-                  >
-                    <InlineHTMLContent html={plan.description} />
-                  </p>
-                </div>
+          {/* Trust Badge - Always visible for both tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center gap-6 mb-12"
+          >
+            {/* Trust Badge Pill */}
+            <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-green-500">
+                <Icon name="check" size={16} style={{ color: '#ffffff' }} />
+              </div>
+              <span 
+                className="font-semibold text-sm"
+                style={{ color: isDark ? '#86efac' : '#047857' }}
+              >
+                Trusted by 100+ Restaurants — Nationally & Internationally
+              </span>
+            </div>
 
-                <div
-                  className="mb-8 p-6 -mx-2 rounded-2xl"
-                  style={{
-                    backgroundColor: isDark
-                      ? (data.cardColors as any)?.priceBoxBgDark || 'rgba(255,255,255,0.03)'
-                      : (data.cardColors as any)?.priceBoxBgLight || '#f1f5f9',
-                  }}
-                >
-                  {/* Original Price (Strikethrough) */}
-                  {(isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly) && (
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                      <span className="text-sm line-through decoration-orange-500 text-orange-500 font-bold">
-                        Rs. {isAnnual ? plan.originalPriceYearly : plan.originalPriceMonthly}
-                      </span>
-                    </div>
-                  )}
+            {/* Global Presence Marquee */}
+            <div className="w-full max-w-5xl relative overflow-hidden">
+              {/* Fade masks on edges */}
+              <div 
+                className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+                style={{
+                  background: isDark 
+                    ? 'linear-gradient(to right, rgba(255,255,255,0.02) 0%, transparent 100%)'
+                    : 'linear-gradient(to right, #f8fafc 0%, transparent 100%)'
+                }}
+              />
+              <div 
+                className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
+                style={{
+                  background: isDark 
+                    ? 'linear-gradient(to left, rgba(255,255,255,0.02) 0%, transparent 100%)'
+                    : 'linear-gradient(to left, #f8fafc 0%, transparent 100%)'
+                }}
+              />
 
-                  <div className="flex items-baseline justify-center gap-1">
-                    {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
-                      <span className="text-lg font-medium text-gray-400">Rs.</span>
-                    )}
-
-                    <span
-                      className={`font-black tracking-tight ${
-                        plan.name === 'Pro' ? 'text-4xl' : 'text-3xl'
-                      }`}
-                      style={{
-                        color: isDark
-                          ? (data.cardColors as any)?.nameDark || '#ffffff'
-                          : (data.cardColors as any)?.nameLight || '#0f172a',
-                      }}
-                    >
-                      {isAnnual
-                        ? plan.priceYearly.replace('Rs. ', '')
-                        : plan.priceMonthly.replace('Rs. ', '')}
-                    </span>
-
-                    {plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
-                      <span className="text-sm text-gray-500">{isAnnual ? '/yr' : '/mo'}</span>
-                    )}
-                  </div>
-                  {isAnnual && plan.priceMonthly !== 'Custom' && plan.priceMonthly !== 'Free' && (
-                    <p className="text-xs text-center mt-2 text-green-600 dark:text-green-400 font-medium">
-                      Billed Annually ({data.annualSavingsLabel || 'Save Rs. 6000/yr'})
-                    </p>
-                  )}
-                </div>
-
-                {/* Features */}
-                <div className="flex-grow mb-8">
-                  <p className="sr-only">Features:</p>
-                  <ul className="space-y-4 text-sm text-left">
-                    {plan.features.map((feature: string, idx: number) => (
-                      <li key={idx} className="flex gap-3 items-start">
-                        <span
-                          className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full mt-0.5"
+              {/* Scrolling container */}
+              <div className="marquee-container">
+                <div className="marquee-content">
+                  {[...Array(2)].map((_, setIndex) => (
+                    <div key={setIndex} className="flex gap-4 items-center">
+                      {[
+                        { code: 'au', name: 'Australia' },
+                        { code: 'pk', name: 'Pakistan' },
+                        { code: 'us', name: 'USA' },
+                        { code: 'my', name: 'Malaysia' },
+                        { code: 'mm', name: 'Myanmar' },
+                        { code: 'jp', name: 'Japan' },
+                        { code: 'it', name: 'Italy' },
+                        { code: 'gb', name: 'UK' },
+                        { code: 'in', name: 'India' },
+                        { code: 'th', name: 'Thailand' },
+                        { code: 'np', name: 'Nepal' },
+                      ].map((country, idx) => (
+                        <div
+                          key={`${setIndex}-${idx}`}
+                          className="flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap"
                           style={{
-                            backgroundColor: plan.isPopular
-                              ? (data.cardColors as any)?.checkIconBgPopular ||
-                                'rgba(249, 115, 22, 0.1)'
-                              : isDark
-                              ? (data.cardColors as any)?.checkIconBgDark ||
-                                'rgba(255,255,255,0.1)'
-                              : (data.cardColors as any)?.checkIconBgLight || '#e2e8f0',
+                            backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff',
+                            border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e2e8f0',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
                           }}
                         >
-                          <Icon
-                            name="check"
-                            size={16}
-                            className={
-                              plan.isPopular
-                                ? ''
-                                : ''
-                            }
-                            style={{
-                              color: plan.isPopular
-                                ? (data.cardColors as any)?.checkIconColorPopular || '#f97316'
-                                : isDark
-                                ? (data.cardColors as any)?.checkIconColorDark || '#ffffff'
-                                : (data.cardColors as any)?.checkIconColorLight || '#475569',
+                          <span 
+                            className={`fi fi-${country.code} fis`}
+                            style={{ 
+                              width: '20px', 
+                              height: '15px',
+                              borderRadius: '2px',
+                              display: 'inline-block',
+                              backgroundSize: 'cover',
+                              flexShrink: 0
                             }}
                           />
-                        </span>
-                        <span
-                          style={{
-                            color: isDark
-                              ? (data.cardColors as any)?.featureTextDark || '#d4d4d4'
-                              : (data.cardColors as any)?.featureTextLight || '#475569',
-                          }}
-                        >
-                          {typeof feature === 'string' ? feature : feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                          <span 
+                            className="text-xs font-medium"
+                            style={{ color: isDark ? '#d4d4d4' : '#475569' }}
+                          >
+                            {country.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
                 </div>
-
-                {/* CTA Button */}
-                {plan.ctaText && plan.ctaHref && (
-                  <Link
-                    href={plan.ctaHref}
-                    className={`block w-full py-4 rounded-xl font-bold transition-all duration-300 text-center ${
-                      plan.isPopular
-                        ? 'hover:shadow-lg hover:shadow-orange-500/20'
-                        : 'hover:opacity-90'
-                    }`}
-                    style={
-                      plan.isPopular
-                        ? {
-                            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-                            color: '#ffffff',
-                            boxShadow: '0 4px 14px 0 rgba(249, 115, 22, 0.39)',
-                          }
-                        : {
-                            backgroundColor: isDark ? '#ffffff' : '#0f172a',
-                            color: isDark ? '#0f172a' : '#ffffff',
-                          }
-                    }
-                  >
-                    {plan.ctaText}
-                  </Link>
-                )}
               </div>
-            ))}
+            </div>
+          </motion.div>
+          {/* Cards Container - shared by both states */}
+          <div>
+            <AnimatePresence mode="popLayout">
+              {activeTab === 'restaurant' && (
+                <motion.div 
+                  key="restaurant-plans"
+                  className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ willChange: 'opacity' }}
+                  onAnimationStart={() => console.log('[Restaurant] Animation started')}
+                  onAnimationComplete={() => console.log('[Restaurant] Animation complete')}
+                >
+                  {visiblePlans.map((plan) => (
+                    <PlanCard
+                      key={plan.id}
+                      plan={plan}
+                      currentPrice={plan.currentPrice!}
+                      isAnnual={isAnnual}
+                      isDark={isDark}
+                      data={data}
+                    />
+                  ))}
+                </motion.div>
+              )}
+
+              {/* Enterprise Card - matching Restaurant Plans grid width */}
+              {activeTab === 'enterprise' && (
+                <motion.div
+                  key="enterprise-plan"
+                  className="w-full flex justify-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ willChange: 'opacity' }}
+                  onAnimationStart={() => console.log('[Enterprise] Animation started')}
+                  onAnimationComplete={() => console.log('[Enterprise] Animation complete')}
+                >
+                  <div className="w-full max-w-xl">
+                    <EnterprisePlanCard isDark={isDark} data={data} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
+        {/* Remove old separate Enterprise section */}
+        
         {/* FAQ Section */}
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -558,11 +751,10 @@ export function Pricing() {
               <Icon
                 name="arrow_forward"
                 size={24}
-                className="-500 group-hover:translate-x-1 transition-transform"
+                className="group-hover:translate-x-1 transition-transform"
               />
             </button>
 
-            {/* Hidden Plane for Animation */}
             <div
               id="flying-plane"
               className="fixed top-1/2 left-[-100px] z-[9999] pointer-events-none hidden"
@@ -576,3 +768,466 @@ export function Pricing() {
     </section>
   )
 }
+
+// Plan Card Component - REBUILT with shared components
+function PlanCard({ 
+  plan, 
+  currentPrice, 
+  isAnnual, 
+  isDark, 
+  data,
+  animationDelay = 0
+}: { 
+  plan: Plan & { currentPrice?: any }
+  currentPrice: any
+  isAnnual: boolean
+  isDark: boolean
+  data: Partial<PricingPageData>
+  animationDelay?: number
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // Premium plan is yearly-only - force yearly price if no 6-month option exists
+  const isPremiumPlan = plan.id === 'premium';
+  const isYearlyOnly = isPremiumPlan || !getPlanPrice(plan, '6month');
+  
+  // Use yearly price for Premium even when toggle is on 6-month
+  const displayPrice = (isYearlyOnly && !isAnnual) 
+    ? getPlanPrice(plan, 'yearly') 
+    : currentPrice;
+  
+  const hasDiscount = displayPrice?.originalAmount && displayPrice.originalAmount > displayPrice.amount;
+
+  const getBorderColor = () => {
+    if (plan.isPopular) {
+      return isDark ? '#ea580c' : '#ea580c';
+    }
+    return isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+  };
+
+  const getBackground = () => {
+    return isDark ? '#0f0f0f' : '#ffffff';
+  };
+
+  // Calculate save percentage
+  const savePercent = hasDiscount 
+    ? Math.round(((displayPrice.originalAmount - displayPrice.amount) / displayPrice.originalAmount) * 100)
+    : undefined;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: animationDelay }}
+      whileHover={{ y: -4 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="flex flex-col h-full p-8 rounded-2xl relative overflow-visible w-full"
+      style={{
+        background: getBackground(),
+        border: `2px solid ${getBorderColor()}`,
+        boxShadow: isHovered
+          ? (plan.isPopular 
+              ? '0 20px 40px -8px rgba(234, 88, 12, 0.25)' 
+              : (isDark ? '0 12px 32px -4px rgba(0,0,0,0.5)' : '0 12px 32px -4px rgba(0,0,0,0.12)'))
+          : (plan.isPopular
+              ? '0 10px 24px -4px rgba(234, 88, 12, 0.15)'
+              : (isDark ? '0 4px 12px -2px rgba(0,0,0,0.3)' : '0 4px 12px -2px rgba(0,0,0,0.08)')),
+        transition: 'all 0.3s ease-out',
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* Most Popular Badge - overlapping top border */}
+      {plan.isPopular && (
+        <div
+          className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
+          style={{
+            background: '#ea580c',
+            color: '#ffffff',
+            boxShadow: '0 4px 12px rgba(234, 88, 12, 0.3)',
+            zIndex: 10,
+          }}
+        >
+          Most Popular
+        </div>
+      )}
+
+      {/* Plan Header - fixed height for consistent alignment */}
+      <div className="mb-6 mt-2">
+        <h3
+          className="font-bold text-2xl lg:text-3xl mb-3 lg:mb-4"
+          style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+        >
+          {plan.name}
+        </h3>
+        <div 
+          className="flex items-start justify-center text-center"
+          style={{ minHeight: '60px' }}
+        >
+          <p
+            className="text-sm lg:text-base leading-relaxed"
+            style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+          >
+            {plan.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Price Box - Gray inset with fixed height and proper padding */}
+      <div 
+        className="mb-6 p-6 rounded-xl flex flex-col justify-center"
+        style={{
+          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#F5F5F5',
+          border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none',
+          minHeight: '200px',
+        }}
+      >
+        {/* Struck-through original price */}
+        {displayPrice?.originalAmount && (
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="text-sm line-through decoration-orange-500 text-orange-500 font-bold">
+              Rs. {displayPrice.originalAmount.toLocaleString()}
+            </span>
+          </div>
+        )}
+
+        {/* Main price - moderate font size that fits cleanly */}
+        <div className="mb-3">
+          {displayPrice?.amount > 0 ? (
+            <div className="flex items-baseline justify-center gap-1 flex-wrap">
+              <span 
+                className="text-2xl lg:text-3xl font-black"
+                style={{ color: isDark ? '#ffffff' : '#000000' }}
+              >
+                Rs. {displayPrice.amount.toLocaleString()}
+              </span>
+              <span 
+                className="text-base lg:text-lg font-medium"
+                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+              >
+                {displayPrice.period === 'yearly' ? '/yr' : displayPrice.period === '6month' ? '/6 months' : '/Forever'}
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-baseline justify-center gap-1 flex-wrap">
+              <span 
+                className="text-2xl lg:text-3xl font-black"
+                style={{ color: isDark ? '#ffffff' : '#000000' }}
+              >
+                Rs. 0
+              </span>
+              <span 
+                className="text-base lg:text-lg font-medium"
+                style={{ color: isDark ? '#94a3b8' : '#64748b' }}
+              >
+                /Forever
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Billing and renewal information */}
+        {isYearlyOnly && !isAnnual ? (
+          // Show "Yearly plan only" note when toggle is on 6-month but plan is yearly-only
+          <p className="text-xs text-center mt-2 font-medium" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+            Yearly plan only
+          </p>
+        ) : (
+          // Show renewal info based on plan and period
+          displayPrice?.amount > 0 && (displayPrice.period === 'yearly' || displayPrice.period === '6month') && (
+            <div className="text-center mt-2">
+              {displayPrice.period === 'yearly' ? (
+                // YEARLY VIEW LOGIC
+                displayPrice.renewalAmount && displayPrice.renewalAmount !== displayPrice.amount ? (
+                  // Has renewal discount (Pro & Premium)
+                  <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <p className="text-xs font-semibold" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+                      Renews at Rs. {displayPrice.renewalAmount.toLocaleString()}/yr
+                    </p>
+                    <span 
+                      className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap"
+                      style={{
+                        background: '#22c55e',
+                        color: '#ffffff',
+                      }}
+                    >
+                      {Math.round(((displayPrice.amount - displayPrice.renewalAmount) / displayPrice.amount) * 100)}% OFF
+                    </span>
+                  </div>
+                ) : (
+                  // Flat renewal rate (Basic)
+                  <p className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                    Flat renewal rate
+                  </p>
+                )
+              ) : (
+                // 6-MONTH VIEW LOGIC - all are flat rates
+                <p className="text-xs font-semibold" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+                  Flat rate, no renewal discount
+                </p>
+              )}
+            </div>
+          )
+        )}
+      </div>
+
+      {/* Feature List - left-aligned with improved readability */}
+      <div className="flex-grow mb-6">
+        <ul className="space-y-3">
+          {plan.features.map((feature, idx) => {
+            const isExcluded = !feature.included || 
+                               feature.text.toLowerCase().includes('no ') ||
+                               feature.text.toLowerCase().includes('not included');
+            
+            return (
+              <li key={idx} className="flex items-start gap-3">
+                <span
+                  className="flex-shrink-0 flex items-center justify-center rounded-full"
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    backgroundColor: isExcluded 
+                      ? (isDark ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.1)')
+                      : (isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)'),
+                  }}
+                >
+                  <Icon
+                    name={isExcluded ? 'close' : 'check'}
+                    size={15}
+                    style={{
+                      color: isExcluded ? '#ef4444' : '#ea580c',
+                    }}
+                  />
+                </span>
+                <span
+                  className={`text-sm lg:text-[15px] font-medium flex-1 text-left ${!feature.included ? 'line-through opacity-60' : ''}`}
+                  style={{
+                    color: isDark ? '#e5e7eb' : '#1f2937',
+                    lineHeight: '1.6',
+                  }}
+                >
+                  {feature.text}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* CTA Button - pinned to bottom */}
+      <div className="mt-auto">
+        <a
+          href={plan.ctaHref}
+          className="block w-full py-3.5 px-6 rounded-xl font-bold text-center text-base transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
+          style={
+            plan.isPopular
+              ? {
+                  backgroundColor: '#ea580c',
+                  color: '#ffffff',
+                  border: '2px solid #ea580c',
+                }
+              : {
+                  backgroundColor: 'transparent',
+                  color: isDark ? '#ffffff' : '#0f172a',
+                  border: `2px solid ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)'}`,
+                }
+          }
+        >
+          {plan.ctaText}
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
+// Enterprise Plan Card Component - Matching Restaurant Plan Card styling
+function EnterprisePlanCard({ 
+  isDark, 
+  data 
+}: { 
+  isDark: boolean
+  data: Partial<PricingPageData>
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const getBackground = () => {
+    return isDark ? '#0f0f0f' : '#ffffff';
+  };
+
+  const getBorderColor = () => {
+    return isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: 0 }}
+      whileHover={{ y: -4 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="flex flex-col h-full p-8 rounded-2xl relative overflow-visible w-full"
+      style={{
+        background: getBackground(),
+        border: `2px solid ${getBorderColor()}`,
+        boxShadow: isHovered
+          ? (isDark ? '0 12px 32px -4px rgba(0,0,0,0.5)' : '0 12px 32px -4px rgba(0,0,0,0.12)')
+          : (isDark ? '0 4px 12px -2px rgba(0,0,0,0.3)' : '0 4px 12px -2px rgba(0,0,0,0.08)'),
+        transition: 'all 0.3s ease-out',
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* Enterprise Badge - matching Most Popular style */}
+      <div
+        className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
+        style={{
+          background: isDark ? '#475569' : '#64748b',
+          color: '#ffffff',
+          boxShadow: '0 4px 12px rgba(100, 116, 139, 0.3)',
+          zIndex: 10,
+        }}
+      >
+        Enterprise Grade
+      </div>
+
+      {/* Plan Header - matching other cards exactly */}
+      <div className="mb-6 mt-2">
+        <h3
+          className="font-bold text-2xl lg:text-3xl mb-3 lg:mb-4"
+          style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+        >
+          Enterprise
+        </h3>
+        <div 
+          className="flex items-start justify-center text-center"
+          style={{ minHeight: '60px' }}
+        >
+          <p
+            className="text-sm lg:text-base leading-relaxed"
+            style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+          >
+            For hotels, resorts, and massive corporate operations needing heavy, specialized ERP tools.
+          </p>
+        </div>
+      </div>
+
+      {/* Price Box - matching other cards exactly */}
+      <div 
+        className="mb-6 p-6 rounded-xl flex flex-col justify-center items-center"
+        style={{
+          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#F5F5F5',
+          border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none',
+          minHeight: '200px',
+        }}
+      >
+        <span
+          className="text-2xl lg:text-3xl font-black mb-2"
+          style={{ color: isDark ? '#ffffff' : '#000000' }}
+        >
+          {enterprisePlan.priceLabel}
+        </span>
+        <p className="text-xs lg:text-sm text-center font-medium" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+          Tailored pricing for your needs
+        </p>
+      </div>
+
+      {/* Features - matching other cards exactly */}
+      <div className="flex-grow mb-6">
+        <ul className="space-y-3">
+          {enterprisePlan.features.map((feature: PlanFeature, idx: number) => (
+            <li 
+              key={idx} 
+              className="flex items-start gap-3"
+            >
+              <span
+                className="flex-shrink-0 flex items-center justify-center rounded-full"
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  backgroundColor: isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)',
+                }}
+              >
+                <Icon
+                  name="check"
+                  size={15}
+                  style={{ color: '#ea580c' }}
+                />
+              </span>
+              <span
+                className="text-sm lg:text-[15px] font-medium flex-1 text-left"
+                style={{
+                  color: isDark ? '#e5e7eb' : '#1f2937',
+                  lineHeight: '1.6',
+                }}
+              >
+                {feature.text}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Add-ons section */}
+      <div 
+        className="mb-6 p-5 rounded-xl"
+        style={{
+          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#F5F5F5',
+          border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none',
+        }}
+      >
+        <p 
+          className="text-xs font-bold mb-3 uppercase tracking-wide"
+          style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+        >
+          Optional Add-ons
+        </p>
+        <div className="space-y-2">
+          {enterprisePlan.addOns.map((addon, idx) => (
+            <div 
+              key={idx}
+              className="flex justify-between items-center py-2"
+              style={{ 
+                borderBottom: idx < enterprisePlan.addOns.length - 1 
+                  ? `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`
+                  : 'none'
+              }}
+            >
+              <span 
+                className="font-medium text-sm"
+                style={{ color: isDark ? '#e5e7eb' : '#1f2937' }}
+              >
+                {addon.name}
+              </span>
+              <span 
+                className="font-bold text-sm"
+                style={{ color: '#ea580c' }}
+              >
+                {addon.price}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA Button - matching other cards exactly */}
+      <div className="mt-auto">
+        <a
+          href={enterprisePlan.ctaHref}
+          className="block w-full py-3.5 px-6 rounded-xl font-bold text-center text-base transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
+          style={{
+            backgroundColor: '#ea580c',
+            color: '#ffffff',
+            border: '2px solid #ea580c',
+          }}
+        >
+          {enterprisePlan.ctaText}
+        </a>
+      </div>
+    </motion.div>
+  );
+}
+
+
+
