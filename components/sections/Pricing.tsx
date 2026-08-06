@@ -116,9 +116,9 @@ function PriceBlock({ oldPrice, newPrice, period, savePercent, isDark, showLimit
           <div
             className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide"
             style={{
-              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+              background: 'linear-gradient(135deg, #ff6929 0%, #e55e24 100%)',
               color: '#ffffff',
-              boxShadow: '0 2px 8px rgba(245, 158, 11, 0.3)',
+              boxShadow: '0 2px 8px rgba(255, 105, 41, 0.3)',
             }}
           >
             ⚡ Limited Offer
@@ -236,8 +236,8 @@ const fallbackData: Partial<PricingPageData> = {
   toggle: { monthlyLabel: 'Monthly', yearlyLabel: 'Yearly', savingsLabel: 'SAVE 33%' },
   promotionBanner: {
     icon: 'celebration',
-    text: 'Free Installation valid until',
-    highlightText: 'February!',
+    text: 'Get a POS Printer Free At Just',
+    highlightText: 'Rs. 24,999/year',
   },
 }
 
@@ -270,10 +270,15 @@ export function Pricing() {
     fetchData()
   }, [fetchData])
 
-  useRefetchOnFocus(fetchData)
+  // Note: Removed useRefetchOnFocus to prevent excessive API calls
 
   const toggle = data.toggle || fallbackData.toggle!
   const promo = data.promotionBanner || fallbackData.promotionBanner!
+
+  // Debug FAQ data
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Pricing] FAQ count:', faqs.length, faqs)
+  }
 
   // Memoize derived data - only recalculate when data or isAnnual changes
   const plansToDisplay = useMemo(() => {
@@ -414,7 +419,7 @@ export function Pricing() {
               <button
                 onClick={() => setIsAnnual(!isAnnual)}
                 className="relative w-16 h-8 rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                style={{ backgroundColor: isAnnual ? '#c2410c' : isDark ? '#404040' : '#cbd5e1' }}
+                style={{ backgroundColor: isAnnual ? '#ff6929' : isDark ? '#404040' : '#cbd5e1' }}
                 aria-label="Toggle pricing period"
               >
                 <motion.div
@@ -450,7 +455,13 @@ export function Pricing() {
               className="relative cursor-default"
             >
               <div className="relative px-6 py-2.5 bg-white dark:bg-[#0a0a0a] ring-1 ring-gray-200 dark:ring-white/10 rounded-full flex items-center gap-3 shadow-sm">
-                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400">
+                <span 
+                  className="flex items-center justify-center w-6 h-6 rounded-full" 
+                  style={{ 
+                    backgroundColor: isDark ? 'rgba(255, 105, 41, 0.2)' : 'rgba(255, 105, 41, 0.1)',
+                    color: '#ff6929'
+                  }}
+                >
                   <Icon name={promo.icon} size={24} />
                 </span>
                 <span
@@ -458,7 +469,7 @@ export function Pricing() {
                   style={{ color: isDark ? '#e5e5e5' : '#334155' }}
                 >
                   {promo.text}{' '}
-                  <span className="font-bold text-orange-600 dark:text-orange-500">
+                  <span className="font-bold" style={{ color: '#ff6929' }}>
                     {promo.highlightText}
                   </span>
                 </span>
@@ -490,7 +501,7 @@ export function Pricing() {
                 border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
               }}
             >
-              {/* Sliding background indicator */}
+              {/* Sliding background indicator - uses translateX for smooth premium animation */}
               <motion.div
                 className="absolute top-1 bottom-1 rounded-full"
                 style={{
@@ -498,25 +509,27 @@ export function Pricing() {
                   boxShadow: isDark 
                     ? '0 4px 12px rgba(255,255,255,0.15)'
                     : '0 4px 12px rgba(0,0,0,0.15)',
+                  left: '4px',
+                  width: 'calc(50% - 4px)',
                 }}
                 animate={{
-                  left: activeTab === 'restaurant' ? '4px' : '50%',
-                  right: activeTab === 'restaurant' ? '50%' : '4px',
+                  x: activeTab === 'restaurant' ? 0 : 'calc(100% + 4px)',
                 }}
                 transition={{
-                  duration: 0.15,
-                  ease: "easeOut"
+                  duration: 0.35,
+                  ease: [0.4, 0, 0.2, 1], // Premium cubic-bezier easing
                 }}
               />
               
               {/* Restaurant Plans Button */}
               <button
                 onClick={handleRestaurantClick}
-                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-200"
+                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-300"
                 style={{
                   color: activeTab === 'restaurant' 
                     ? isDark ? '#0f172a' : '#ffffff'
                     : isDark ? '#a3a3a3' : '#64748b',
+                  transition: 'color 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
                 Restaurant Plans
@@ -525,11 +538,12 @@ export function Pricing() {
               {/* Enterprise Button */}
               <button
                 onClick={handleEnterpriseClick}
-                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-200"
+                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-300"
                 style={{
                   color: activeTab === 'enterprise' 
                     ? isDark ? '#0f172a' : '#ffffff'
                     : isDark ? '#a3a3a3' : '#64748b',
+                  transition: 'color 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
                 Enterprise
@@ -697,40 +711,46 @@ export function Pricing() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 text-left">
-            {faqs
-              .sort((a, b) => a.order - b.order)
-              .map((faq, i) => (
-                <div key={i} className="group">
-                  <h4
-                    className="flex items-start gap-3 text-lg font-bold mb-3"
-                    style={{
-                      color: isDark
-                        ? (data.faqColors as any)?.questionDark || '#f1f5f9'
-                        : (data.faqColors as any)?.questionLight || '#1e293b',
-                    }}
-                  >
-                    <Icon
-                      name="help"
-                      size={20}
-                      className="mt-0.5 transition-opacity cursor-help"
+            {faqs.length > 0 ? (
+              faqs
+                .sort((a, b) => a.order - b.order)
+                .map((faq, i) => (
+                  <div key={i} className="group">
+                    <h4
+                      className="flex items-start gap-3 text-lg font-bold mb-3"
                       style={{
-                        color: (data.faqColors as any)?.iconColorDefault || '#9ca3af',
+                        color: isDark
+                          ? (data.faqColors as any)?.questionDark || '#f1f5f9'
+                          : (data.faqColors as any)?.questionLight || '#1e293b',
                       }}
-                    />
-                    {faq.question}
-                  </h4>
-                  <div
-                    className="pl-8 text-base leading-relaxed"
-                    style={{
-                      color: isDark
-                        ? (data.faqColors as any)?.answerDark || '#94a3b8'
-                        : (data.faqColors as any)?.answerLight || '#64748b',
-                    }}
-                  >
-                    <InlineHTMLContent html={faq.answer} />
+                    >
+                      <Icon
+                        name="help"
+                        size={20}
+                        className="mt-0.5 transition-opacity cursor-help"
+                        style={{
+                          color: (data.faqColors as any)?.iconColorDefault || '#9ca3af',
+                        }}
+                      />
+                      {faq.question}
+                    </h4>
+                    <div
+                      className="pl-8 text-base leading-relaxed"
+                      style={{
+                        color: isDark
+                          ? (data.faqColors as any)?.answerDark || '#94a3b8'
+                          : (data.faqColors as any)?.answerLight || '#64748b',
+                      }}
+                    >
+                      <InlineHTMLContent html={faq.answer} />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+            ) : (
+              <div className="col-span-2 text-center py-8" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
+                No FAQs available
+              </div>
+            )}
           </div>
 
           <div className="mt-12 text-center relative z-50">
@@ -1023,14 +1043,14 @@ function PlanCard({
           style={
             plan.isPopular
               ? {
-                  backgroundColor: '#ea580c',
+                  backgroundColor: '#ff6929',
                   color: '#ffffff',
-                  border: '2px solid #ea580c',
+                  border: '2px solid #ff6929',
                 }
               : {
-                  backgroundColor: 'transparent',
-                  color: isDark ? '#ffffff' : '#0f172a',
-                  border: `2px solid ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)'}`,
+                  backgroundColor: isDark ? '#ffffff' : '#0f172a',
+                  color: isDark ? '#0f172a' : '#ffffff',
+                  border: 'none',
                 }
           }
         >
@@ -1056,7 +1076,8 @@ function EnterprisePlanCard({
   };
 
   const getBorderColor = () => {
-    return isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+    // Premium gradient border for Enterprise
+    return isDark ? 'rgba(255, 105, 41, 0.3)' : 'rgba(255, 105, 41, 0.2)';
   };
 
   return (
@@ -1070,10 +1091,12 @@ function EnterprisePlanCard({
       onHoverEnd={() => setIsHovered(false)}
       className="flex flex-col h-full p-8 rounded-2xl relative overflow-visible w-full"
       style={{
-        background: getBackground(),
+        background: isDark 
+          ? 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)'
+          : 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)',
         border: `2px solid ${getBorderColor()}`,
         boxShadow: isHovered
-          ? (isDark ? '0 12px 32px -4px rgba(0,0,0,0.5)' : '0 12px 32px -4px rgba(0,0,0,0.12)')
+          ? (isDark ? '0 12px 32px -4px rgba(255, 105, 41, 0.25), 0 0 0 1px rgba(255, 105, 41, 0.1) inset' : '0 12px 32px -4px rgba(255, 105, 41, 0.15), 0 0 0 1px rgba(255, 105, 41, 0.08) inset')
           : (isDark ? '0 4px 12px -2px rgba(0,0,0,0.3)' : '0 4px 12px -2px rgba(0,0,0,0.08)'),
         transition: 'all 0.3s ease-out',
         boxSizing: 'border-box',
@@ -1083,9 +1106,9 @@ function EnterprisePlanCard({
       <div
         className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
         style={{
-          background: isDark ? '#475569' : '#64748b',
+          background: isDark ? '#334155' : '#475569',
           color: '#ffffff',
-          boxShadow: '0 4px 12px rgba(100, 116, 139, 0.3)',
+          boxShadow: '0 4px 12px rgba(71, 85, 105, 0.4)',
           zIndex: 10,
         }}
       >
@@ -1113,18 +1136,35 @@ function EnterprisePlanCard({
         </div>
       </div>
 
-      {/* Price Box - matching other cards exactly */}
+      {/* Price Box - premium styled with icon */}
       <div 
-        className="mb-6 p-6 rounded-xl flex flex-col justify-center items-center"
+        className="mb-6 p-6 rounded-xl flex flex-col justify-center items-center relative overflow-hidden"
         style={{
-          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#F5F5F5',
-          border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none',
+          background: isDark 
+            ? 'linear-gradient(135deg, rgba(255, 105, 41, 0.08) 0%, rgba(255, 105, 41, 0.03) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 105, 41, 0.06) 0%, rgba(255, 105, 41, 0.02) 100%)',
+          border: `2px solid ${isDark ? 'rgba(255, 105, 41, 0.2)' : 'rgba(255, 105, 41, 0.15)'}`,
           minHeight: '200px',
         }}
       >
+        {/* Enterprise icon */}
+        <div 
+          className="mb-4 flex items-center justify-center rounded-full"
+          style={{
+            width: '56px',
+            height: '56px',
+            backgroundColor: isDark ? 'rgba(255, 105, 41, 0.15)' : 'rgba(255, 105, 41, 0.1)',
+          }}
+        >
+          <Icon
+            name="building2"
+            size={28}
+            style={{ color: '#ff6929' }}
+          />
+        </div>
         <span
           className="text-2xl lg:text-3xl font-black mb-2"
-          style={{ color: isDark ? '#ffffff' : '#000000' }}
+          style={{ color: isDark ? '#ffffff' : '#0f172a' }}
         >
           {enterprisePlan.priceLabel}
         </span>
@@ -1146,13 +1186,13 @@ function EnterprisePlanCard({
                 style={{
                   width: '24px',
                   height: '24px',
-                  backgroundColor: isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)',
+                  backgroundColor: isDark ? 'rgba(255, 105, 41, 0.15)' : 'rgba(255, 105, 41, 0.1)',
                 }}
               >
                 <Icon
                   name="check"
                   size={15}
-                  style={{ color: '#ea580c' }}
+                  style={{ color: '#ff6929' }}
                 />
               </span>
               <span
@@ -1202,7 +1242,7 @@ function EnterprisePlanCard({
               </span>
               <span 
                 className="font-bold text-sm"
-                style={{ color: '#ea580c' }}
+                style={{ color: '#ff6929' }}
               >
                 {addon.price}
               </span>
@@ -1211,15 +1251,15 @@ function EnterprisePlanCard({
         </div>
       </div>
 
-      {/* CTA Button - matching other cards exactly */}
+      {/* CTA Button - orange like Pro to signal premium tier */}
       <div className="mt-auto">
         <a
           href={enterprisePlan.ctaHref}
           className="block w-full py-3.5 px-6 rounded-xl font-bold text-center text-base transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
           style={{
-            backgroundColor: '#ea580c',
+            backgroundColor: '#ff6929',
             color: '#ffffff',
-            border: '2px solid #ea580c',
+            border: '2px solid #ff6929',
           }}
         >
           {enterprisePlan.ctaText}
