@@ -13,6 +13,27 @@
   animation: logo-marquee 42s linear infinite;
   will-change: transform;
 }
+
+@keyframes country-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.marquee-content {
+  display: flex;
+  animation: country-marquee 30s linear infinite;
+  will-change: transform;
+}
 @plugin "@tailwindcss/typography";
 
 /* Explicit dark variant for class-based toggling in Tailwind v4 */

@@ -522,60 +522,47 @@ export function Pricing() {
             transition={{ duration: 0.5 }}
             className="flex justify-center mb-12"
           >
-            <div 
-              className="relative inline-flex p-1 rounded-full"
-              style={{
-                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(226, 232, 240, 0.5)',
-                border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
-              }}
-            >
-              {/* Sliding background indicator - uses translateX for smooth premium animation */}
-              <motion.div
-                className="absolute top-1 bottom-1 rounded-full"
-                style={{
-                  backgroundColor: isDark ? '#ffffff' : '#0f172a',
-                  boxShadow: isDark 
-                    ? '0 4px 12px rgba(255,255,255,0.15)'
-                    : '0 4px 12px rgba(0,0,0,0.15)',
-                  left: '4px',
-                  width: 'calc(50% - 4px)',
-                }}
-                animate={{
-                  x: activeTab === 'restaurant' ? 0 : 'calc(100% + 4px)',
-                }}
-                transition={{
-                  duration: 0.35,
-                  ease: [0.4, 0, 0.2, 1], // Premium cubic-bezier easing
-                }}
-              />
-              
-              {/* Restaurant Plans Button */}
-              <button
-                onClick={handleRestaurantClick}
-                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-300"
-                style={{
-                  color: activeTab === 'restaurant' 
-                    ? isDark ? '#0f172a' : '#ffffff'
-                    : isDark ? '#a3a3a3' : '#64748b',
-                  transition: 'color 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
+            <div className="flex items-center justify-center gap-4">
+              <span
+                className={`text-sm font-medium ${
+                  activeTab === 'restaurant'
+                    ? isDark
+                      ? 'text-white'
+                      : 'text-slate-900'
+                    : isDark
+                    ? 'text-neutral-500'
+                    : 'text-slate-500'
+                }`}
               >
                 Restaurant Plans
-              </button>
-              
-              {/* Enterprise Button */}
+              </span>
               <button
-                onClick={handleEnterpriseClick}
-                className="relative z-10 px-8 py-3 rounded-full font-semibold text-sm transition-colors duration-300"
-                style={{
-                  color: activeTab === 'enterprise' 
-                    ? isDark ? '#0f172a' : '#ffffff'
-                    : isDark ? '#a3a3a3' : '#64748b',
-                  transition: 'color 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                }}
+                onClick={() => setActiveTab(activeTab === 'restaurant' ? 'enterprise' : 'restaurant')}
+                role="switch"
+                aria-checked={activeTab === 'enterprise'}
+                aria-label="Toggle between Restaurant Plans and Enterprise"
+                className="relative w-16 h-8 rounded-full transition-colors duration-100 focus:outline-none"
+                style={{ backgroundColor: activeTab === 'enterprise' ? '#ff6929' : isDark ? '#404040' : '#cbd5e1' }}
+              >
+                <motion.div
+                  className="absolute top-1 left-1 w-6 h-6 rounded-full bg-white shadow-sm"
+                  animate={{ x: activeTab === 'enterprise' ? 32 : 0 }}
+                  transition={{ duration: 0.12, ease: 'easeOut' }}
+                />
+              </button>
+              <span
+                className={`text-sm font-medium ${
+                  activeTab === 'enterprise'
+                    ? isDark
+                      ? 'text-white'
+                      : 'text-slate-900'
+                    : isDark
+                    ? 'text-neutral-500'
+                    : 'text-slate-500'
+                }`}
               >
                 Enterprise
-              </button>
+              </span>
             </div>
           </motion.div>
 
@@ -647,15 +634,17 @@ export function Pricing() {
                             boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
                           }}
                         >
-                          <span 
-                            className={`fi fi-${country.code} fis`}
+                          <img
+                            src={`https://flagcdn.com/w40/${country.code}.png`}
+                            srcSet={`https://flagcdn.com/w80/${country.code}.png 2x`}
+                            alt={`${country.name} flag`}
+                            width="20"
+                            height="15"
                             style={{ 
-                              width: '20px', 
-                              height: '15px',
                               borderRadius: '2px',
-                              display: 'inline-block',
-                              backgroundSize: 'cover',
-                              flexShrink: 0
+                              display: 'block',
+                              flexShrink: 0,
+                              objectFit: 'cover'
                             }}
                           />
                           <span 
@@ -674,16 +663,16 @@ export function Pricing() {
           </motion.div>
           {/* Cards Container - shared by both states */}
           <div>
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="wait">
               {activeTab === 'restaurant' && (
                 <motion.div 
                   key="restaurant-plans"
                   className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ willChange: 'opacity' }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  style={{ willChange: 'opacity, transform' }}
                   onAnimationStart={() => console.log('[Restaurant] Animation started')}
                   onAnimationComplete={() => console.log('[Restaurant] Animation complete')}
                 >
@@ -705,11 +694,11 @@ export function Pricing() {
                 <motion.div
                   key="enterprise-plan"
                   className="w-full flex justify-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ willChange: 'opacity' }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  style={{ willChange: 'opacity, transform' }}
                   onAnimationStart={() => console.log('[Enterprise] Animation started')}
                   onAnimationComplete={() => console.log('[Enterprise] Animation complete')}
                 >
