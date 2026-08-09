@@ -64,10 +64,18 @@ export function Navbar() {
   const fetchData = useCallback(async () => {
     try {
       const apiData = await getNavbar()
-      setData(apiData)
+      // Merge API data with fallback, ensuring items always exist
+      setData({
+        ...apiData,
+        items: apiData.items && apiData.items.length > 0 ? apiData.items : fallbackData.items,
+        logo: apiData.logo || fallbackData.logo,
+        loginButton: apiData.loginButton || fallbackData.loginButton,
+        themeToggle: apiData.themeToggle || fallbackData.themeToggle,
+      })
     } catch (error) {
       console.error('[Navbar] Failed to fetch navbar data:', error)
       // Keep fallback data
+      setData(fallbackData)
     }
   }, [])
 

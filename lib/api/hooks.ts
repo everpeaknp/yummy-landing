@@ -17,7 +17,7 @@ import {
   type GalleryData,
 } from './index';
 
-// Generic hook factory
+// Generic hook factory with empty data validation
 function useApiData<T>(
   fetcher: () => Promise<T>,
   fallback: T
@@ -33,11 +33,22 @@ function useApiData<T>(
       try {
         const result = await fetcher();
         if (mounted) {
-          setData(result);
+          // Check if result is meaningful (not empty object/array)
+          const isEmptyObject = result && typeof result === 'object' && Object.keys(result).length === 0;
+          const isEmptyArray = Array.isArray(result) && result.length === 0;
+          
+          // Use fallback if data is empty, otherwise use API data
+          if (isEmptyObject || isEmptyArray) {
+            setData(fallback);
+          } else {
+            // Merge API data with fallback to preserve any missing fields
+            setData({ ...fallback, ...result } as T);
+          }
         }
       } catch (err) {
         if (mounted) {
           setError(err instanceof Error ? err : new Error('Unknown error'));
+          setData(fallback); // Use fallback on error
         }
       } finally {
         if (mounted) {

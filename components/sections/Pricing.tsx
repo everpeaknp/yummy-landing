@@ -19,7 +19,8 @@ import {
   getPlanPrice, 
   type Plan, 
   type BillingPeriod,
-  type PlanFeature
+  type PlanFeature,
+  type PlanTier
 } from '@/lib/pricingPlans'
 
 const fallbackFaqs: PricingFaq[] = [
@@ -286,57 +287,84 @@ export function Pricing() {
     // Transform API data structure to match Plan type from pricingPlans.ts
     return (data.plans && data.plans.length > 0) 
       ? data.plans.map(apiPlan => {
-          // Parse yearly price - extract only the first number before any slashes or text
-          const yearlyMatch = apiPlan.priceYearly.match(/Rs\.\s*([\d,]+)/);
-          const yearlyAmount = yearlyMatch ? parseInt(yearlyMatch[1].replace(/,/g, ''), 10) : 0;
+          // Parse yearly price - API returns plain numbers like "11400.00"
+          const yearlyAmount = apiPlan.priceYearly 
+            ? parseFloat(apiPlan.priceYearly) 
+            : 0;
           
-          // Parse 6-month price - extract only the first number before any slashes or text
-          const monthlyMatch = apiPlan.priceMonthly.match(/Rs\.\s*([\d,]+)/);
-          const monthlyAmount = monthlyMatch ? parseInt(monthlyMatch[1].replace(/,/g, ''), 10) : 0;
+          // Parse 6-month price - API returns plain numbers like "6000.00"
+          const monthlyAmount = apiPlan.price6Month 
+            ? parseFloat(apiPlan.price6Month) 
+            : 0;
           
           // Parse original prices if present
           const originalYearlyAmount = apiPlan.originalPriceYearly 
-            ? parseInt(apiPlan.originalPriceYearly.replace(/[^0-9]/g, ''), 10)
+            ? parseFloat(apiPlan.originalPriceYearly)
             : undefined;
-          const originalMonthlyAmount = apiPlan.originalPriceMonthly 
-            ? parseInt(apiPlan.originalPriceMonthly.replace(/[^0-9]/g, ''), 10)
+          const originalMonthlyAmount = apiPlan.originalPrice6Month 
+            ? parseFloat(apiPlan.originalPrice6Month)
             : undefined;
           
+          // Parse renewal prices if present
+          const renewalYearlyAmount = apiPlan.renewalPriceYearly 
+            ? parseFloat(apiPlan.renewalPriceYearly)
+            : undefined;
+          const renewalMonthlyAmount = apiPlan.renewalPrice6Month 
+            ? parseFloat(apiPlan.renewalPrice6Month)
+            : undefined;
+          
+          // Format display labels with "Rs." prefix
+          const formatPrice = (amount: number) => {
+            if (amount === 0) return 'Rs. 0';
+            return `Rs. ${amount.toLocaleString('en-NP', { maximumFractionDigits: 0 })}`;
+          };
+          
+          // Match plan by name to get hardcoded features from pricingPlans.ts
+          const planId = apiPlan.name.toLowerCase().replace(/\s+/g, '-') as PlanTier;
+          const hardcodedPlan = normalPlans.find(p => p.id === planId);
+          
           return {
-            id: apiPlan.name.toLowerCase().replace(/\s+/g, '-') as any,
+            id: planId,
             name: apiPlan.name,
             // Strip HTML tags from description if present (e.g., <p></p>)
-            description: apiPlan.description.replace(/<\/?[^>]+(>|$)/g, ''),
+            description: apiPlan.description?.replace(/<\/?[^>]+(>|$)/g, '') || '',
             prices: [
               {
                 period: 'yearly' as BillingPeriod,
                 amount: yearlyAmount,
-                displayLabel: apiPlan.priceYearly,
+                displayLabel: formatPrice(yearlyAmount),
                 originalAmount: originalYearlyAmount,
+                renewalAmount: renewalYearlyAmount,
               },
               {
                 period: '6month' as BillingPeriod,
                 amount: monthlyAmount,
-                displayLabel: apiPlan.priceMonthly,
+                displayLabel: formatPrice(monthlyAmount),
                 originalAmount: originalMonthlyAmount,
+                renewalAmount: renewalMonthlyAmount,
               },
             ],
-            features: apiPlan.features.map(f => ({ text: f.text, included: true })),
-            isPopular: apiPlan.isPopular,
-            ctaText: apiPlan.ctaText,
-            ctaHref: apiPlan.ctaHref,
-            order: apiPlan.order,
+            // Use detailed hardcoded features from pricingPlans.ts as source of truth
+            // Fall back to API features only if no hardcoded plan is found
+            features: hardcodedPlan?.features || apiPlan.features?.map(f => ({ text: f.text, included: true })) || [],
+            isPopular: apiPlan.isPopular || false,
+            ctaText: apiPlan.ctaText || 'Get Started',
+            ctaHref: apiPlan.ctaHref || 'https://app.yummyever.com/',
+            order: apiPlan.order || 0,
           };
         })
       : normalPlans;
   }, [data.plans]);
 
   // Memoize visiblePlans - only recalculate when plansToDisplay or isAnnual changes
+  // Filter out Enterprise plan - it has its own dedicated section
   const visiblePlans = useMemo(() => {
-    return plansToDisplay.map(plan => {
-      const price = getPlanPrice(plan, isAnnual ? 'yearly' : '6month') || getPlanPrice(plan, 'yearly');
-      return { ...plan, currentPrice: price };
-    });
+    return plansToDisplay
+      .filter(plan => plan.name.toLowerCase() !== 'enterprise')
+      .map(plan => {
+        const price = getPlanPrice(plan, isAnnual ? 'yearly' : '6month') || getPlanPrice(plan, 'yearly');
+        return { ...plan, currentPrice: price };
+      });
   }, [plansToDisplay, isAnnual]);
 
   // Memoize toggle handlers to prevent recreation on every render
@@ -914,7 +942,7 @@ function PlanCard({
 
         {/* Main price - moderate font size that fits cleanly */}
         <div className="mb-3">
-          {displayPrice?.amount > 0 ? (
+          {displayPrice?.amount && displayPrice.amount > 0 ? (
             <div className="flex items-baseline justify-center gap-1 flex-wrap">
               <span 
                 className="text-2xl lg:text-3xl font-black"
@@ -926,7 +954,7 @@ function PlanCard({
                 className="text-base lg:text-lg font-medium"
                 style={{ color: isDark ? '#94a3b8' : '#64748b' }}
               >
-                {displayPrice.period === 'yearly' ? '/yr' : displayPrice.period === '6month' ? '/6 months' : '/Forever'}
+                {displayPrice?.period === 'yearly' ? '/yr' : displayPrice?.period === '6month' ? '/6 months' : '/Forever'}
               </span>
             </div>
           ) : (
@@ -955,7 +983,7 @@ function PlanCard({
           </p>
         ) : (
           // Show renewal info based on plan and period
-          displayPrice?.amount > 0 && (displayPrice.period === 'yearly' || displayPrice.period === '6month') && (
+          displayPrice?.amount && displayPrice.amount > 0 && displayPrice.period && (displayPrice.period === 'yearly' || displayPrice.period === '6month') && (
             <div className="text-center mt-2">
               {displayPrice.period === 'yearly' ? (
                 // YEARLY VIEW LOGIC
