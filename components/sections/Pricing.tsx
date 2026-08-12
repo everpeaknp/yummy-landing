@@ -247,6 +247,15 @@ export function Pricing() {
   const isDark = theme === 'dark'
   const [isAnnual, setIsAnnual] = useState(true)
   const [activeTab, setActiveTab] = useState<'restaurant' | 'enterprise'>('restaurant')
+  const [renderTab, setRenderTab] = useState<'restaurant' | 'enterprise'>('restaurant')
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setRenderTab(activeTab)
+    }, 250)
+    return () => clearTimeout(timer)
+  }, [activeTab])
+
   const [data, setData] = useState<Partial<PricingPageData>>(fallbackData)
   const [faqs, setFaqs] = useState(fallbackFaqs)
 
@@ -369,19 +378,11 @@ export function Pricing() {
 
   // Memoize toggle handlers to prevent recreation on every render
   const handleRestaurantClick = useCallback(() => {
-    console.time('Toggle to Restaurant')
     setActiveTab('restaurant')
-    requestAnimationFrame(() => {
-      setTimeout(() => console.timeEnd('Toggle to Restaurant'), 500)
-    })
   }, [])
 
   const handleEnterpriseClick = useCallback(() => {
-    console.time('Toggle to Enterprise')
     setActiveTab('enterprise')
-    requestAnimationFrame(() => {
-      setTimeout(() => console.timeEnd('Toggle to Enterprise'), 500)
-    })
   }, [])
 
   return (
@@ -427,6 +428,61 @@ export function Pricing() {
               }
             />
           </p>
+
+          {/* Plan Type Toggle Switcher */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center mb-12"
+          >
+            <div 
+              className="relative inline-flex p-1 rounded-full"
+              style={{
+                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(226, 232, 240, 0.5)',
+                border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
+                width: '300px',
+              }}
+            >
+              {/* Sliding background indicator - active brand orange-red pill background */}
+              <div
+                className="absolute top-1 bottom-1 rounded-full"
+                style={{
+                  backgroundColor: '#ff6929',
+                  boxShadow: '0 2px 8px rgba(255, 105, 41, 0.3)',
+                  width: '146px',
+                  left: activeTab === 'restaurant' ? '4px' : '150px',
+                  transition: 'left 250ms ease-in-out',
+                }}
+              />
+              
+              {/* Business Option */}
+              <button
+                onClick={handleRestaurantClick}
+                className="relative z-10 w-1/2 py-3 rounded-full font-semibold text-sm transition-colors duration-200 focus:outline-none"
+                style={{
+                  color: activeTab === 'restaurant' 
+                    ? '#ffffff'
+                    : isDark ? '#a3a3a3' : '#64748b',
+                }}
+              >
+                Standard
+              </button>
+              
+              {/* Enterprise Option */}
+              <button
+                onClick={handleEnterpriseClick}
+                className="relative z-10 w-1/2 py-3 rounded-full font-semibold text-sm transition-colors duration-200 focus:outline-none"
+                style={{
+                  color: activeTab === 'enterprise' 
+                    ? '#ffffff'
+                    : isDark ? '#a3a3a3' : '#64748b',
+                }}
+              >
+                Enterprise
+              </button>
+            </div>
+          </motion.div>
 
           {/* Toggle */}
           <div className="flex flex-col items-center gap-6 mb-16">
@@ -514,57 +570,6 @@ export function Pricing() {
           >
             Standard Plans
           </h3>
-          
-          {/* Plan Type Toggle Switcher */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex justify-center mb-12"
-          >
-            <div className="flex items-center justify-center gap-4">
-              <span
-                className={`text-sm font-medium ${
-                  activeTab === 'restaurant'
-                    ? isDark
-                      ? 'text-white'
-                      : 'text-slate-900'
-                    : isDark
-                    ? 'text-neutral-500'
-                    : 'text-slate-500'
-                }`}
-              >
-                Restaurant Plans
-              </span>
-              <button
-                onClick={() => setActiveTab(activeTab === 'restaurant' ? 'enterprise' : 'restaurant')}
-                role="switch"
-                aria-checked={activeTab === 'enterprise'}
-                aria-label="Toggle between Restaurant Plans and Enterprise"
-                className="relative w-16 h-8 rounded-full transition-colors duration-100 focus:outline-none"
-                style={{ backgroundColor: activeTab === 'enterprise' ? '#ff6929' : isDark ? '#404040' : '#cbd5e1' }}
-              >
-                <motion.div
-                  className="absolute top-1 left-1 w-6 h-6 rounded-full bg-white shadow-sm"
-                  animate={{ x: activeTab === 'enterprise' ? 32 : 0 }}
-                  transition={{ duration: 0.12, ease: 'easeOut' }}
-                />
-              </button>
-              <span
-                className={`text-sm font-medium ${
-                  activeTab === 'enterprise'
-                    ? isDark
-                      ? 'text-white'
-                      : 'text-slate-900'
-                    : isDark
-                    ? 'text-neutral-500'
-                    : 'text-slate-500'
-                }`}
-              >
-                Enterprise
-              </span>
-            </div>
-          </motion.div>
 
           {/* Trust Badge - Always visible for both tabs */}
           <motion.div
@@ -662,52 +667,49 @@ export function Pricing() {
             </div>
           </motion.div>
           {/* Cards Container - shared by both states */}
-          <div>
-            <AnimatePresence mode="wait">
-              {activeTab === 'restaurant' && (
-                <motion.div 
-                  key="restaurant-plans"
-                  className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
-                  style={{ willChange: 'opacity, transform' }}
-                  onAnimationStart={() => console.log('[Restaurant] Animation started')}
-                  onAnimationComplete={() => console.log('[Restaurant] Animation complete')}
-                >
-                  {visiblePlans.map((plan) => (
-                    <PlanCard
-                      key={plan.id}
-                      plan={plan}
-                      currentPrice={plan.currentPrice!}
-                      isAnnual={isAnnual}
-                      isDark={isDark}
-                      data={data}
-                    />
-                  ))}
-                </motion.div>
-              )}
+          <div className="relative w-full grid grid-cols-1 grid-rows-1 items-stretch">
+            {/* Restaurant Plans (Business) */}
+            <div
+              className="w-full"
+              style={{
+                gridArea: '1 / 1 / 2 / 2',
+                opacity: activeTab === 'restaurant' ? 1 : 0,
+                pointerEvents: activeTab === 'restaurant' ? 'auto' : 'none',
+                transform: `translateY(${activeTab === 'restaurant' ? '0px' : '8px'})`,
+                transition: 'opacity 250ms ease-in-out, transform 250ms ease-in-out',
+                zIndex: activeTab === 'restaurant' ? 1 : 0,
+                display: (activeTab === 'restaurant' || renderTab === 'restaurant') ? 'block' : 'none',
+              }}
+            >
+              <div className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch">
+                {visiblePlans.map((plan) => (
+                  <PlanCard
+                    key={plan.id}
+                    plan={plan}
+                    currentPrice={plan.currentPrice!}
+                    isAnnual={isAnnual}
+                    isDark={isDark}
+                    data={data}
+                  />
+                ))}
+              </div>
+            </div>
 
-              {/* Enterprise Card - matching Restaurant Plans grid width */}
-              {activeTab === 'enterprise' && (
-                <motion.div
-                  key="enterprise-plan"
-                  className="w-full flex justify-center"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
-                  style={{ willChange: 'opacity, transform' }}
-                  onAnimationStart={() => console.log('[Enterprise] Animation started')}
-                  onAnimationComplete={() => console.log('[Enterprise] Animation complete')}
-                >
-                  <div className="w-full max-w-xl">
-                    <EnterprisePlanCard isDark={isDark} data={data} />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Enterprise Card - matching Restaurant Plans grid width */}
+            <div
+              className="w-full mx-auto"
+              style={{
+                gridArea: '1 / 1 / 2 / 2',
+                opacity: activeTab === 'enterprise' ? 1 : 0,
+                pointerEvents: activeTab === 'enterprise' ? 'auto' : 'none',
+                transform: `translateY(${activeTab === 'enterprise' ? '0px' : '8px'})`,
+                transition: 'opacity 250ms ease-in-out, transform 250ms ease-in-out',
+                zIndex: activeTab === 'enterprise' ? 1 : 0,
+                display: (activeTab === 'enterprise' || renderTab === 'enterprise') ? 'block' : 'none',
+              }}
+            >
+              <EnterprisePlanCard isDark={isDark} data={data} />
+            </div>
           </div>
         </div>
 
@@ -1078,7 +1080,7 @@ function PlanCard({
   );
 }
 
-// Enterprise Plan Card Component - Matching Restaurant Plan Card styling
+// Enterprise Plan Card Component - Redesigned as a two-column panel
 function EnterprisePlanCard({ 
   isDark, 
   data 
@@ -1088,14 +1090,22 @@ function EnterprisePlanCard({
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const getBackground = () => {
-    return isDark ? '#0f0f0f' : '#ffffff';
+  const getBorderColor = () => {
+    return isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
   };
 
-  const getBorderColor = () => {
-    // Premium gradient border for Enterprise
-    return isDark ? 'rgba(255, 105, 41, 0.3)' : 'rgba(255, 105, 41, 0.2)';
-  };
+  // Find enterprise plan in the API plans data
+  const apiEnterprisePlan = data?.plans?.find(p => p.name.toLowerCase() === 'enterprise');
+  
+  // Use API features if available, otherwise fall back to static config
+  const featuresList = (apiEnterprisePlan?.features && apiEnterprisePlan.features.length > 0)
+    ? apiEnterprisePlan.features.map(f => f.text)
+    : enterprisePlan.features.map(f => f.text);
+
+  const headerText = featuresList[0] || "Everything in Premium, plus";
+  const col1Features = featuresList.slice(1, 5);
+  const col2Features = featuresList.slice(5);
+
 
   return (
     <motion.div
@@ -1106,185 +1116,166 @@ function EnterprisePlanCard({
       whileHover={{ y: -4 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="flex flex-col h-full p-8 rounded-2xl relative overflow-visible w-full"
+      className="flex flex-col py-12 px-16 rounded-3xl relative overflow-visible w-full text-left"
       style={{
-        background: isDark 
-          ? 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)'
-          : 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)',
-        border: `2px solid ${getBorderColor()}`,
+        backgroundColor: isDark ? '#0f0f0f' : '#ffffff',
+        border: `1px solid ${getBorderColor()}`,
         boxShadow: isHovered
-          ? (isDark ? '0 12px 32px -4px rgba(255, 105, 41, 0.25), 0 0 0 1px rgba(255, 105, 41, 0.1) inset' : '0 12px 32px -4px rgba(255, 105, 41, 0.15), 0 0 0 1px rgba(255, 105, 41, 0.08) inset')
-          : (isDark ? '0 4px 12px -2px rgba(0,0,0,0.3)' : '0 4px 12px -2px rgba(0,0,0,0.08)'),
+          ? (isDark ? '0 12px 32px -4px rgba(0, 0, 0, 0.3)' : '0 12px 32px -4px rgba(0, 0, 0, 0.06)')
+          : (isDark ? '0 4px 20px -2px rgba(0,0,0,0.3)' : '0 4px 20px -2px rgba(0,0,0,0.03)'),
         transition: 'all 0.3s ease-out',
         boxSizing: 'border-box',
       }}
     >
-      {/* Enterprise Badge - matching Most Popular style */}
-      <div
-        className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide"
-        style={{
-          background: isDark ? '#334155' : '#475569',
-          color: '#ffffff',
-          boxShadow: '0 4px 12px rgba(71, 85, 105, 0.4)',
-          zIndex: 10,
-        }}
-      >
-        Enterprise Grade
-      </div>
-
-      {/* Plan Header - matching other cards exactly */}
-      <div className="mb-6 mt-2">
-        <h3
-          className="font-bold text-2xl lg:text-3xl mb-3 lg:mb-4"
-          style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-        >
-          Enterprise
-        </h3>
-        <div 
-          className="flex items-start justify-center text-center"
-          style={{ minHeight: '60px' }}
-        >
-          <p
-            className="text-sm lg:text-base leading-relaxed"
-            style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
-          >
-            For hotels, resorts, and massive corporate operations needing heavy, specialized ERP tools.
-          </p>
-        </div>
-      </div>
-
-      {/* Price Box - premium styled with icon */}
-      <div 
-        className="mb-6 p-6 rounded-xl flex flex-col justify-center items-center relative overflow-hidden"
-        style={{
-          background: isDark 
-            ? 'linear-gradient(135deg, rgba(255, 105, 41, 0.08) 0%, rgba(255, 105, 41, 0.03) 100%)'
-            : 'linear-gradient(135deg, rgba(255, 105, 41, 0.06) 0%, rgba(255, 105, 41, 0.02) 100%)',
-          border: `2px solid ${isDark ? 'rgba(255, 105, 41, 0.2)' : 'rgba(255, 105, 41, 0.15)'}`,
-          minHeight: '200px',
-        }}
-      >
-        {/* Enterprise icon */}
-        <div 
-          className="mb-4 flex items-center justify-center rounded-full"
-          style={{
-            width: '56px',
-            height: '56px',
-            backgroundColor: isDark ? 'rgba(255, 105, 41, 0.15)' : 'rgba(255, 105, 41, 0.1)',
-          }}
-        >
-          <Icon
-            name="building2"
-            size={28}
-            style={{ color: '#ff6929' }}
-          />
-        </div>
-        <span
-          className="text-2xl lg:text-3xl font-black mb-2"
-          style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-        >
-          {enterprisePlan.priceLabel}
-        </span>
-        <p className="text-xs lg:text-sm text-center font-medium" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
-          Tailored pricing for your needs
-        </p>
-      </div>
-
-      {/* Features - matching other cards exactly */}
-      <div className="flex-grow mb-6">
-        <ul className="space-y-3">
-          {enterprisePlan.features.map((feature: PlanFeature, idx: number) => (
-            <li 
-              key={idx} 
-              className="flex items-start gap-3"
-            >
-              <span
-                className="flex-shrink-0 flex items-center justify-center rounded-full"
-                style={{
-                  width: '24px',
-                  height: '24px',
-                  backgroundColor: isDark ? 'rgba(255, 105, 41, 0.15)' : 'rgba(255, 105, 41, 0.1)',
-                }}
-              >
-                <Icon
-                  name="check"
-                  size={15}
-                  style={{ color: '#ff6929' }}
-                />
-              </span>
-              <span
-                className="text-sm lg:text-[15px] font-medium flex-1 text-left"
-                style={{
-                  color: isDark ? '#e5e7eb' : '#1f2937',
-                  lineHeight: '1.6',
-                }}
-              >
-                {feature.text}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Add-ons section */}
-      <div 
-        className="mb-6 p-5 rounded-xl"
-        style={{
-          backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#F5F5F5',
-          border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none',
-        }}
-      >
-        <p 
-          className="text-xs font-bold mb-3 uppercase tracking-wide"
-          style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
-        >
-          Optional Add-ons
-        </p>
-        <div className="space-y-2">
-          {enterprisePlan.addOns.map((addon, idx) => (
+      {/* Two-column layout */}
+      <div className="grid md:grid-cols-12 gap-8 md:gap-16 items-start">
+        {/* Left column - span 4 */}
+        <div className="flex flex-col items-start md:col-span-4">
+          {/* Header row: Icon next to Title & Subtitle */}
+          <div className="flex items-start gap-4 mb-2">
+            {/* Big custom icon container */}
             <div 
-              key={idx}
-              className="flex justify-between items-center py-2"
-              style={{ 
-                borderBottom: idx < enterprisePlan.addOns.length - 1 
-                  ? `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'}`
-                  : 'none'
+              className="flex-shrink-0 flex items-center justify-center"
+              style={{
+                width: '80px',
+                height: '80px',
+                borderRadius: '16px',
+                backgroundColor: '#ffe8dc',
               }}
             >
-              <span 
-                className="font-medium text-sm"
-                style={{ color: isDark ? '#e5e7eb' : '#1f2937' }}
-              >
-                {addon.name}
-              </span>
-              <span 
-                className="font-bold text-sm"
+              <Icon
+                name="users"
+                size={38}
                 style={{ color: '#ff6929' }}
-              >
-                {addon.price}
-              </span>
+              />
             </div>
-          ))}
+
+            <div className="flex flex-col items-start">
+              <h3
+                className="font-bold text-3xl md:text-4xl mb-1 font-display"
+                style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+              >
+                Enterprise
+              </h3>
+              
+              <p
+                className="text-sm md:text-base font-bold text-orange-500 leading-tight"
+              >
+                For multi-location chains<br />and large franchises
+              </p>
+            </div>
+          </div>
+
+          {/* Short Orange dividing line */}
+          <div 
+            className="w-20 h-0.5 mt-0 mb-6" 
+            style={{ backgroundColor: '#ff6929' }}
+          />
+
+          <p
+            className="text-sm md:text-base leading-relaxed max-w-[380px]"
+            style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
+          >
+            A powerful and flexible solution designed to manage complex operations, centralize control and scale your business effortlessly.
+          </p>
+        </div>
+
+        {/* Right column - span 8 */}
+        <div className="flex flex-col md:col-span-8">
+          {/* Right Heading with Divider Line */}
+          <div className="flex items-center gap-8 mb-6 w-full">
+            <h4 
+              className="text-lg md:text-xl font-bold whitespace-nowrap"
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            >
+              {headerText}
+            </h4>
+            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+          </div>
+          
+          {/* Two-column bulleted feature list with vertical separator line */}
+          <div className="flex flex-col sm:flex-row gap-y-4 w-full">
+            {/* Column 1 */}
+            <ul className="space-y-4 flex-1">
+              {col1Features.map((text, idx) => (
+                <li key={idx} className="flex items-center gap-3">
+                  <span
+                    className="flex-shrink-0 flex items-center justify-center rounded-full"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      backgroundColor: '#ffe8dc',
+                    }}
+                  >
+                    <Icon
+                      name="check"
+                      size={14}
+                      style={{ color: '#ff6929' }}
+                    />
+                  </span>
+                  <span
+                    className="text-sm md:text-base font-normal"
+                    style={{ color: isDark ? '#e5e7eb' : '#334155' }}
+                  >
+                    {text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            {/* Vertical Divider Line */}
+            <div className="hidden sm:block w-px bg-slate-200 dark:bg-slate-700 self-stretch mx-8" />
+
+            {/* Column 2 */}
+            <ul className="space-y-4 flex-1">
+              {col2Features.map((text, idx) => (
+                <li key={idx} className="flex items-center gap-3">
+                  <span
+                    className="flex-shrink-0 flex items-center justify-center rounded-full"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      backgroundColor: '#ffe8dc',
+                    }}
+                  >
+                    <Icon
+                      name="check"
+                      size={14}
+                      style={{ color: '#ff6929' }}
+                    />
+                  </span>
+                  <span
+                    className="text-sm md:text-base font-normal"
+                    style={{ color: isDark ? '#e5e7eb' : '#334155' }}
+                  >
+                    {text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
-      {/* CTA Button - orange like Pro to signal premium tier */}
-      <div className="mt-auto">
+      {/* Centered black pill CTA Button */}
+      <div className="flex justify-center mt-8">
         <a
           href={enterprisePlan.ctaHref}
-          className="block w-full py-3.5 px-6 rounded-xl font-bold text-center text-base transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
+          className="inline-block py-3.5 px-16 rounded-xl font-bold text-center text-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md"
           style={{
-            backgroundColor: '#ff6929',
-            color: '#ffffff',
-            border: '2px solid #ff6929',
+            backgroundColor: isDark ? '#ffffff' : '#000000',
+            color: isDark ? '#000000' : '#ffffff',
+            minWidth: '280px',
           }}
         >
-          {enterprisePlan.ctaText}
+          Contact Sales
         </a>
       </div>
     </motion.div>
   );
 }
+
+
 
 
 

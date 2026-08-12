@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Pricing Plans Configuration
  * Single source of truth for all plan data, features, and pricing
  */
@@ -201,12 +201,15 @@ export const enterprisePlan: EnterprisePlan = {
   description: 'For hotels, resorts, and massive corporate operations needing heavy, specialized ERP tools.',
   priceLabel: 'Custom Pricing',
   features: [
-    { text: 'Everything in Premium, plus:', included: true },
-    { text: 'Hotel Module (room management, room service, guest folio billing sync)', included: true },
-    { text: 'Extensive Detailed Accounting Module (Aging Reports AR/AP, Full Ledger, Balance Sheet generation)', included: true },
-    { text: 'Dedicated Server & Database', included: true },
-    { text: 'Advanced API & Webhook Integrations', included: true },
-    { text: 'Dedicated Account Manager', included: true },
+    { text: 'Everything in Premium, plus', included: true },
+    { text: 'Multi-location Management', included: true },
+    { text: 'Central Kitchen Module', included: true },
+    { text: 'Custom ERP Integrations', included: true },
+    { text: 'API Access', included: true },
+    { text: 'White-label options', included: true },
+    { text: 'Dedicated account manager', included: true },
+    { text: 'SLA Support', included: true },
+    { text: 'On-site training', included: true },
   ],
   addOns: [
     { name: 'Accounting Module', price: 'Rs. 18,000' },
