@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { useTheme } from '@/hooks/useTheme'
 import { useState, useEffect, useCallback, useMemo } from 'react'
@@ -667,7 +668,7 @@ export function Pricing() {
             </div>
           </motion.div>
           {/* Cards Container - shared by both states */}
-          <div className="relative w-full grid grid-cols-1 grid-rows-1 items-stretch">
+          <div className="relative w-full grid grid-cols-1 grid-rows-1 items-stretch" style={{ minHeight: '600px' }}>
             {/* Restaurant Plans (Business) */}
             <div
               className="w-full"
@@ -678,7 +679,7 @@ export function Pricing() {
                 transform: `translateY(${activeTab === 'restaurant' ? '0px' : '8px'})`,
                 transition: 'opacity 250ms ease-in-out, transform 250ms ease-in-out',
                 zIndex: activeTab === 'restaurant' ? 1 : 0,
-                display: (activeTab === 'restaurant' || renderTab === 'restaurant') ? 'block' : 'none',
+                visibility: activeTab === 'restaurant' ? 'visible' : 'hidden',
               }}
             >
               <div className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch">
@@ -697,7 +698,7 @@ export function Pricing() {
 
             {/* Enterprise Card - matching Restaurant Plans grid width */}
             <div
-              className="w-full mx-auto"
+              className="w-full"
               style={{
                 gridArea: '1 / 1 / 2 / 2',
                 opacity: activeTab === 'enterprise' ? 1 : 0,
@@ -705,7 +706,10 @@ export function Pricing() {
                 transform: `translateY(${activeTab === 'enterprise' ? '0px' : '8px'})`,
                 transition: 'opacity 250ms ease-in-out, transform 250ms ease-in-out',
                 zIndex: activeTab === 'enterprise' ? 1 : 0,
-                display: (activeTab === 'enterprise' || renderTab === 'enterprise') ? 'block' : 'none',
+                visibility: activeTab === 'enterprise' ? 'visible' : 'hidden',
+                maxWidth: '64rem',
+                marginLeft: 'auto',
+                marginRight: 'auto',
               }}
             >
               <EnterprisePlanCard isDark={isDark} data={data} />
@@ -825,6 +829,7 @@ function PlanCard({
   animationDelay?: number
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   // Premium plan is yearly-only - force yearly price if no 6-month option exists
   const isPremiumPlan = plan.id === 'premium';
@@ -852,6 +857,17 @@ function PlanCard({
   const savePercent = hasDiscount 
     ? Math.round(((displayPrice.originalAmount - displayPrice.amount) / displayPrice.originalAmount) * 100)
     : undefined;
+
+  // Filter to only included features (hide excluded ones)
+  const includedFeatures = plan.features.filter(feature => 
+    feature.included && 
+    !feature.text.toLowerCase().includes('no ') &&
+    !feature.text.toLowerCase().includes('not included')
+  );
+
+  // Show first 8 features on card, rest accessible via modal
+  const visibleFeatures = includedFeatures.slice(0, 8);
+  const remainingCount = includedFeatures.length - visibleFeatures.length;
 
   return (
     <motion.div
@@ -1013,46 +1029,91 @@ function PlanCard({
 
       {/* Feature List - left-aligned with improved readability */}
       <div className="flex-grow mb-6">
-        <ul className="space-y-3">
-          {plan.features.map((feature, idx) => {
-            const isExcluded = !feature.included || 
-                               feature.text.toLowerCase().includes('no ') ||
-                               feature.text.toLowerCase().includes('not included');
-            
-            return (
-              <li key={idx} className="flex items-start gap-3">
-                <span
-                  className="flex-shrink-0 flex items-center justify-center rounded-full"
+        <ul className="space-y-2.5">
+          {visibleFeatures.map((feature, idx) => (
+            <li key={idx} className="flex items-start gap-3">
+              <span
+                className="flex-shrink-0 flex items-center justify-center rounded-full"
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  backgroundColor: isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)',
+                }}
+              >
+                <Icon
+                  name="check"
+                  size={15}
                   style={{
-                    width: '24px',
-                    height: '24px',
-                    backgroundColor: isExcluded 
-                      ? (isDark ? 'rgba(239, 68, 68, 0.15)' : 'rgba(239, 68, 68, 0.1)')
-                      : (isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)'),
+                    color: '#ea580c',
                   }}
-                >
-                  <Icon
-                    name={isExcluded ? 'close' : 'check'}
-                    size={15}
-                    style={{
-                      color: isExcluded ? '#ef4444' : '#ea580c',
-                    }}
-                  />
-                </span>
-                <span
-                  className={`text-sm lg:text-[15px] font-medium flex-1 text-left ${!feature.included ? 'line-through opacity-60' : ''}`}
-                  style={{
-                    color: isDark ? '#e5e7eb' : '#1f2937',
-                    lineHeight: '1.6',
-                  }}
-                >
-                  {feature.text}
-                </span>
-              </li>
-            );
-          })}
+                />
+              </span>
+              <span
+                className="text-sm lg:text-[15px] font-medium flex-1 text-left"
+                style={{
+                  color: isDark ? '#e5e7eb' : '#1f2937',
+                  lineHeight: '1.6',
+                }}
+              >
+                {feature.text}
+              </span>
+            </li>
+          ))}
         </ul>
+        
+        {/* "+X more included capabilities" link */}
+        {remainingCount > 0 && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="mt-2.5 flex items-start gap-3 w-full hover:underline transition-colors duration-200"
+            style={{
+              cursor: 'pointer',
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              textAlign: 'left',
+            }}
+          >
+            <span
+              className="flex-shrink-0 flex items-center justify-center rounded-full"
+              style={{
+                width: '24px',
+                height: '24px',
+                backgroundColor: isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)',
+              }}
+            >
+              <Icon
+                name="check"
+                size={15}
+                style={{
+                  color: '#ea580c',
+                }}
+              />
+            </span>
+            <span
+              className="text-sm lg:text-[15px] font-medium flex-1 text-left"
+              style={{
+                color: '#ea580c',
+                lineHeight: '1.6',
+              }}
+            >
+              +{remainingCount} more included capabilities
+            </span>
+          </button>
+        )}
       </div>
+
+      {/* Feature Modal */}
+      {isModalOpen && (
+        <FeatureModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          planName={plan.name}
+          price={displayPrice}
+          features={includedFeatures}
+          isDark={isDark}
+        />
+      )}
 
       {/* CTA Button - pinned to bottom */}
       <div className="mt-auto">
@@ -1116,7 +1177,7 @@ function EnterprisePlanCard({
       whileHover={{ y: -4 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="flex flex-col py-12 px-16 rounded-3xl relative overflow-visible w-full text-left"
+      className="flex flex-col py-12 px-16 rounded-xl relative overflow-visible w-full text-left"
       style={{
         backgroundColor: isDark ? '#0f0f0f' : '#ffffff',
         border: `1px solid ${getBorderColor()}`,
@@ -1144,13 +1205,13 @@ function EnterprisePlanCard({
               }}
             >
               <Icon
-                name="users"
+                name="building"
                 size={38}
                 style={{ color: '#ff6929' }}
               />
             </div>
 
-            <div className="flex flex-col items-start">
+            <div className="flex flex-col items-start" style={{ maxWidth: '240px' }}>
               <h3
                 className="font-bold text-3xl md:text-4xl mb-1 font-display"
                 style={{ color: isDark ? '#ffffff' : '#0f172a' }}
@@ -1160,6 +1221,7 @@ function EnterprisePlanCard({
               
               <p
                 className="text-sm md:text-base font-bold text-orange-500 leading-tight"
+                style={{ fontSize: '13px' }}
               >
                 For multi-location chains<br />and large franchises
               </p>
@@ -1279,3 +1341,144 @@ function EnterprisePlanCard({
 
 
 
+
+
+// Feature Modal Component
+function FeatureModal({
+  isOpen,
+  onClose,
+  planName,
+  price,
+  features,
+  isDark,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  planName: string;
+  price: any;
+  features: PlanFeature[];
+  isDark: boolean;
+}) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isOpen || !isMounted) return null;
+
+  // Split features into two columns
+  const midPoint = Math.ceil(features.length / 2);
+  const column1 = features.slice(0, midPoint);
+  const column2 = features.slice(midPoint);
+
+  const modalContent = (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl p-10 bg-white"
+        style={{
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header with Title and Close button on same line */}
+        <div className="flex items-center justify-between mb-2">
+          <h3
+            className="text-2xl font-bold"
+            style={{ color: '#000000' }}
+          >
+            {planName} Features
+          </h3>
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors"
+            aria-label="Close modal"
+          >
+            <Icon
+              name="close"
+              size={20}
+              style={{ color: '#000000' }}
+            />
+          </button>
+        </div>
+
+        {/* Price in orange */}
+        {price && price.amount > 0 && (
+          <p
+            className="text-base font-semibold mb-8"
+            style={{ color: '#ff6929' }}
+          >
+            NPR {price.amount.toLocaleString()} - Price Annual
+          </p>
+        )}
+
+        {/* Two-column feature list */}
+        <div className="grid md:grid-cols-2 gap-x-12 gap-y-4">
+          {/* Column 1 */}
+          <ul className="space-y-4">
+            {column1.map((feature, idx) => (
+              <li key={idx} className="flex items-start gap-3">
+                <span
+                  className="flex-shrink-0 flex items-center justify-center rounded-full"
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                  }}
+                >
+                  <Icon
+                    name="check"
+                    size={14}
+                    style={{ color: '#22c55e' }}
+                  />
+                </span>
+                <span
+                  className="text-sm font-medium flex-1"
+                  style={{ color: '#1f2937' }}
+                >
+                  {feature.text}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          {/* Column 2 */}
+          <ul className="space-y-4">
+            {column2.map((feature, idx) => (
+              <li key={idx} className="flex items-start gap-3">
+                <span
+                  className="flex-shrink-0 flex items-center justify-center rounded-full"
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                  }}
+                >
+                  <Icon
+                    name="check"
+                    size={14}
+                    style={{ color: '#22c55e' }}
+                  />
+                </span>
+                <span
+                  className="text-sm font-medium flex-1"
+                  style={{ color: '#1f2937' }}
+                >
+                  {feature.text}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+
+  return createPortal(modalContent, document.body);
+}
