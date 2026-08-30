@@ -293,6 +293,11 @@ export function Pricing() {
 
   const toggle = data.toggle || fallbackData.toggle!
   const promo = data.promotionBanner || fallbackData.promotionBanner!
+  const countries = [
+    ['au', 'Australia'], ['pk', 'Pakistan'], ['us', 'USA'], ['my', 'Malaysia'],
+    ['mm', 'Myanmar'], ['jp', 'Japan'], ['it', 'Italy'], ['gb', 'UK'],
+    ['in', 'India'], ['th', 'Thailand'], ['np', 'Nepal'],
+  ] as const
 
   // Memoize derived data - only recalculate when data or isAnnual changes
   const plansToDisplay = useMemo(() => {
@@ -310,7 +315,8 @@ export function Pricing() {
             : undefined
           
           // Format display labels with "Rs." prefix
-          const formatPrice = (amount: number) => {
+          const formatPrice = (value: string, amount: number) => {
+            if (/^(free|custom)$/i.test(value.trim())) return value
             if (amount === 0) return 'Rs. 0';
             return `Rs. ${amount.toLocaleString('en-NP', { maximumFractionDigits: 0 })}`;
           };
@@ -328,13 +334,13 @@ export function Pricing() {
               {
                 period: 'yearly' as BillingPeriod,
                 amount: yearlyAmount,
-                displayLabel: formatPrice(yearlyAmount),
+                displayLabel: formatPrice(apiPlan.priceYearly, yearlyAmount),
                 originalAmount: originalYearlyAmount,
               },
               {
                 period: 'monthly' as BillingPeriod,
                 amount: monthlyAmount,
-                displayLabel: formatPrice(monthlyAmount),
+                displayLabel: formatPrice(apiPlan.priceMonthly, monthlyAmount),
                 originalAmount: originalMonthlyAmount,
               },
             ],
@@ -414,6 +420,27 @@ export function Pricing() {
             />
           </p>
 
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 max-w-5xl mx-auto mb-8 overflow-hidden">
+              <div className="flex-shrink-0 text-sm font-medium text-slate-500 dark:text-slate-400">
+                Trusted by 100+ restaurants worldwide
+              </div>
+              <div className="hidden sm:block h-6 w-px flex-shrink-0 bg-slate-200 dark:bg-slate-700" />
+              <div className="marquee-container min-w-0 overflow-hidden">
+                <div className="marquee-content">
+                  {[...Array(2)].map((_, setIndex) => (
+                    <div key={setIndex} className="flex items-center gap-4">
+                      {countries.map(([code, name]) => (
+                        <div key={`${setIndex}-${code}`} className="flex items-center gap-2 px-3 py-1.5 rounded-full whitespace-nowrap text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                          <img src={`https://flagcdn.com/w40/${code}.png`} alt={`${name} flag`} width="20" height="15" className="flex-shrink-0 rounded-sm" />
+                          <span>{name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+          </div>
+
           {/* Plan Type Toggle Switcher */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -421,48 +448,18 @@ export function Pricing() {
             transition={{ duration: 0.5 }}
             className="flex justify-center mb-12"
           >
-            <div 
-              className="relative inline-flex p-1 rounded-full"
-              style={{
-                backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(226, 232, 240, 0.5)',
-                border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(226, 232, 240, 0.8)',
-                width: '300px',
-              }}
-            >
-              {/* Sliding background indicator - active brand orange-red pill background */}
-              <div
-                className="absolute top-1 bottom-1 rounded-full"
-                style={{
-                  backgroundColor: '#ff6929',
-                  boxShadow: '0 2px 8px rgba(255, 105, 41, 0.3)',
-                  width: '146px',
-                  left: activeTab === 'restaurant' ? '4px' : '150px',
-                  transition: 'left 250ms ease-in-out',
-                }}
-              />
-              
-              {/* Business Option */}
+            <div className="inline-flex gap-8 border-b border-slate-200 dark:border-white/10">
               <button
                 onClick={handleRestaurantClick}
-                className="relative z-10 w-1/2 py-3 rounded-full font-semibold text-sm transition-colors duration-200 focus:outline-none"
-                style={{
-                  color: activeTab === 'restaurant' 
-                    ? '#ffffff'
-                    : isDark ? '#a3a3a3' : '#64748b',
-                }}
+                aria-pressed={activeTab === 'restaurant'}
+                className={`px-2 pb-3 text-sm font-semibold border-b-2 -mb-px transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ea580c] ${activeTab === 'restaurant' ? 'text-[#ea580c] border-[#ea580c]' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-900 dark:hover:text-white'}`}
               >
                 Standard
               </button>
-              
-              {/* Enterprise Option */}
               <button
                 onClick={handleEnterpriseClick}
-                className="relative z-10 w-1/2 py-3 rounded-full font-semibold text-sm transition-colors duration-200 focus:outline-none"
-                style={{
-                  color: activeTab === 'enterprise' 
-                    ? '#ffffff'
-                    : isDark ? '#a3a3a3' : '#64748b',
-                }}
+                aria-pressed={activeTab === 'enterprise'}
+                className={`px-2 pb-3 text-sm font-semibold border-b-2 -mb-px transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ea580c] ${activeTab === 'enterprise' ? 'text-[#ea580c] border-[#ea580c]' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-900 dark:hover:text-white'}`}
               >
                 Enterprise
               </button>
@@ -471,7 +468,7 @@ export function Pricing() {
 
           {/* Standard plan controls */}
           {activeTab === 'restaurant' && (
-          <div className="flex flex-col items-center gap-6 mb-16">
+          <div className="flex flex-col items-center justify-center gap-4 mb-10">
             <div className="flex items-center justify-center gap-4">
               <span
                 className={`text-sm font-medium ${
@@ -550,115 +547,9 @@ export function Pricing() {
         </div>
 
         {/* SECTION 1: NORMAL PLANS */}
-        <div className="mb-20">
-          {activeTab === 'restaurant' && (
-          <>
-          <h3 
-            className="text-2xl font-bold mb-8"
-            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-          >
-            Standard Plans
-          </h3>
-
-          {/* Trust Badge - Always visible for both tabs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            viewport={{ once: true }}
-            className="flex flex-col items-center gap-6 mb-12"
-          >
-            {/* Trust Badge Pill */}
-            <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-green-500">
-                <Icon name="check" size={16} style={{ color: '#ffffff' }} />
-              </div>
-              <span 
-                className="font-semibold text-sm"
-                style={{ color: isDark ? '#86efac' : '#047857' }}
-              >
-                Trusted by 100+ Restaurants — Nationally & Internationally
-              </span>
-            </div>
-
-            {/* Global Presence Marquee */}
-            <div className="w-full max-w-5xl relative overflow-hidden">
-              {/* Fade masks on edges */}
-              <div 
-                className="absolute left-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
-                style={{
-                  background: isDark 
-                    ? 'linear-gradient(to right, rgba(255,255,255,0.02) 0%, transparent 100%)'
-                    : 'linear-gradient(to right, #f8fafc 0%, transparent 100%)'
-                }}
-              />
-              <div 
-                className="absolute right-0 top-0 bottom-0 w-20 z-10 pointer-events-none"
-                style={{
-                  background: isDark 
-                    ? 'linear-gradient(to left, rgba(255,255,255,0.02) 0%, transparent 100%)'
-                    : 'linear-gradient(to left, #f8fafc 0%, transparent 100%)'
-                }}
-              />
-
-              {/* Scrolling container */}
-              <div className="marquee-container">
-                <div className="marquee-content">
-                  {[...Array(2)].map((_, setIndex) => (
-                    <div key={setIndex} className="flex gap-4 items-center">
-                      {[
-                        { code: 'au', name: 'Australia' },
-                        { code: 'pk', name: 'Pakistan' },
-                        { code: 'us', name: 'USA' },
-                        { code: 'my', name: 'Malaysia' },
-                        { code: 'mm', name: 'Myanmar' },
-                        { code: 'jp', name: 'Japan' },
-                        { code: 'it', name: 'Italy' },
-                        { code: 'gb', name: 'UK' },
-                        { code: 'in', name: 'India' },
-                        { code: 'th', name: 'Thailand' },
-                        { code: 'np', name: 'Nepal' },
-                      ].map((country, idx) => (
-                        <div
-                          key={`${setIndex}-${idx}`}
-                          className="flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap"
-                          style={{
-                            backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#ffffff',
-                            border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e2e8f0',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                          }}
-                        >
-                          <img
-                            src={`https://flagcdn.com/w40/${country.code}.png`}
-                            srcSet={`https://flagcdn.com/w80/${country.code}.png 2x`}
-                            alt={`${country.name} flag`}
-                            width="20"
-                            height="15"
-                            style={{ 
-                              borderRadius: '2px',
-                              display: 'block',
-                              flexShrink: 0,
-                              objectFit: 'cover'
-                            }}
-                          />
-                          <span 
-                            className="text-xs font-medium"
-                            style={{ color: isDark ? '#d4d4d4' : '#475569' }}
-                          >
-                            {country.name}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-          </>
-          )}
+        <div className="flex flex-col mb-20">
           {/* Cards Container - shared by both states */}
-          <div className="relative w-full grid grid-cols-1 grid-rows-1 items-stretch" style={{ minHeight: '600px' }}>
+          <div className="order-1 relative w-full grid grid-cols-1 grid-rows-1 items-stretch" style={{ minHeight: '600px' }}>
             {/* Restaurant Plans (Business) */}
             <div
               className="w-full"
@@ -672,7 +563,7 @@ export function Pricing() {
                 visibility: activeTab === 'restaurant' ? 'visible' : 'hidden',
               }}
             >
-              <div className="w-full grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch">
+              <div className="w-full max-w-[758px] mx-auto grid md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
                 {visiblePlans.map((plan) => (
                   <PlanCard
                     key={plan.id}
@@ -854,8 +745,6 @@ function PlanCard({
     !feature.text.toLowerCase().includes('no ') &&
     !feature.text.toLowerCase().includes('not included')
   );
-
-  // Show first 8 features on card, rest accessible via modal
   const visibleFeatures = includedFeatures.slice(0, 8);
   const remainingCount = includedFeatures.length - visibleFeatures.length;
 
@@ -865,10 +754,9 @@ function PlanCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: animationDelay }}
-      whileHover={{ y: -4 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="flex flex-col h-full p-8 rounded-2xl relative overflow-visible w-full"
+      className="flex flex-col h-full p-8 rounded-[2rem] relative overflow-visible w-full"
       style={{
         background: getBackground(),
         border: `2px solid ${getBorderColor()}`,
@@ -898,20 +786,16 @@ function PlanCard({
         </div>
       )}
 
-      {/* Plan Header - fixed height for consistent alignment */}
-      <div className="mb-6 mt-2">
+      <div className="mb-8">
         <h3
-          className="font-bold text-2xl lg:text-3xl mb-3 lg:mb-4"
+          className="font-bold text-2xl mb-2"
           style={{ color: isDark ? '#ffffff' : '#0f172a' }}
         >
           {plan.name}
         </h3>
-        <div 
-          className="flex items-start justify-center text-center"
-          style={{ minHeight: '60px' }}
-        >
+        <div className="flex items-start justify-center text-center">
           <p
-            className="text-sm lg:text-base leading-relaxed"
+            className="text-sm leading-relaxed min-h-[40px]"
             style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
           >
             {plan.description}
@@ -919,13 +803,11 @@ function PlanCard({
         </div>
       </div>
 
-      {/* Price Box - Gray inset with fixed height and proper padding */}
       <div 
-        className="mb-6 p-6 rounded-xl flex flex-col justify-center"
+        className="mb-8 p-6 -mx-2 rounded-2xl flex flex-col justify-center"
         style={{
           backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#F5F5F5',
           border: isDark ? '1px solid rgba(255,255,255,0.1)' : 'none',
-          minHeight: '200px',
         }}
       >
         {/* Struck-through original price */}
@@ -960,13 +842,13 @@ function PlanCard({
                 className="text-2xl lg:text-3xl font-black"
                 style={{ color: isDark ? '#ffffff' : '#000000' }}
               >
-                Rs. 0
+                {displayPrice?.displayLabel || 'Rs. 0'}
               </span>
               <span 
                 className="text-base lg:text-lg font-medium"
                 style={{ color: isDark ? '#94a3b8' : '#64748b' }}
               >
-                /Forever
+                {displayPrice?.displayLabel.toLowerCase() === 'free' ? '' : '/Forever'}
               </span>
             </div>
           )}
@@ -1017,32 +899,31 @@ function PlanCard({
         )}
       </div>
 
-      {/* Feature List - left-aligned with improved readability */}
-      <div className="flex-grow mb-6">
-        <ul className="space-y-2.5">
+      <div className="flex-grow mb-8">
+        <ul className="space-y-4">
           {visibleFeatures.map((feature, idx) => (
             <li key={idx} className="flex items-start gap-3">
               <span
                 className="flex-shrink-0 flex items-center justify-center rounded-full"
                 style={{
-                  width: '24px',
-                  height: '24px',
+                  width: '20px',
+                  height: '20px',
                   backgroundColor: isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)',
                 }}
               >
                 <Icon
                   name="check"
-                  size={15}
+                  size={13}
                   style={{
                     color: '#ea580c',
                   }}
                 />
               </span>
               <span
-                className="text-sm lg:text-[15px] font-medium flex-1 text-left"
+                className="text-sm flex-1 text-left"
                 style={{
                   color: isDark ? '#e5e7eb' : '#1f2937',
-                  lineHeight: '1.6',
+                  lineHeight: '1.5',
                 }}
               >
                 {feature.text}
@@ -1050,58 +931,23 @@ function PlanCard({
             </li>
           ))}
         </ul>
-        
-        {/* "+X more included capabilities" link */}
         {remainingCount > 0 && (
           <button
+            type="button"
             onClick={() => setIsModalOpen(true)}
-            className="mt-2.5 flex items-start gap-3 w-full hover:underline transition-colors duration-200"
-            style={{
-              cursor: 'pointer',
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              textAlign: 'left',
-            }}
+            className="mt-4 text-sm font-semibold hover:underline"
+            style={{ color: '#ea580c' }}
           >
-            <span
-              className="flex-shrink-0 flex items-center justify-center rounded-full"
-              style={{
-                width: '24px',
-                height: '24px',
-                backgroundColor: isDark ? 'rgba(234, 88, 12, 0.15)' : 'rgba(234, 88, 12, 0.1)',
-              }}
-            >
-              <Icon
-                name="check"
-                size={15}
-                style={{
-                  color: '#ea580c',
-                }}
-              />
-            </span>
-            <span
-              className="text-sm lg:text-[15px] font-medium flex-1 text-left"
-              style={{
-                color: '#ea580c',
-                lineHeight: '1.6',
-              }}
-            >
-              +{remainingCount} more included capabilities
-            </span>
+            +{remainingCount} more included capabilities
           </button>
         )}
       </div>
 
-      {/* Feature Modal */}
       {isModalOpen && (
         <FeatureModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
           planName={plan.name}
-          price={displayPrice}
           features={includedFeatures}
-          isDark={isDark}
+          onClose={() => setIsModalOpen(false)}
         />
       )}
 
@@ -1152,9 +998,8 @@ function EnterprisePlanCard({
     ? apiEnterprisePlan.features.map(f => f.text)
     : enterprisePlan.features.map(f => f.text);
 
-  const headerText = featuresList[0] || "Everything in Premium, plus";
-  const col1Features = featuresList.slice(1, 5);
-  const col2Features = featuresList.slice(5);
+  const featureMidpoint = Math.ceil(featuresList.length / 2);
+  const featureColumns = [featuresList.slice(0, featureMidpoint), featuresList.slice(featureMidpoint)];
 
 
   return (
@@ -1163,10 +1008,9 @@ function EnterprisePlanCard({
       animate={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: 0 }}
-      whileHover={{ y: -4 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="flex flex-col py-12 px-16 rounded-xl relative overflow-visible w-full text-left"
+      className="flex flex-col max-w-5xl mx-auto p-8 md:p-10 rounded-2xl relative w-full text-left"
       style={{
         backgroundColor: isDark ? '#0f0f0f' : '#ffffff',
         border: `1px solid ${getBorderColor()}`,
@@ -1177,297 +1021,110 @@ function EnterprisePlanCard({
         boxSizing: 'border-box',
       }}
     >
-      {/* Two-column layout */}
-      <div className="grid md:grid-cols-12 gap-8 md:gap-16 items-start">
-        {/* Left column - span 4 */}
-        <div className="flex flex-col items-start md:col-span-4">
-          {/* Header row: Icon next to Title & Subtitle */}
-          <div className="flex items-start gap-4 mb-2">
-            {/* Big custom icon container */}
-            <div 
-              className="flex-shrink-0 flex items-center justify-center"
-              style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '16px',
-                backgroundColor: '#ffe8dc',
-              }}
-            >
-              <Icon
-                name="building"
-                size={38}
-                style={{ color: '#ff6929' }}
-              />
-            </div>
-
-            <div className="flex flex-col items-start" style={{ maxWidth: '240px' }}>
-              <h3
-                className="font-bold text-3xl md:text-4xl mb-1 font-display"
-                style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-              >
-                {apiEnterprisePlan?.name || enterprisePlan.name}
-              </h3>
-              
-              <p
-                className="text-sm md:text-base font-bold text-orange-500 leading-tight"
-                style={{ fontSize: '13px' }}
-              >
-                {apiEnterprisePlan?.enterpriseSubheading || 'For multi-location chains and large franchises'}
-              </p>
-            </div>
+      <div className="flex flex-col md:flex-row md:items-center gap-6">
+        <div className="flex items-center gap-4 min-w-0 flex-1">
+          <div className="flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl" style={{ backgroundColor: 'rgba(234, 88, 12, 0.12)' }}>
+            <Icon name="building" size={32} style={{ color: '#ea580c' }} />
           </div>
-
-          {/* Short Orange dividing line */}
-          <div 
-            className="w-20 h-0.5 mt-0 mb-6" 
-            style={{ backgroundColor: '#ff6929' }}
-          />
-
-          <p
-            className="text-sm md:text-base leading-relaxed max-w-[380px]"
-            style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
-          >
-            <InlineHTMLContent html={apiEnterprisePlan?.description || enterprisePlan.description} />
-          </p>
-        </div>
-
-        {/* Right column - span 8 */}
-        <div className="flex flex-col md:col-span-8">
-          {/* Right Heading with Divider Line */}
-          <div className="flex items-center gap-8 mb-6 w-full">
-            <h4 
-              className="text-lg md:text-xl font-bold whitespace-nowrap"
-              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-            >
-              {headerText}
-            </h4>
-            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
-          </div>
-          
-          {/* Two-column bulleted feature list with vertical separator line */}
-          <div className="flex flex-col sm:flex-row gap-y-4 w-full">
-            {/* Column 1 */}
-            <ul className="space-y-4 flex-1">
-              {col1Features.map((text, idx) => (
-                <li key={idx} className="flex items-center gap-3">
-                  <span
-                    className="flex-shrink-0 flex items-center justify-center rounded-full"
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      backgroundColor: '#ffe8dc',
-                    }}
-                  >
-                    <Icon
-                      name="check"
-                      size={14}
-                      style={{ color: '#ff6929' }}
-                    />
-                  </span>
-                  <span
-                    className="text-sm md:text-base font-normal"
-                    style={{ color: isDark ? '#e5e7eb' : '#334155' }}
-                  >
-                    {text}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            {/* Vertical Divider Line */}
-            <div className="hidden sm:block w-px bg-slate-200 dark:bg-slate-700 self-stretch mx-8" />
-
-            {/* Column 2 */}
-            <ul className="space-y-4 flex-1">
-              {col2Features.map((text, idx) => (
-                <li key={idx} className="flex items-center gap-3">
-                  <span
-                    className="flex-shrink-0 flex items-center justify-center rounded-full"
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      backgroundColor: '#ffe8dc',
-                    }}
-                  >
-                    <Icon
-                      name="check"
-                      size={14}
-                      style={{ color: '#ff6929' }}
-                    />
-                  </span>
-                  <span
-                    className="text-sm md:text-base font-normal"
-                    style={{ color: isDark ? '#e5e7eb' : '#334155' }}
-                  >
-                    {text}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <div className="min-w-0">
+            <h3 className="font-bold text-3xl font-display" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
+              {apiEnterprisePlan?.name || enterprisePlan.name}
+            </h3>
+            <p className="mt-1 text-sm font-semibold" style={{ color: '#ea580c' }}>
+              {apiEnterprisePlan?.enterpriseSubheading || 'For multi-location chains and large franchises'}
+            </p>
           </div>
         </div>
-      </div>
-
-      {/* Centered black pill CTA Button */}
-      <div className="flex justify-center mt-8">
         <a
           href={apiEnterprisePlan?.ctaHref || enterprisePlan.ctaHref}
-          className="inline-block py-3.5 px-16 rounded-xl font-bold text-center text-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md"
+          className="flex-shrink-0 inline-block py-3 px-8 rounded-xl font-bold text-center transition-all duration-200 hover:scale-[1.01] hover:shadow-md"
           style={{
             backgroundColor: isDark ? '#ffffff' : '#000000',
             color: isDark ? '#000000' : '#ffffff',
-            minWidth: '280px',
           }}
         >
           {apiEnterprisePlan?.ctaText || enterprisePlan.ctaText}
         </a>
       </div>
+
+      <div className="mt-6 text-sm md:text-base leading-relaxed max-w-3xl" style={{ color: isDark ? '#a3a3a3' : '#64748b' }}>
+        <InlineHTMLContent html={apiEnterprisePlan?.description || enterprisePlan.description} />
+      </div>
+
+      <div className="h-px my-8 bg-slate-200 dark:bg-white/10" />
+
+      <div className="grid sm:grid-cols-2 gap-x-12 gap-y-4">
+        {featureColumns.map((column, columnIndex) => (
+          <ul key={columnIndex} className="space-y-4">
+            {column.map((text) => (
+              <li key={text} className="flex items-center gap-3">
+                <span className="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full" style={{ backgroundColor: 'rgba(234, 88, 12, 0.12)' }}>
+                  <Icon name="check" size={14} style={{ color: '#ea580c' }} />
+                </span>
+                <span className="text-sm md:text-base" style={{ color: isDark ? '#e5e7eb' : '#334155' }}>
+                  {text}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
     </motion.div>
   );
 }
 
-
-
-
-
-
-
-// Feature Modal Component
 function FeatureModal({
-  isOpen,
-  onClose,
   planName,
-  price,
   features,
-  isDark,
+  onClose,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
-  planName: string;
-  price: any;
-  features: PlanFeature[];
-  isDark: boolean;
+  planName: string
+  features: PlanFeature[]
+  onClose: () => void
 }) {
-  const [isMounted, setIsMounted] = useState(false);
-
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && onClose()
+    document.addEventListener('keydown', closeOnEscape)
+    return () => document.removeEventListener('keydown', closeOnEscape)
+  }, [onClose])
 
-  if (!isOpen || !isMounted) return null;
-
-  // Split features into two columns
-  const midPoint = Math.ceil(features.length / 2);
-  const column1 = features.slice(0, midPoint);
-  const column2 = features.slice(midPoint);
-
-  const modalContent = (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl p-10 bg-white"
-        style={{
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-        }}
-        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feature-modal-title"
+        className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-8 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
       >
-        {/* Modal Header with Title and Close button on same line */}
-        <div className="flex items-center justify-between mb-2">
-          <h3
-            className="text-2xl font-bold"
-            style={{ color: '#000000' }}
-          >
-            {planName} Features
+        <div className="flex items-center justify-between gap-4 mb-8">
+          <h3 id="feature-modal-title" className="text-2xl font-bold text-slate-900">
+            {planName} features
           </h3>
           <button
+            type="button"
             onClick={onClose}
-            className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors"
-            aria-label="Close modal"
+            aria-label="Close feature list"
+            className="flex items-center justify-center w-9 h-9 rounded-full text-slate-600 hover:bg-slate-100"
           >
-            <Icon
-              name="close"
-              size={20}
-              style={{ color: '#000000' }}
-            />
+            <Icon name="close" size={20} />
           </button>
         </div>
-
-        {/* Price in orange */}
-        {price && price.amount > 0 && (
-          <p
-            className="text-base font-semibold mb-8"
-            style={{ color: '#ff6929' }}
-          >
-            NPR {price.amount.toLocaleString()} - Price Annual
-          </p>
-        )}
-
-        {/* Two-column feature list */}
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-4">
-          {/* Column 1 */}
-          <ul className="space-y-4">
-            {column1.map((feature, idx) => (
-              <li key={idx} className="flex items-start gap-3">
-                <span
-                  className="flex-shrink-0 flex items-center justify-center rounded-full"
-                  style={{
-                    width: '20px',
-                    height: '20px',
-                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                  }}
-                >
-                  <Icon
-                    name="check"
-                    size={14}
-                    style={{ color: '#22c55e' }}
-                  />
-                </span>
-                <span
-                  className="text-sm font-medium flex-1"
-                  style={{ color: '#1f2937' }}
-                >
-                  {feature.text}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          {/* Column 2 */}
-          <ul className="space-y-4">
-            {column2.map((feature, idx) => (
-              <li key={idx} className="flex items-start gap-3">
-                <span
-                  className="flex-shrink-0 flex items-center justify-center rounded-full"
-                  style={{
-                    width: '20px',
-                    height: '20px',
-                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
-                  }}
-                >
-                  <Icon
-                    name="check"
-                    size={14}
-                    style={{ color: '#22c55e' }}
-                  />
-                </span>
-                <span
-                  className="text-sm font-medium flex-1"
-                  style={{ color: '#1f2937' }}
-                >
-                  {feature.text}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-4">
+          {features.map((feature) => (
+            <li key={feature.text} className="flex items-start gap-3 text-sm text-slate-700">
+              <span className="flex-shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-orange-50">
+                <Icon name="check" size={13} style={{ color: '#ea580c' }} />
+              </span>
+              {feature.text}
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
-  );
-
-  return createPortal(modalContent, document.body);
+    </div>,
+    document.body,
+  )
 }
