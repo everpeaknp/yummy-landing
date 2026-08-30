@@ -93,6 +93,8 @@ export interface PricingFeature {
 
 export interface PricingPlan {
   name: string
+  planType: 'standard' | 'enterprise'
+  enterpriseSubheading: string
   priceMonthly: string
   priceYearly: string
   originalPriceMonthly?: string
@@ -576,4 +578,3 @@ export interface PageSEOResponse {
   sitemapChangeFrequency: string
   jsonLd: Record<string, unknown> | null
 }
-

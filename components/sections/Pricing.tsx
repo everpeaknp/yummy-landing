@@ -243,6 +243,14 @@ const fallbackData: Partial<PricingPageData> = {
   },
 }
 
+function parsePrice(value: string | null | undefined, field: string, plan: string): number {
+  if (!value || /^(free|custom)$/i.test(value.trim())) return 0
+
+  const amount = value.replace(/,/g, '').match(/-?\d+(?:\.\d+)?/)
+  if (!amount) throw new Error(`Invalid ${field} for pricing plan "${plan}": ${value}`)
+  return Number(amount[0])
+}
+
 export function Pricing() {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
@@ -286,42 +294,20 @@ export function Pricing() {
   const toggle = data.toggle || fallbackData.toggle!
   const promo = data.promotionBanner || fallbackData.promotionBanner!
 
-  // Debug FAQ data
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[Pricing] FAQ count:', faqs.length, faqs)
-  }
-
   // Memoize derived data - only recalculate when data or isAnnual changes
   const plansToDisplay = useMemo(() => {
     // Use API plans if available, otherwise fall back to hardcoded normalPlans
     // Transform API data structure to match Plan type from pricingPlans.ts
     return (data.plans && data.plans.length > 0) 
-      ? data.plans.map(apiPlan => {
-          // Parse yearly price - API returns plain numbers like "11400.00"
-          const yearlyAmount = apiPlan.priceYearly 
-            ? parseFloat(apiPlan.priceYearly) 
-            : 0;
-          
-          // Parse 6-month price - API returns plain numbers like "6000.00"
-          const monthlyAmount = apiPlan.price6Month 
-            ? parseFloat(apiPlan.price6Month) 
-            : 0;
-          
-          // Parse original prices if present
-          const originalYearlyAmount = apiPlan.originalPriceYearly 
-            ? parseFloat(apiPlan.originalPriceYearly)
-            : undefined;
-          const originalMonthlyAmount = apiPlan.originalPrice6Month 
-            ? parseFloat(apiPlan.originalPrice6Month)
-            : undefined;
-          
-          // Parse renewal prices if present
-          const renewalYearlyAmount = apiPlan.renewalPriceYearly 
-            ? parseFloat(apiPlan.renewalPriceYearly)
-            : undefined;
-          const renewalMonthlyAmount = apiPlan.renewalPrice6Month 
-            ? parseFloat(apiPlan.renewalPrice6Month)
-            : undefined;
+      ? data.plans.filter(apiPlan => apiPlan.planType === 'standard').map(apiPlan => {
+          const yearlyAmount = parsePrice(apiPlan.priceYearly, 'yearly price', apiPlan.name)
+          const monthlyAmount = parsePrice(apiPlan.priceMonthly, 'monthly price', apiPlan.name)
+          const originalYearlyAmount = apiPlan.originalPriceYearly
+            ? parsePrice(apiPlan.originalPriceYearly, 'original yearly price', apiPlan.name)
+            : undefined
+          const originalMonthlyAmount = apiPlan.originalPriceMonthly
+            ? parsePrice(apiPlan.originalPriceMonthly, 'original monthly price', apiPlan.name)
+            : undefined
           
           // Format display labels with "Rs." prefix
           const formatPrice = (amount: number) => {
@@ -344,14 +330,12 @@ export function Pricing() {
                 amount: yearlyAmount,
                 displayLabel: formatPrice(yearlyAmount),
                 originalAmount: originalYearlyAmount,
-                renewalAmount: renewalYearlyAmount,
               },
               {
-                period: '6month' as BillingPeriod,
+                period: 'monthly' as BillingPeriod,
                 amount: monthlyAmount,
                 displayLabel: formatPrice(monthlyAmount),
                 originalAmount: originalMonthlyAmount,
-                renewalAmount: renewalMonthlyAmount,
               },
             ],
             // Use detailed hardcoded features from pricingPlans.ts as source of truth
@@ -367,12 +351,12 @@ export function Pricing() {
   }, [data.plans]);
 
   // Memoize visiblePlans - only recalculate when plansToDisplay or isAnnual changes
-  // Filter out Enterprise plan - it has its own dedicated section
   const visiblePlans = useMemo(() => {
     return plansToDisplay
-      .filter(plan => plan.name.toLowerCase() !== 'enterprise')
       .map(plan => {
-        const price = getPlanPrice(plan, isAnnual ? 'yearly' : '6month') || getPlanPrice(plan, 'yearly');
+        const price = isAnnual
+          ? getPlanPrice(plan, 'yearly')
+          : getPlanPrice(plan, 'monthly') || getPlanPrice(plan, '6month') || getPlanPrice(plan, 'yearly')
         return { ...plan, currentPrice: price };
       });
   }, [plansToDisplay, isAnnual]);
@@ -485,7 +469,8 @@ export function Pricing() {
             </div>
           </motion.div>
 
-          {/* Toggle */}
+          {/* Standard plan controls */}
+          {activeTab === 'restaurant' && (
           <div className="flex flex-col items-center gap-6 mb-16">
             <div className="flex items-center justify-center gap-4">
               <span
@@ -561,10 +546,13 @@ export function Pricing() {
               </div>
             </motion.div>
           </div>
+          )}
         </div>
 
         {/* SECTION 1: NORMAL PLANS */}
         <div className="mb-20">
+          {activeTab === 'restaurant' && (
+          <>
           <h3 
             className="text-2xl font-bold mb-8"
             style={{ color: isDark ? '#ffffff' : '#0f172a' }}
@@ -667,6 +655,8 @@ export function Pricing() {
               </div>
             </div>
           </motion.div>
+          </>
+          )}
           {/* Cards Container - shared by both states */}
           <div className="relative w-full grid grid-cols-1 grid-rows-1 items-stretch" style={{ minHeight: '600px' }}>
             {/* Restaurant Plans (Business) */}
@@ -831,9 +821,9 @@ function PlanCard({
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  // Premium plan is yearly-only - force yearly price if no 6-month option exists
+  // Premium plan is yearly-only - force yearly price if no shorter option exists
   const isPremiumPlan = plan.id === 'premium';
-  const isYearlyOnly = isPremiumPlan || !getPlanPrice(plan, '6month');
+  const isYearlyOnly = isPremiumPlan || (!getPlanPrice(plan, 'monthly') && !getPlanPrice(plan, '6month'));
   
   // Use yearly price for Premium even when toggle is on 6-month
   const displayPrice = (isYearlyOnly && !isAnnual) 
@@ -961,7 +951,7 @@ function PlanCard({
                 className="text-base lg:text-lg font-medium"
                 style={{ color: isDark ? '#94a3b8' : '#64748b' }}
               >
-                {displayPrice?.period === 'yearly' ? '/yr' : displayPrice?.period === '6month' ? '/6 months' : '/Forever'}
+                {displayPrice?.period === 'yearly' ? '/yr' : displayPrice?.period === 'monthly' ? '/month' : displayPrice?.period === '6month' ? '/6 months' : '/Forever'}
               </span>
             </div>
           ) : (
@@ -990,7 +980,7 @@ function PlanCard({
           </p>
         ) : (
           // Show renewal info based on plan and period
-          displayPrice?.amount && displayPrice.amount > 0 && displayPrice.period && (displayPrice.period === 'yearly' || displayPrice.period === '6month') && (
+          displayPrice?.amount && displayPrice.amount > 0 && displayPrice.period && (
             <div className="text-center mt-2">
               {displayPrice.period === 'yearly' ? (
                 // YEARLY VIEW LOGIC
@@ -1155,8 +1145,7 @@ function EnterprisePlanCard({
     return isDark ? 'rgba(255, 255, 255, 0.08)' : '#e2e8f0';
   };
 
-  // Find enterprise plan in the API plans data
-  const apiEnterprisePlan = data?.plans?.find(p => p.name.toLowerCase() === 'enterprise');
+  const apiEnterprisePlan = data.plans?.find(plan => plan.planType === 'enterprise');
   
   // Use API features if available, otherwise fall back to static config
   const featuresList = (apiEnterprisePlan?.features && apiEnterprisePlan.features.length > 0)
@@ -1216,14 +1205,14 @@ function EnterprisePlanCard({
                 className="font-bold text-3xl md:text-4xl mb-1 font-display"
                 style={{ color: isDark ? '#ffffff' : '#0f172a' }}
               >
-                Enterprise
+                {apiEnterprisePlan?.name || enterprisePlan.name}
               </h3>
               
               <p
                 className="text-sm md:text-base font-bold text-orange-500 leading-tight"
                 style={{ fontSize: '13px' }}
               >
-                For multi-location chains<br />and large franchises
+                {apiEnterprisePlan?.enterpriseSubheading || 'For multi-location chains and large franchises'}
               </p>
             </div>
           </div>
@@ -1238,7 +1227,7 @@ function EnterprisePlanCard({
             className="text-sm md:text-base leading-relaxed max-w-[380px]"
             style={{ color: isDark ? '#a3a3a3' : '#64748b' }}
           >
-            A powerful and flexible solution designed to manage complex operations, centralize control and scale your business effortlessly.
+            <InlineHTMLContent html={apiEnterprisePlan?.description || enterprisePlan.description} />
           </p>
         </div>
 
@@ -1322,7 +1311,7 @@ function EnterprisePlanCard({
       {/* Centered black pill CTA Button */}
       <div className="flex justify-center mt-8">
         <a
-          href={enterprisePlan.ctaHref}
+          href={apiEnterprisePlan?.ctaHref || enterprisePlan.ctaHref}
           className="inline-block py-3.5 px-16 rounded-xl font-bold text-center text-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md"
           style={{
             backgroundColor: isDark ? '#ffffff' : '#000000',
@@ -1330,7 +1319,7 @@ function EnterprisePlanCard({
             minWidth: '280px',
           }}
         >
-          Contact Sales
+          {apiEnterprisePlan?.ctaText || enterprisePlan.ctaText}
         </a>
       </div>
     </motion.div>
