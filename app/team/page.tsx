@@ -8,11 +8,11 @@ export async function generateMetadata(): Promise<Metadata> {
     const seo = await getPageSEO("team");
     return {
       title: seo.metaTitle || "Meet the Team | Yummy POS",
-      description: seo.metaDescription || "Yummy Ever is the flagship product of Everacy.",
+      description: seo.metaDescription || "Yummyever is the flagship product of Everacy.",
       keywords: seo.metaKeywords,
       openGraph: {
         title: seo.ogTitle || seo.metaTitle || "Meet the Team | Yummy POS",
-        description: seo.ogDescription || seo.metaDescription || "Yummy Ever is the flagship product of Everacy.",
+        description: seo.ogDescription || seo.metaDescription || "Yummyever is the flagship product of Everacy.",
         type: (seo.ogType as any) || "website",
         url: seo.canonicalUrl || "https://yummyever.com/team",
         images: seo.ogImage ? [{ url: seo.ogImage }] : [],
@@ -25,11 +25,11 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: "Meet the Team | Yummy POS",
       description:
-        "Yummy Ever is the flagship product of Everacy. We are a passionate group of foodies, engineers, and designers on a mission to revolutionize the restaurant industry in Nepal.",
+        "Yummyever is the flagship product of Everacy. We are a passionate group of foodies, engineers, and designers on a mission to revolutionize the restaurant industry in Nepal.",
       openGraph: {
         title: "Meet the Team | Yummy POS",
         description:
-          "Yummy Ever is the flagship product of Everacy. We are a passionate group of foodies, engineers, and designers on a mission to revolutionize the restaurant industry in Nepal.",
+          "Yummyever is the flagship product of Everacy. We are a passionate group of foodies, engineers, and designers on a mission to revolutionize the restaurant industry in Nepal.",
         type: "website",
         url: "https://yummyever.com/team",
       },

@@ -3,8 +3,8 @@
  * Base URL and fetch wrapper for Django backend
  */
 
-// Use direct backend URL for all requests, normalized to avoid `//` issues
-const RAW_API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'
+// Use the same-origin Next.js proxy so browser requests do not require backend CORS access
+const RAW_API_BASE_URL = '/api'
 const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '')
 
 /**

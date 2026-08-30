@@ -25,11 +25,11 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: "Simple, Transparent Pricing | Yummy POS",
       description:
-        "Choose the plan that fits your restaurant. No hidden fees, cancel anytime. Free installation valid until February!",
+        "Choose the plan that fits your restaurant. No hidden fees, cancel anytime. Get a POS Printer Free At Just Rs. 24,999/year!",
       openGraph: {
         title: "Simple, Transparent Pricing | Yummy POS",
         description:
-          "Choose the plan that fits your restaurant. No hidden fees, cancel anytime. Free installation valid until February!",
+          "Choose the plan that fits your restaurant. No hidden fees, cancel anytime. Get a POS Printer Free At Just Rs. 24,999/year!",
         type: "website",
         url: "https://yummyever.com/pricing",
       },
