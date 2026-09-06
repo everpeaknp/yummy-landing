@@ -563,7 +563,7 @@ export function Pricing() {
                 visibility: activeTab === 'restaurant' ? 'visible' : 'hidden',
               }}
             >
-              <div className="w-full max-w-[758px] mx-auto grid md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+              <div className="w-full max-w-[1548px] mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-stretch">
                 {visiblePlans.map((plan) => (
                   <PlanCard
                     key={plan.id}
