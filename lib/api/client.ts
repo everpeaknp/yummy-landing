@@ -4,7 +4,10 @@
  */
 
 // Use the same-origin Next.js proxy so browser requests do not require backend CORS access
-const RAW_API_BASE_URL = '/api'
+// But on the server (Server Components), fetch requires an absolute URL.
+const RAW_API_BASE_URL = typeof window === 'undefined'
+  ? (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api')
+  : '/api';
 const API_BASE_URL = RAW_API_BASE_URL.replace(/\/+$/, '')
 
 /**
