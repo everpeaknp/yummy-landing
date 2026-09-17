@@ -3,8 +3,9 @@
 import { Navbar, Footer } from '@/components/layout'
 import { useTheme } from '@/hooks/useTheme'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState, useEffect, useCallback } from 'react'
-import { getBlogPost, useRefetchOnFocus, type BlogPostDetail } from '@/lib/api'
+import { getBlogPost, getBlogPosts, useRefetchOnFocus, type BlogPostDetail, type BlogPost } from '@/lib/api'
 import { HTMLContent, InlineHTMLContent } from '@/components/ui/HTMLContent'
 
 // Single-line class strings for prose styling - prevents hydration mismatch
@@ -45,11 +46,16 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
       : [],
   })
 
+  const [recentPosts, setRecentPosts] = useState<BlogPost[]>([])
+
   const fetchData = useCallback(async () => {
     try {
-      const apiPost: BlogPostDetail = await getBlogPost(slug)
+      const [apiPost, allPostsData] = await Promise.all([
+        getBlogPost(slug),
+        getBlogPosts()
+      ])
+      
       // Map API response (BlogPostDetail) to DisplayPost format
-      // API uses imageUrl, keywords as string (comma-separated)
       setPost({
         slug: apiPost.slug,
         title: apiPost.title,
@@ -66,6 +72,12 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
               : initialPost.keywords
             : [],
       })
+
+      if (allPostsData?.posts) {
+        // Filter out current post and get up to 3 recent ones
+        const filtered = allPostsData.posts.filter(p => p.slug !== slug).slice(0, 3)
+        setRecentPosts(filtered)
+      }
     } catch (error) {
       // Keep initial/fallback post on error - silent for 404s
       console.debug('Blog API not available, using fallback:', error)
@@ -83,51 +95,4 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
     <>
       <Navbar />
       <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <article
-        className="pt-32 pb-20 min-h-screen"
-        style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
-      >
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="mb-8">
-            <span className="text-sm font-bold uppercase tracking-wider text-primary">
-              {post.date}
-            </span>
-            {post.keywords && post.keywords.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-4">
-                {post.keywords.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-          <h1
-            className="text-3xl md:text-5xl font-black font-display mb-8 leading-tight"
-            style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-          >
-            <InlineHTMLContent html={post.title} />
-          </h1>
-
-          <div className="w-full h-64 md:h-96 rounded-3xl mb-12 overflow-hidden shadow-xl relative">
-            <Image src={post.image} alt={post.title} fill className="object-cover" priority />
-          </div>
-
-          <HTMLContent
-            as="div"
-            html={post.content}
-            className={proseClasses}
-            style={{ color: isDark ? '#e5e5e5' : '#334155' }}
-          />
-        </div>
-      </article>
-      <Footer />
-    </>
-  )
-}
+        type=" application/ld+json\
