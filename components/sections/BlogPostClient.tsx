@@ -74,8 +74,8 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
       })
 
       if (allPostsData?.posts) {
-        // Filter out current post and get up to 3 recent ones
-        const filtered = allPostsData.posts.filter(p => p.slug !== slug).slice(0, 3)
+        // Filter out current post and get up to 8 recent ones
+        const filtered = allPostsData.posts.filter(p => p.slug !== slug).slice(0, 8)
         setRecentPosts(filtered)
       }
     } catch (error) {
@@ -143,7 +143,8 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
           </div>
 
           {/* Sidebar */}
-          <aside className="lg:col-span-1 space-y-12">
+          <div className="lg:col-span-1">
+            <aside className="sticky top-32 space-y-12 pb-10">
             {/* About Widget */}
             <div className="p-6 rounded-2xl bg-gray-50 dark:bg-zinc-900/50 border border-gray-100 dark:border-zinc-800">
               <h3 className="text-xl font-bold font-display mb-4" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
@@ -188,7 +189,8 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
                 </div>
               </div>
             )}
-          </aside>
+            </aside>
+          </div>
 
         </div>
       </article>
