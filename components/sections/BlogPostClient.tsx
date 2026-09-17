@@ -95,4 +95,104 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
     <>
       <Navbar />
       <script
-        type=" application/ld+json\
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <article
+        className="pt-32 pb-20 min-h-screen"
+        style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
+      >
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-12">
+          
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            <div className="mb-8">
+              <span className="text-sm font-bold uppercase tracking-wider text-primary">
+                {post.date}
+              </span>
+              {post.keywords && post.keywords.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {post.keywords.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-400"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+            <h1
+              className="text-3xl md:text-5xl font-black font-display mb-8 leading-tight"
+              style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+            >
+              <InlineHTMLContent html={post.title} />
+            </h1>
+
+            <div className="w-full h-64 md:h-[450px] rounded-3xl mb-12 overflow-hidden shadow-xl relative">
+              <Image src={post.image} alt={post.title} fill className="object-cover" priority />
+            </div>
+
+            <HTMLContent
+              as="div"
+              html={post.content}
+              className={proseClasses}
+              style={{ color: isDark ? '#e5e5e5' : '#334155' }}
+            />
+          </div>
+
+          {/* Sidebar */}
+          <aside className="lg:col-span-1 space-y-12">
+            {/* About Widget */}
+            <div className="p-6 rounded-2xl bg-gray-50 dark:bg-zinc-900/50 border border-gray-100 dark:border-zinc-800">
+              <h3 className="text-xl font-bold font-display mb-4" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
+                About Yummy POS
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                Yummy Manage is Nepal's top-rated cloud restaurant management software. We help cafes, restaurants, and chains streamline their billing, KOT, and inventory.
+              </p>
+              <Link
+                href="/pricing"
+                className="block w-full py-3 px-4 bg-primary text-white text-center font-bold rounded-xl hover:bg-orange-600 transition-colors"
+              >
+                Start Free Trial
+              </Link>
+            </div>
+
+            {/* Recommended Posts */}
+            {recentPosts.length > 0 && (
+              <div>
+                <h3 className="text-xl font-bold font-display mb-6" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
+                  Recommended Reading
+                </h3>
+                <div className="space-y-6">
+                  {recentPosts.map((rp) => (
+                    <Link href={`/blog/${rp.slug}`} key={rp.slug} className="group block">
+                      <div className="relative w-full h-40 rounded-xl overflow-hidden mb-3">
+                        <Image
+                          src={rp.imageUrl}
+                          alt={rp.title}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                      <h4 className="font-bold text-lg leading-snug group-hover:text-primary transition-colors line-clamp-2" style={{ color: isDark ? '#ffffff' : '#0f172a' }}>
+                        {rp.title}
+                      </h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                        {rp.date}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </aside>
+
+        </div>
+      </article>
+      <Footer />
+    </>
+  )
+}
