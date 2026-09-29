@@ -73,7 +73,7 @@ export function Navbar() {
         themeToggle: apiData.themeToggle || fallbackData.themeToggle,
       })
     } catch (error) {
-      console.error('[Navbar] Failed to fetch navbar data:', error)
+      console.warn('[Navbar] Failed to fetch navbar data:', error)
       // Keep fallback data
       setData(fallbackData)
     }

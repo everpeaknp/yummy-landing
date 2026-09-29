@@ -78,7 +78,7 @@ export function Footer() {
       const apiData = await getFooter();
       setData(apiData);
     } catch (error) {
-      console.error("Failed to fetch footer data:", error);
+      console.warn("Failed to fetch footer data:", error);
     }
   }, []);
 

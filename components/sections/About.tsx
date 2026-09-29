@@ -78,7 +78,9 @@ export function About() {
       const apiData = await get<AboutData>('/pages/home/about/')
       setData(apiData)
     } catch (error) {
-      console.error('Failed to fetch about data:', error)
+      console.warn('Failed to fetch about data:', error)
+      // Keep fallback data
+      setData(fallbackData)
     }
   }, [])
 

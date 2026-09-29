@@ -10,7 +10,7 @@ export async function getActivePromoBanner(): Promise<PromoBannerData | null> {
     const data = await get<PromoBannerData | null>('/promo-banner/active/')
     return data
   } catch (error) {
-    console.error('Error fetching active promo banner:', error)
+    console.warn('Error fetching active promo banner:', error)
     return null
   }
 }

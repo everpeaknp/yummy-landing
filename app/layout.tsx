@@ -206,7 +206,7 @@ export default async function RootLayout({
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         {/* Theme script */}
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} suppressHydrationWarning />
 
         {/* Global JSON-LD Structured Data */}
         <script
