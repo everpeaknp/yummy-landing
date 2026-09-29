@@ -68,7 +68,6 @@ export const normalPlans: Plan[] = [
       { text: 'Up to 2 Users Login', included: true },
       { text: 'Up to 5 Tables', included: true },
       { text: 'Up to 50 Menu Items', included: true },
-      { text: 'Up to 2 Staff Members', included: true },
       { text: 'Basic Ordering System', included: true },
       { text: 'No Inventory Management', included: false },
       { text: 'No Add-ons or Modifiers', included: false },
@@ -102,9 +101,8 @@ export const normalPlans: Plan[] = [
     ],
     features: [
       { text: 'Up to 5 Users Login', included: true },
-      { text: 'Up to 15 Tables', included: true },
+      { text: 'Up to 8 Tables', included: true },
       { text: 'Up to 300 Menu Items', included: true },
-      { text: 'Up to 15 Staff Members', included: true },
       { text: 'Ordering System (Dine-in, Takeaway, Delivery)', included: true },
       { text: 'Reservations', included: true },
       { text: 'Digital QR Menu Ordering', included: true },

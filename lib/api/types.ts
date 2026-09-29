@@ -577,3 +577,59 @@ export interface PageSEOResponse {
   jsonLd: Record<string, unknown> | null
 }
 
+// ============================================
+// Promo Banner Types
+// ============================================
+
+export interface PromoBannerFeature {
+  icon: string
+  text: string
+}
+
+export interface PromoBannerTextBlock {
+  id: number
+  text: string
+  position: 'top_left' | 'top_center' | 'top_right' | 'middle_left' | 'center' | 'middle_right' | 'bottom_left' | 'bottom_center' | 'bottom_right' | 'custom'
+  custom_x_percent: number | null
+  custom_y_percent: number | null
+  font_size: 'small' | 'medium' | 'large' | 'xlarge'
+  font_weight: 'normal' | 'bold' | 'black'
+  text_color: string
+  background_color: string
+  alignment: 'left' | 'center' | 'right'
+  order: number
+  is_visible: boolean
+}
+
+export interface PromoBannerData {
+  id: number
+  festival: string
+  mode: 'full_image' | 'text_overlay'
+  image_url: string
+  mobile_image_url: string
+  headline_line1: string
+  headline_line2: string
+  features: PromoBannerFeature[]
+  text_blocks: PromoBannerTextBlock[]
+  cta_text: string
+  cta_link: string
+  accent_color: string
+  text_color: string
+  timer_position: 'top_left' | 'top_center' | 'top_right' | 'middle_left' | 'center' | 'middle_right' | 'bottom_left' | 'bottom_center' | 'bottom_right'
+  timer_style: 'boxes' | 'compact' | 'digital'
+  show_days: boolean
+  timer_theme: 'brand_orange' | 'festive_red' | 'deep_navy' | 'custom'
+  timer_box_color: string
+  timer_number_color: string
+  timer_label_color: string
+  timer_separator_color: string
+  timer_size: 'small' | 'medium' | 'large'
+  timer_label_style: 'full' | 'short'
+  starts_at: string
+  ends_at: string
+  display_order: number
+  is_active: boolean
+  hide_on_expire: boolean
+  is_currently_active: boolean
+}
+

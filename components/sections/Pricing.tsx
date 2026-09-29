@@ -14,11 +14,12 @@ import {
 } from '@/lib/api'
 import { InlineHTMLContent } from '@/components/ui/HTMLContent'
 import { Icon } from '@/components/ui/Icon'
-import { 
-  normalPlans, 
-  enterprisePlan, 
-  getPlanPrice, 
-  type Plan, 
+import { PromoBanner } from '@/components/promo/PromoBanner'
+import {
+  normalPlans,
+  enterprisePlan,
+  getPlanPrice,
+  type Plan,
   type BillingPeriod,
   type PlanFeature,
   type PlanTier
@@ -237,8 +238,8 @@ const fallbackData: Partial<PricingPageData> = {
   subtitle: 'Choose the plan that fits your business stage. No hidden fees, cancel anytime.',
   toggle: { monthlyLabel: 'Monthly', yearlyLabel: 'Yearly', savingsLabel: 'SAVE 33%' },
   promotionBanner: {
-    icon: 'celebration',
-    text: 'Get a POS Printer Free At Just',
+    icon: 'sparkles',
+    text: '🪁 Dashain Offer: Get a POS Printer Free at Just',
     highlightText: 'Rs. 24,999/year',
   },
 }
@@ -259,6 +260,7 @@ export function Pricing() {
 
   const [data, setData] = useState<Partial<PricingPageData>>(fallbackData)
   const [faqs, setFaqs] = useState(fallbackFaqs)
+  const [hasBanner, setHasBanner] = useState(false)
 
   const fetchData = useCallback(async () => {
     try {
@@ -387,29 +389,35 @@ export function Pricing() {
   }, [])
 
   return (
-    <section
-      id="pricing"
-      className="py-24 relative overflow-hidden"
-      style={{
-        backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : '#f8fafc',
-        borderTop: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid #e2e8f0',
-      }}
-    >
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div
-          className={`absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-3xl opacity-5 ${
-            isDark ? 'bg-orange-500' : 'bg-orange-300'
-          }`}
-        />
-        <div
-          className={`absolute top-[40%] -left-[10%] w-[500px] h-[500px] rounded-full blur-3xl opacity-5 ${
-            isDark ? 'bg-blue-500' : 'bg-blue-300'
-          }`}
-        />
+    <>
+      {/* Promo Banner - full width, no container */}
+      <div className="relative z-10">
+        <PromoBanner onBannerExists={setHasBanner} />
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <section
+        id="pricing"
+        className={`relative overflow-hidden ${hasBanner ? 'pb-24' : 'py-24'}`}
+        style={{
+          backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : '#f8fafc',
+          borderTop: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid #e2e8f0',
+        }}
+      >
+        {/* Background Gradients */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div
+            className={`absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full blur-3xl opacity-5 ${
+              isDark ? 'bg-orange-500' : 'bg-orange-300'
+            }`}
+          />
+          <div
+            className={`absolute top-[40%] -left-[10%] w-[500px] h-[500px] rounded-full blur-3xl opacity-5 ${
+              isDark ? 'bg-blue-500' : 'bg-blue-300'
+            }`}
+          />
+        </div>
+
+      <div className={`max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 ${hasBanner ? 'mt-8' : ''}`}>
         {/* Header */}
         <div className="mb-12">
           <h2
@@ -532,34 +540,6 @@ export function Pricing() {
                 </span>
               </div>
             </div>
-
-            {/* Installation Offer Badge - flat matte finish */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="relative cursor-default"
-            >
-              <div className="relative px-6 py-2.5 bg-white dark:bg-[#0a0a0a] ring-1 ring-gray-200 dark:ring-white/10 rounded-full flex items-center gap-3 shadow-sm">
-                <span 
-                  className="flex items-center justify-center w-6 h-6 rounded-full" 
-                  style={{ 
-                    backgroundColor: isDark ? 'rgba(255, 105, 41, 0.2)' : 'rgba(255, 105, 41, 0.1)',
-                    color: '#ff6929'
-                  }}
-                >
-                  <Icon name={promo.icon} size={24} />
-                </span>
-                <span
-                  className="text-sm font-medium"
-                  style={{ color: isDark ? '#e5e5e5' : '#334155' }}
-                >
-                  {promo.text}{' '}
-                  <span className="font-bold" style={{ color: '#ff6929' }}>
-                    {promo.highlightText}
-                  </span>
-                </span>
-              </div>
-            </motion.div>
           </div>
         </div>
 
@@ -809,6 +789,7 @@ export function Pricing() {
         </div>
       </div>
     </section>
+    </>
   )
 }
 

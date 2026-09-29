@@ -17,7 +17,7 @@ export function PricingClient() {
         initial={{ opacity: 0, y: 40, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] }}
-        className="pt-20" 
+        className="pt-20 w-full" 
         style={{ backgroundColor: isDark ? '#0a0a0a' : '#ffffff' }}
       >
         <PricingSection />
