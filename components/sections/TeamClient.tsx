@@ -146,7 +146,8 @@ export function TeamClient() {
           <motion.div variants={item} className="flex justify-center mb-10">
             <Image
               src={data.companyLogo || '/images/Everacy_logo_withbg.png'}
-              alt={data.companyHighlight || 'Everacy'}
+              alt={`${data.companyHighlight || 'Everacy'} - Creators of Yummy Manage Restaurant POS Nepal`}
+              title={`${data.companyHighlight || 'Everacy'} Team`}
               width={150}
               height={150}
               className="h-24 w-auto rounded-xl shadow-lg"

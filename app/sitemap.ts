@@ -6,21 +6,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const currentDate = new Date();
 
   // Core pages
-  const coreRoutes = [
-    '',
-    '/features',
-    '/pricing',
-    '/contact',
-    '/about',
-    '/blog',
-    '/faq',
-    '/terms-and-conditions',
-    '/privacy-policy',
-  ].map((route) => ({
+  const coreRoutes: MetadataRoute.Sitemap = [
+    { route: '', img: `${baseUrl}/images/screen-2.jpg`, priority: 1.0 },
+    { route: '/features', img: `${baseUrl}/images/screen-2.jpg`, priority: 0.9 },
+    { route: '/pricing', img: `${baseUrl}/images/Everacy_logo_withbg.png`, priority: 0.9 },
+    { route: '/contact', img: `${baseUrl}/images/Everacy_logo_withbg.png`, priority: 0.8 },
+    { route: '/about', img: `${baseUrl}/images/Everacy_logo_withbg.png`, priority: 0.8 },
+    { route: '/blog', img: `${baseUrl}/images/Everacy_logo_withbg.png`, priority: 0.8 },
+    { route: '/faq', img: undefined, priority: 0.7 },
+    { route: '/terms-and-conditions', img: undefined, priority: 0.5 },
+    { route: '/privacy-policy', img: undefined, priority: 0.5 },
+  ].map(({ route, img, priority }) => ({
     url: `${baseUrl}${route}`,
     lastModified: currentDate,
     changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : 0.8,
+    priority,
+    ...(img ? { images: [img] } : {}),
   }));
 
   // Fetch all blog posts dynamically
@@ -31,11 +32,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       blogRoutes = blogData.posts.map((post) => {
         // Attempt to parse the API date or fallback to current date
         const postDate = post.date ? new Date(post.date) : currentDate;
+        const absImg = post.imageUrl
+          ? (post.imageUrl.startsWith('http')
+              ? post.imageUrl
+              : `${baseUrl}${post.imageUrl.startsWith('/') ? '' : '/'}${post.imageUrl}`)
+          : undefined;
+
         return {
           url: `${baseUrl}/blog/${post.slug}`,
           lastModified: isNaN(postDate.getTime()) ? currentDate : postDate,
           changeFrequency: 'monthly' as const,
-          priority: 0.7,
+          priority: 0.8,
+          ...(absImg ? { images: [absImg] } : {}),
         };
       });
     }
