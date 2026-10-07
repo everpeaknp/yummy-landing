@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const post = await getBlogPost(slug)
     const absoluteImageUrl = toAbsoluteUrl(post.imageUrl)
-    const imageAlt = `${post.title} - Yummy Manage Restaurant POS Software Nepal`
+    const imageAlt = post.imageAlt || `${post.title} - Yummy Manage Restaurant POS Software Nepal`
 
     return {
       title: post.metaTitle || post.title,
@@ -82,7 +82,7 @@ export default async function BlogPage({ params }: Props) {
         url: absoluteImageUrl,
         width: 1200,
         height: 630,
-        caption: post.title,
+        caption: post.imageAlt || post.title,
         description: post.metaDescription || post.excerpt || post.title,
       },
       ...contentImages.map((imgUrl, idx) => ({

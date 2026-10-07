@@ -18,6 +18,7 @@ interface DisplayPost {
   title: string
   date: string
   image: string
+  imageAlt?: string
   content: string
   keywords: string[]
 }
@@ -38,6 +39,7 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
     title: initialPost.title,
     date: initialPost.date,
     image: initialPost.imageUrl,
+    imageAlt: initialPost.imageAlt,
     content: initialPost.content,
     keywords: initialPost.keywords 
       ? typeof initialPost.keywords === 'string'
@@ -61,6 +63,7 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
         title: apiPost.title,
         date: apiPost.date,
         image: apiPost.imageUrl || initialPost.imageUrl,
+        imageAlt: apiPost.imageAlt || initialPost.imageAlt,
         content: apiPost.content,
         keywords: apiPost.keywords
           ? typeof apiPost.keywords === 'string'
@@ -133,8 +136,8 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
             <div className="w-full h-64 md:h-[450px] rounded-3xl mb-12 overflow-hidden shadow-xl relative">
               <Image
                 src={post.image}
-                alt={`${post.title} - Yummy Manage Restaurant POS Software Nepal`}
-                title={post.title}
+                alt={post.imageAlt || `${post.title} - Yummy Manage Restaurant POS Software Nepal`}
+                title={post.imageAlt || post.title}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1280px) 70vw, 850px"
                 className="object-cover"
@@ -182,8 +185,8 @@ export function BlogPostClient({ post: initialPost, jsonLd, slug }: BlogPostClie
                       <div className="relative w-full h-40 rounded-xl overflow-hidden mb-3">
                         <Image
                           src={rp.imageUrl}
-                          alt={`${rp.title} - Yummy Manage Restaurant POS`}
-                          title={rp.title}
+                          alt={rp.imageAlt || `${rp.title} - Yummy Manage Restaurant POS`}
+                          title={rp.imageAlt || rp.title}
                           fill
                           sizes="(max-width: 1024px) 100vw, 360px"
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
