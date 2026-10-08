@@ -356,9 +356,10 @@ export function Pricing() {
                 renewalAmount: renewalMonthlyAmount,
               },
             ],
-            // Use detailed hardcoded features from pricingPlans.ts as source of truth
-            // Fall back to API features only if no hardcoded plan is found
-            features: hardcodedPlan?.features || apiPlan.features?.map(f => ({ text: f.text, included: true })) || [],
+            // Use API features if available, fallback to hardcoded features
+            features: apiPlan.features?.length > 0 
+              ? apiPlan.features.map(f => ({ text: f.text, included: f.included ?? true }))
+              : hardcodedPlan?.features || [],
             isPopular: apiPlan.isPopular || false,
             ctaText: apiPlan.ctaText || 'Get Started',
             ctaHref: apiPlan.ctaHref || 'https://app.yummyever.com/',
