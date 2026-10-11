@@ -317,6 +317,11 @@ export function Pricing() {
             ? parseFloat(apiPlan.originalPrice6Month)
             : undefined;
           
+          // Parse strikethrough prices - use strikethrough if set, else fall back to original
+          const strikethroughYearlyAmount = apiPlan.strikethroughPriceYearly
+            ? parseFloat(apiPlan.strikethroughPriceYearly)
+            : originalYearlyAmount;
+          
           // Parse renewal prices if present
           const renewalYearlyAmount = apiPlan.renewalPriceYearly 
             ? parseFloat(apiPlan.renewalPriceYearly)
@@ -345,7 +350,7 @@ export function Pricing() {
                 period: 'yearly' as BillingPeriod,
                 amount: yearlyAmount,
                 displayLabel: formatPrice(yearlyAmount),
-                originalAmount: originalYearlyAmount,
+                originalAmount: strikethroughYearlyAmount,
                 renewalAmount: renewalYearlyAmount,
               },
               {

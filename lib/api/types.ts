@@ -97,6 +97,7 @@ export interface PricingPlan {
   priceYearly: string
   originalPriceMonthly?: string
   originalPriceYearly?: string
+  strikethroughPriceYearly?: string
   description: string
   features: PricingFeature[]
   ctaText: string
