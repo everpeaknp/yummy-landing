@@ -156,7 +156,8 @@ export function Navbar() {
           <Link href={logo.href} onClick={handleLogoClick} className="flex items-center gap-3 relative z-50">
             <Image
               src={resolvedLogoSrc}
-              alt={logo.text}
+              alt={`${logo.text} - Cloud Restaurant POS System Nepal`}
+              title={logo.text}
               width={50}
               height={50}
               className="h-8 w-auto"
@@ -519,7 +520,8 @@ const Blog = ({ isDark }: { isDark: boolean }) => {
           <div className="mb-2 h-14 w-full rounded bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden relative">
             <Image
               src="https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=600&auto=format&fit=crop"
-              alt="Trends"
+              alt="Restaurant Trends in Nepal - Yummy Manage POS"
+              title="Restaurant Trends"
               fill
               className="object-cover opacity-80 hover:opacity-100 transition-opacity"
             />
@@ -535,7 +537,8 @@ const Blog = ({ isDark }: { isDark: boolean }) => {
           <div className="mb-2 h-14 w-full rounded bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden relative">
             <Image
               src="https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=600&auto=format&fit=crop"
-              alt="Inventory"
+              alt="Optimize Restaurant Inventory Management - Yummy Manage"
+              title="Optimize Inventory"
               fill
               className="object-cover opacity-80 hover:opacity-100 transition-opacity"
             />

@@ -107,7 +107,8 @@ export function Footer() {
               <div className="flex items-center gap-3">
                 <Image
                   src={isDark ? brand.logoDark : brand.logoLight}
-                  alt={brand.name}
+                  alt={`${brand.name} - Restaurant Management POS Software`}
+                  title={brand.name}
                   width={40}
                   height={40}
                   className="h-10 w-auto"
@@ -158,7 +159,7 @@ export function Footer() {
                 {copyright.poweredBy && (
                   <div className="flex items-center gap-2 text-base font-semibold opacity-80">
                       <a href={copyright.poweredBy.href} target="_blank" rel="noopener noreferrer">{copyright.poweredBy.text}</a>
-                      <Image src={copyright.poweredBy.logoUrl || "/images/Everacy_logo_withbg.png"} width={32} height={32} alt="Everacy" className="h-8 w-auto rounded-md" />
+                      <Image src={copyright.poweredBy.logoUrl || "/images/Everacy_logo_withbg.png"} width={32} height={32} alt="Everacy Technologies - Restaurant POS Nepal" title="Everacy Technologies" className="h-8 w-auto rounded-md" />
                   </div>
                 )}
             </div>

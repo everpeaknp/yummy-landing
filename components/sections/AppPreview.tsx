@@ -24,7 +24,8 @@ export function AppPreview() {
           <div className="phone-mockup shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500 relative z-10">
             <Image
               src="/images/screen-2.jpg"
-              alt="POS Visual"
+              alt="Yummy Manage Mobile Restaurant POS System Interface for Waiters and Kitchen Staff in Nepal"
+              title="Yummy Manage Mobile Restaurant POS Interface"
               width={280}
               height={607}
               className="w-full h-full object-cover"

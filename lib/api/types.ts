@@ -88,16 +88,26 @@ export interface ContactPageData {
 
 export interface PricingFeature {
   text: string
-  order: number
+  order?: number
+  included?: boolean
 }
 
 export interface PricingPlan {
   name: string
-  priceMonthly: string
+  planType?: 'standard' | 'enterprise'
+  enterpriseSubheading?: string
+  priceMonthly?: string
   priceYearly: string
   originalPriceMonthly?: string
   originalPriceYearly?: string
   strikethroughPriceYearly?: string
+  price6Month?: string
+  originalPrice6Month?: string
+  renewalPriceYearly?: string
+  renewalPrice6Month?: string
+  renewalDiscountPercentage?: number
+  isEnterprise?: boolean
+  customPricingLabel?: string
   description: string
   features: PricingFeature[]
   ctaText: string
@@ -237,6 +247,7 @@ export interface BlogPost {
   title: string
   excerpt: string
   imageUrl: string
+  imageAlt?: string
   date: string
   author?: BlogAuthor
   category?: BlogCategory
@@ -633,4 +644,3 @@ export interface PromoBannerData {
   hide_on_expire: boolean
   is_currently_active: boolean
 }
-

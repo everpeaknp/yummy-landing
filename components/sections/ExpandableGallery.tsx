@@ -125,7 +125,8 @@ export function ExpandableGallery() {
                   <>
                     <Image
                       src={features[activeIdx].imageUrl}
-                      alt={features[activeIdx].title}
+                      alt={`${features[activeIdx].title} - Yummy Manage Restaurant POS System`}
+                      title={features[activeIdx].title}
                       fill
                       className="object-cover object-center"
                       priority
@@ -293,7 +294,8 @@ function MobileSlide({
       <div className="absolute inset-0">
         <Image
           src={feature.imageUrl}
-          alt={feature.title}
+          alt={`${feature.title} - Yummy Manage Restaurant POS System`}
+          title={feature.title}
           fill
           className="object-cover object-top"
           unoptimized

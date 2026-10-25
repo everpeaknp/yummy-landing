@@ -65,7 +65,8 @@ export function OurCustomers() {
                 <div className="h-12 md:h-16 w-auto flex items-center justify-center">
                   <Image
                     src={item.logoUrl || '/images/logo-placeholder.jpg'}
-                    alt={item.name}
+                    alt={`${item.name} - Restaurant powered by Yummy Manage POS`}
+                    title={`${item.name} uses Yummy Manage`}
                     width={260}
                     height={64}
                     className="h-full w-auto max-w-[260px] object-contain bg-transparent block"

@@ -29,6 +29,7 @@ type BlogDisplay = {
   title: string;
   excerpt: string;
   imageUrl: string;
+  imageAlt?: string;
   date: string;
   order: number;
   category?: { name: string; slug: string };
@@ -53,6 +54,7 @@ export function BlogList() {
           title: p.title,
           excerpt: p.excerpt,
           imageUrl: p.imageUrl,
+          imageAlt: p.imageAlt,
           date: p.date,
           order: p.order || idx + 1,
           category: p.category,
@@ -259,7 +261,8 @@ function BlogCard({ blog, isLarge = false }: { blog: BlogDisplay, isLarge?: bool
       <div className="w-full h-full relative">
          <Image 
             src={blog.imageUrl} 
-            alt={blog.title} 
+            alt={blog.imageAlt || `${blog.title} - Restaurant Management Yummy POS Nepal`} 
+            title={blog.imageAlt || blog.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-700 group-hover:scale-110"
