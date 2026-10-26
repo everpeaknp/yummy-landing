@@ -7,13 +7,7 @@ import { getCustomersSection, type CustomersSectionData } from '@/lib/api'
 
 const fallbackData: CustomersSectionData = {
   title: 'Our Customers',
-  logos: [
-    { name: 'Hotel Barahi', logoUrl: '/images/logo-placeholder.jpg', order: 1 },
-    { name: 'Moondance', logoUrl: '/images/logo-placeholder.jpg', order: 2 },
-    { name: 'Roadhouse', logoUrl: '/images/logo-placeholder.jpg', order: 3 },
-    { name: 'OR2K', logoUrl: '/images/logo-placeholder.jpg', order: 4 },
-    { name: 'Third Eye', logoUrl: '/images/logo-placeholder.jpg', order: 5 },
-  ],
+  logos: [],
 }
 
 export function OurCustomers() {
@@ -25,10 +19,13 @@ export function OurCustomers() {
     async function fetchData() {
       try {
         const apiData = await getCustomersSection()
-        if (apiData?.logos?.length) {
+        const validLogos = (apiData?.logos || []).filter(
+          (logo) => logo.logoUrl && !logo.logoUrl.includes('logo-placeholder')
+        )
+        if (validLogos.length > 0) {
           setData({
             title: apiData.title || fallbackData.title,
-            logos: [...apiData.logos].sort((a, b) => (a.order || 0) - (b.order || 0)),
+            logos: [...validLogos].sort((a, b) => (a.order || 0) - (b.order || 0)),
           })
         }
       } catch {
@@ -38,7 +35,15 @@ export function OurCustomers() {
     fetchData()
   }, [])
 
-  const items = [...data.logos, ...data.logos, ...data.logos]
+  const validLogos = data.logos.filter(
+    (logo) => logo.logoUrl && !logo.logoUrl.includes('logo-placeholder')
+  )
+
+  if (!validLogos || validLogos.length === 0) {
+    return null
+  }
+
+  const items = [...validLogos, ...validLogos, ...validLogos]
 
   return (
     <div className="pt-8 md:pt-12 overflow-hidden">
@@ -64,7 +69,7 @@ export function OurCustomers() {
               >
                 <div className="h-12 md:h-16 w-auto flex items-center justify-center">
                   <Image
-                    src={item.logoUrl || '/images/logo-placeholder.jpg'}
+                    src={item.logoUrl}
                     alt={`${item.name} - Restaurant powered by Yummy Manage POS`}
                     title={`${item.name} uses Yummy Manage`}
                     width={260}
