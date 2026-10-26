@@ -6,15 +6,19 @@ import { getTimerThemeColors, getTimerSizeConfig, getTimerLabelText } from './Ti
 
 interface CountdownTimerProps {
   targetDate: string // ISO datetime string
-  position?: 'top_left' | 'top_center' | 'top_right' | 'middle_left' | 'center' | 'middle_right' | 'bottom_left' | 'bottom_center' | 'bottom_right'
+  position?: 'top_left' | 'top_center' | 'top_right' | 'middle_left' | 'center' | 'middle_right' | 'bottom_left' | 'bottom_center' | 'bottom_right' | 'inline' | 'custom'
+  customX?: number | null
+  customY?: number | null
   timerStyle?: 'boxes' | 'compact' | 'digital'
   showDays?: boolean
   timerTheme?: 'brand_orange' | 'festive_red' | 'deep_navy' | 'custom'
+  timerBgColor?: string
   timerBoxColor?: string
   timerNumberColor?: string
   timerLabelColor?: string
   timerSeparatorColor?: string
   timerSize?: 'small' | 'medium' | 'large'
+  timerScalePercent?: number
   timerLabelStyle?: 'full' | 'short'
 }
 
@@ -26,14 +30,18 @@ interface CountdownTimerProps {
 export function CountdownTimer({ 
   targetDate, 
   position = 'bottom_right',
+  customX = null,
+  customY = null,
   timerStyle = 'boxes',
   showDays = true,
   timerTheme = 'brand_orange',
+  timerBgColor,
   timerBoxColor = '#F97316',
   timerNumberColor = '#FFFFFF',
   timerLabelColor = '#FFFFFF',
   timerSeparatorColor = '#FFFFFF',
   timerSize = 'medium',
+  timerScalePercent = 100,
   timerLabelStyle = 'full'
 }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState<TimeUnits | null>(null)
@@ -64,22 +72,45 @@ export function CountdownTimer({
     return null
   }
 
-  const positionClasses = {
-    top_left: 'top-4 left-4',
-    top_center: 'top-4 left-1/2 -translate-x-1/2',
-    top_right: 'top-4 right-4',
-    middle_left: 'top-1/2 -translate-y-1/2 left-4',
-    center: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-    middle_right: 'top-1/2 -translate-y-1/2 right-4',
-    bottom_left: 'bottom-4 left-4',
-    bottom_center: 'bottom-4 left-1/2 -translate-x-1/2',
-    bottom_right: 'bottom-4 right-4',
+  const positionClasses: Record<string, string> = {
+    top_left: 'absolute top-4 left-4',
+    top_center: 'absolute top-4 left-1/2 -translate-x-1/2',
+    top_right: 'absolute top-4 right-4',
+    middle_left: 'absolute top-1/2 -translate-y-1/2 left-4',
+    center: 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+    middle_right: 'absolute top-1/2 -translate-y-1/2 right-4',
+    bottom_left: 'absolute bottom-4 left-4',
+    bottom_center: 'absolute bottom-4 left-1/2 -translate-x-1/2',
+    bottom_right: 'absolute bottom-4 right-4',
+    inline: 'relative justify-center',
+    custom: 'absolute',
   }
+
+  const isCustom = position === 'custom' || (customX !== null && customY !== null)
+  const scale = (timerScalePercent || 100) / 100
+  const customCoordStyle: React.CSSProperties = isCustom && customX !== null && customY !== null
+    ? {
+        position: 'absolute',
+        left: `${customX}%`,
+        top: `${customY}%`,
+        transform: `translate(-50%, -50%) scale(${scale})`,
+        transformOrigin: 'center center',
+      }
+    : {
+        transform: `scale(${scale})`,
+        transformOrigin: 'center center',
+      }
+
+  // Determine effective background color
+  const effectiveBgColor = timerBgColor !== undefined && timerBgColor !== '' ? timerBgColor : timerBoxColor
+  const isTransparent =
+    !effectiveBgColor ||
+    ['transparent', 'none', ''].includes(effectiveBgColor.trim().toLowerCase())
 
   // Get theme colors
   const colors = getTimerThemeColors(
     timerTheme,
-    timerBoxColor,
+    effectiveBgColor,
     timerNumberColor,
     timerLabelColor,
     timerSeparatorColor
@@ -109,18 +140,19 @@ export function CountdownTimer({
     if (timerStyle === 'boxes') {
       return (
         <div 
-          className={`flex flex-col items-center justify-center ${sizeConfig.boxPadding} ${sizeConfig.borderRadius} ${sizeConfig.shadow} backdrop-blur-sm`}
+          className={`flex flex-col items-center justify-center ${sizeConfig.boxPadding} ${sizeConfig.borderRadius} ${isTransparent ? '' : sizeConfig.shadow} ${isTransparent ? '' : 'backdrop-blur-sm'}`}
           style={{
-            backgroundColor: colors.boxColor,
-            border: `2px solid rgba(255, 255, 255, 0.3)`,
-            boxShadow: `0 4px 12px rgba(0, 0, 0, 0.3)`,
+            backgroundColor: isTransparent ? 'transparent' : colors.boxColor,
+            border: isTransparent ? 'none' : `1.5px solid rgba(255, 255, 255, 0.25)`,
+            boxShadow: isTransparent ? 'none' : `0 4px 12px rgba(0, 0, 0, 0.3)`,
+            padding: isTransparent ? '0 4px' : undefined,
           }}
           aria-hidden="true"
         >
-          <span className={`${sizeConfig.fontSize} font-black`} style={{ color: colors.numberColor }}>
+          <span className={`${sizeConfig.fontSize} font-black drop-shadow-sm leading-none`} style={{ color: colors.numberColor }}>
             {String(unit.value).padStart(2, '0')}
           </span>
-          <span className="text-xs font-semibold opacity-90" style={{ color: colors.labelColor }}>
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider mt-1 drop-shadow-sm opacity-95" style={{ color: colors.labelColor }}>
             {labelText}
           </span>
         </div>
@@ -128,11 +160,11 @@ export function CountdownTimer({
     } else if (timerStyle === 'compact') {
       return (
         <div 
-          className={`flex items-center gap-1 px-2 py-1 rounded-md backdrop-blur-sm`}
+          className={`flex items-center gap-1 px-2 py-1 rounded-md ${isTransparent ? '' : 'backdrop-blur-sm'}`}
           style={{
-            backgroundColor: colors.boxColor,
-            border: `1px solid rgba(255, 255, 255, 0.2)`,
-            boxShadow: `0 2px 8px rgba(0, 0, 0, 0.2)`,
+            backgroundColor: isTransparent ? 'transparent' : colors.boxColor,
+            border: isTransparent ? 'none' : `1px solid rgba(255, 255, 255, 0.2)`,
+            boxShadow: isTransparent ? 'none' : `0 2px 8px rgba(0, 0, 0, 0.2)`,
           }}
           aria-hidden="true"
         >
@@ -147,12 +179,12 @@ export function CountdownTimer({
     } else if (timerStyle === 'digital') {
       return (
         <div 
-          className="flex items-center gap-1 px-2 py-1 rounded-md backdrop-blur-sm"
+          className={`flex items-center gap-1 px-2 py-1 rounded-md ${isTransparent ? '' : 'backdrop-blur-sm'}`}
           style={{
-            backgroundColor: colors.boxColor,
-            border: `1px solid rgba(255, 255, 255, 0.2)`,
+            backgroundColor: isTransparent ? 'transparent' : colors.boxColor,
+            border: isTransparent ? 'none' : `1px solid rgba(255, 255, 255, 0.2)`,
             fontFamily: 'monospace',
-            boxShadow: `0 2px 8px rgba(0, 0, 0, 0.2)`,
+            boxShadow: isTransparent ? 'none' : `0 2px 8px rgba(0, 0, 0, 0.2)`,
           }}
           aria-hidden="true"
         >
@@ -169,11 +201,11 @@ export function CountdownTimer({
 
   return (
     <div 
-      className={`absolute ${positionClasses[position]} z-10 flex gap-2 text-white max-w-[95%]`}
+      className={`${positionClasses[position] || 'relative'} z-10 flex flex-col items-center gap-1 text-white max-w-[95%]`}
       style={{
         maxWidth: '95%',
-        // Ensure timer doesn't overlap with poster text by adding bottom margin for certain positions
-        ...(position.includes('bottom') ? { marginBottom: '16px' } : {}),
+        ...(!isCustom && position !== 'inline' && position.includes('bottom') ? { marginBottom: '16px' } : {}),
+        ...customCoordStyle,
       }}
       role="timer"
       aria-live="off"
@@ -183,21 +215,31 @@ export function CountdownTimer({
       <span className="sr-only">
         Offer ends in {timeLeft.days} days, {timeLeft.hours} hours, {timeLeft.minutes} minutes, {timeLeft.seconds} seconds
       </span>
+
+      {/* Offer Ends In Header */}
+      <span 
+        className="text-[10px] sm:text-xs font-black tracking-widest uppercase text-center drop-shadow-sm select-none mb-0.5"
+        style={{ color: colors.labelColor }}
+      >
+        OFFER ENDS IN:
+      </span>
       
-      {timeUnits.map((unit, index) => (
-        <React.Fragment key={unit.label}>
-          {renderTimeUnit(unit)}
-          {index < timeUnits.length - 1 && (
-            <span 
-              className="text-2xl md:text-3xl font-bold self-center"
-              style={{ color: colors.separatorColor }}
-              aria-hidden="true"
-            >
-              :
-            </span>
-          )}
-        </React.Fragment>
-      ))}
+      <div className="flex items-center gap-1 sm:gap-2">
+        {timeUnits.map((unit, index) => (
+          <React.Fragment key={unit.label}>
+            {renderTimeUnit(unit)}
+            {index < timeUnits.length - 1 && (
+              <span 
+                className="text-xl sm:text-2xl md:text-3xl font-black self-center pb-2 select-none"
+                style={{ color: colors.separatorColor }}
+                aria-hidden="true"
+              >
+                :
+              </span>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   )
 }

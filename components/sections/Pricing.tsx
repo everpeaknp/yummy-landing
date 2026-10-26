@@ -237,11 +237,6 @@ const fallbackData: Partial<PricingPageData> = {
   title: 'Simple, Transparent Pricing',
   subtitle: 'Choose the plan that fits your business stage. No hidden fees, cancel anytime.',
   toggle: { monthlyLabel: 'Monthly', yearlyLabel: 'Yearly', savingsLabel: 'SAVE 33%' },
-  promotionBanner: {
-    icon: 'sparkles',
-    text: '🪁 Dashain Offer: Get a POS Printer Free at Just',
-    highlightText: 'Rs. 24,999/year',
-  },
 }
 
 function parsePrice(value: string | null | undefined, field: string, plan: string): number {
@@ -294,7 +289,6 @@ export function Pricing() {
   // Note: Removed useRefetchOnFocus to prevent excessive API calls
 
   const toggle = data.toggle || fallbackData.toggle!
-  const promo = data.promotionBanner || fallbackData.promotionBanner!
   const countries = [
     ['au', 'Australia'], ['pk', 'Pakistan'], ['us', 'USA'], ['my', 'Malaysia'],
     ['mm', 'Myanmar'], ['jp', 'Japan'], ['it', 'Italy'], ['gb', 'UK'],

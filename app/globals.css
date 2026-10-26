@@ -298,3 +298,38 @@ body {
 .animate-pop-in {
   animation: popIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes festiveKite1 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-20px) translateX(14px) rotate(4deg);
+  }
+}
+
+@keyframes festiveKite2 {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px) rotate(8deg);
+  }
+  50% {
+    transform: translateY(-24px) translateX(-12px) rotate(-4deg);
+  }
+}
+
+.animate-festive-kite-1 {
+  animation: festiveKite1 7s ease-in-out infinite;
+}
+
+.animate-festive-kite-2 {
+  animation: festiveKite2 9s ease-in-out infinite;
+}
+
+/* Hide system cursor when Festive Kite Cursor is active */
+body.festive-cursor-active,
+body.festive-cursor-active * {
+  cursor: none !important;
+}
+
+
+

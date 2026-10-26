@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Outfit } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { FestiveEffects } from '@/components/promo/FestiveEffects'
 
 // Font configuration
 const inter = Inter({
@@ -218,7 +219,10 @@ export default async function RootLayout({
         suppressHydrationWarning
         className={`${inter.variable} ${outfit.variable} bg-slate-50 dark:bg-dark text-slate-900 dark:text-slate-100 font-body antialiased transition-colors duration-300`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <FestiveEffects />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

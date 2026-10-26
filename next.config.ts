@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   typescript: { ignoreBuildErrors: true },
   images: {
+    unoptimized: process.env.NODE_ENV === 'development',
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {

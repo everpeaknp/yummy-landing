@@ -601,9 +601,12 @@ export interface PromoBannerFeature {
 export interface PromoBannerTextBlock {
   id: number
   text: string
+  image?: string | null
+  image_url?: string | null
   position: 'top_left' | 'top_center' | 'top_right' | 'middle_left' | 'center' | 'middle_right' | 'bottom_left' | 'bottom_center' | 'bottom_right' | 'custom'
   custom_x_percent: number | null
   custom_y_percent: number | null
+  scale_percent?: number
   font_size: 'small' | 'medium' | 'large' | 'xlarge'
   font_weight: 'normal' | 'bold' | 'black'
   text_color: string
@@ -617,6 +620,7 @@ export interface PromoBannerData {
   id: number
   festival: string
   mode: 'full_image' | 'text_overlay'
+  use_default_image?: boolean
   image_url: string
   mobile_image_url: string
   headline_line1: string
@@ -627,7 +631,24 @@ export interface PromoBannerData {
   cta_link: string
   accent_color: string
   text_color: string
-  timer_position: 'top_left' | 'top_center' | 'top_right' | 'middle_left' | 'center' | 'middle_right' | 'bottom_left' | 'bottom_center' | 'bottom_right'
+  timer_position: 'top_left' | 'top_center' | 'top_right' | 'middle_left' | 'center' | 'middle_right' | 'bottom_left' | 'bottom_center' | 'bottom_right' | 'custom'
+  timer_x_percent?: number | null
+  timer_y_percent?: number | null
+  content_x_percent?: number | null
+  content_y_percent?: number | null
+  hardware_x_percent?: number | null
+  hardware_y_percent?: number | null
+  content_scale_percent?: number
+  hardware_scale_percent?: number
+  mobile_content_x_percent?: number | null
+  mobile_content_y_percent?: number | null
+  mobile_hardware_x_percent?: number | null
+  mobile_hardware_y_percent?: number | null
+  mobile_timer_x_percent?: number | null
+  mobile_timer_y_percent?: number | null
+  show_on_pricing_page?: boolean
+  show_timer?: boolean
+  timer_bg_color?: string
   timer_style: 'boxes' | 'compact' | 'digital'
   show_days: boolean
   timer_theme: 'brand_orange' | 'festive_red' | 'deep_navy' | 'custom'
@@ -636,6 +657,7 @@ export interface PromoBannerData {
   timer_label_color: string
   timer_separator_color: string
   timer_size: 'small' | 'medium' | 'large'
+  timer_scale_percent?: number
   timer_label_style: 'full' | 'short'
   starts_at: string
   ends_at: string

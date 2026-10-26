@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { getActivePromoBanner } from '@/lib/api/promoBanner'
 import { FullImageBanner } from './FullImageBanner'
 import { TextOverlayBanner } from './TextOverlayBanner'
+import { DashainPromoBanner } from './DashainPromoBanner'
 import type { PromoBannerData } from '@/lib/api/types'
 
 /**
@@ -12,7 +13,13 @@ import type { PromoBannerData } from '@/lib/api/types'
  * Fetches and displays the active campaign banner
  * Renders nothing if no active campaign or on error
  */
-export function PromoBanner({ onBannerExists }: { onBannerExists?: (exists: boolean) => void }) {
+export function PromoBanner({ 
+  onBannerExists,
+  isPricingPage = true,
+}: { 
+  onBannerExists?: (exists: boolean) => void
+  isPricingPage?: boolean
+}) {
   const [banner, setBanner] = useState<PromoBannerData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -21,9 +28,10 @@ export function PromoBanner({ onBannerExists }: { onBannerExists?: (exists: bool
     const fetchBanner = async () => {
       try {
         const data = await getActivePromoBanner()
-        setBanner(data)
+        const shouldShow = !!data && (!isPricingPage || data.show_on_pricing_page !== false)
+        setBanner(shouldShow ? data : null)
         if (onBannerExists) {
-          onBannerExists(!!data)
+          onBannerExists(shouldShow)
         }
       } catch (err) {
         console.error('Failed to fetch promo banner:', err)
@@ -37,7 +45,7 @@ export function PromoBanner({ onBannerExists }: { onBannerExists?: (exists: bool
     }
 
     fetchBanner()
-  }, [onBannerExists])
+  }, [onBannerExists, isPricingPage])
 
   // Don't render anything while loading, on error, or if no banner
   if (isLoading || error || !banner) {
@@ -54,6 +62,13 @@ export function PromoBanner({ onBannerExists }: { onBannerExists?: (exists: bool
     return null
   }
 
+  // Check if a real custom image was uploaded by the user
+  const hasCustomUploadedImage =
+    Boolean(banner.image_url) &&
+    !banner.image_url.includes('Dashainoffer.png') &&
+    banner.image_url.includes('/media/') &&
+    !banner.use_default_image
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -63,7 +78,11 @@ export function PromoBanner({ onBannerExists }: { onBannerExists?: (exists: bool
         transition={{ duration: 0.4 }}
         className="w-full"
       >
-        {banner.mode === 'full_image' ? (
+        {hasCustomUploadedImage ? (
+          <FullImageBanner data={banner} />
+        ) : banner.festival === 'dashain' ? (
+          <DashainPromoBanner data={banner} />
+        ) : banner.mode === 'full_image' ? (
           <FullImageBanner data={banner} />
         ) : (
           <TextOverlayBanner data={banner} />

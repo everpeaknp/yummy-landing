@@ -23,11 +23,11 @@ export interface TimerStyleConfig {
  * Uses preset colors for predefined themes, custom colors for custom theme
  */
 export function getTimerThemeColors(
-  theme: 'brand_orange' | 'festive_red' | 'deep_navy' | 'custom',
-  customBoxColor: string,
-  customNumberColor: string,
-  customLabelColor: string,
-  customSeparatorColor: string
+  theme: 'brand_orange' | 'festive_red' | 'deep_navy' | 'custom' | string,
+  customBoxColor?: string,
+  customNumberColor?: string,
+  customLabelColor?: string,
+  customSeparatorColor?: string
 ): TimerThemeColors {
   const presets: Record<string, TimerThemeColors> = {
     brand_orange: {
@@ -50,16 +50,19 @@ export function getTimerThemeColors(
     },
   }
 
-  if (theme !== 'custom' && presets[theme]) {
-    return presets[theme]
-  }
+  const base = presets[theme] || presets.brand_orange
 
-  // Use custom colors when theme is custom
+  // If explicit colors are specified, prioritize them over preset defaults!
+  const boxColor = customBoxColor !== undefined && customBoxColor !== '' ? customBoxColor : base.boxColor
+  const numberColor = customNumberColor !== undefined && customNumberColor !== '' ? customNumberColor : base.numberColor
+  const labelColor = customLabelColor !== undefined && customLabelColor !== '' ? customLabelColor : base.labelColor
+  const separatorColor = customSeparatorColor !== undefined && customSeparatorColor !== '' ? customSeparatorColor : (customNumberColor || base.separatorColor)
+
   return {
-    boxColor: customBoxColor,
-    numberColor: customNumberColor,
-    labelColor: customLabelColor,
-    separatorColor: customSeparatorColor,
+    boxColor,
+    numberColor,
+    labelColor,
+    separatorColor,
   }
 }
 
