@@ -373,6 +373,7 @@ export function Pricing() {
             ctaText: apiPlan.ctaText || 'Get Started',
             ctaHref: apiPlan.ctaHref || 'https://app.yummyever.com/',
             order: apiPlan.order || 0,
+            showRenewalRate: Boolean(apiPlan.showRenewalRate),
           };
         })
       : normalPlans;
@@ -862,8 +863,8 @@ function PlanCard({
             Yearly plan only
           </p>
         ) : (
-          // Show renewal info based on plan and period
-          displayPrice?.amount && displayPrice.amount > 0 && displayPrice.period && (
+          // Show renewal info only if explicitly enabled on this plan
+          plan.showRenewalRate && displayPrice?.amount && displayPrice.amount > 0 && displayPrice.period ? (
             <div className="text-center mt-2">
               {displayPrice.period === 'yearly' ? (
                 // YEARLY VIEW LOGIC
@@ -884,19 +885,19 @@ function PlanCard({
                     </span>
                   </div>
                 ) : (
-                  // Flat renewal rate (Basic)
+                  // Flat renewal rate
                   <p className="text-xs text-green-600 dark:text-green-400 font-semibold">
                     Flat renewal rate
                   </p>
                 )
               ) : (
-                // 6-MONTH VIEW LOGIC - all are flat rates
+                // 6-MONTH VIEW LOGIC - flat rate
                 <p className="text-xs font-semibold" style={{ color: isDark ? '#94a3b8' : '#64748b' }}>
                   Flat rate, no renewal discount
                 </p>
               )}
             </div>
-          )
+          ) : null
         )}
       </div>
 

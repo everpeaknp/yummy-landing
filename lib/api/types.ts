@@ -106,6 +106,7 @@ export interface PricingPlan {
   renewalPriceYearly?: string
   renewalPrice6Month?: string
   renewalDiscountPercentage?: number
+  showRenewalRate?: boolean
   isEnterprise?: boolean
   customPricingLabel?: string
   description: string

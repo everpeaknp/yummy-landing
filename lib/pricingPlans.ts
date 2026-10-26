@@ -30,6 +30,7 @@ export interface Plan {
   ctaText: string;
   ctaHref: string;
   order: number;
+  showRenewalRate?: boolean;
 }
 
 export interface EnterprisePlan {
@@ -79,6 +80,7 @@ export const normalPlans: Plan[] = [
     ctaText: 'Get Started',
     ctaHref: 'https://app.yummyever.com/',
     order: 1,
+    showRenewalRate: false,
   },
   {
     id: 'basic',
@@ -117,6 +119,7 @@ export const normalPlans: Plan[] = [
     ctaText: 'Get Started',
     ctaHref: 'https://app.yummyever.com/',
     order: 2,
+    showRenewalRate: false,
   },
   {
     id: 'pro',
@@ -155,6 +158,7 @@ export const normalPlans: Plan[] = [
     ctaText: 'Start Free Trial',
     ctaHref: 'https://app.yummyever.com/',
     order: 3,
+    showRenewalRate: true,
   },
   {
     id: 'premium',
@@ -186,6 +190,7 @@ export const normalPlans: Plan[] = [
     ctaText: 'Get Started',
     ctaHref: 'https://app.yummyever.com/',
     order: 4,
+    showRenewalRate: true,
   },
 ];
 
