@@ -236,7 +236,7 @@ function PriceBlock({ oldPrice, newPrice, period, savePercent, isDark, showLimit
 const fallbackData: Partial<PricingPageData> = {
   title: 'Simple, Transparent Pricing',
   subtitle: 'Choose the plan that fits your business stage. No hidden fees, cancel anytime.',
-  toggle: { monthlyLabel: 'Monthly', yearlyLabel: 'Yearly', savingsLabel: 'SAVE 33%' },
+  toggle: { monthlyLabel: '6 Months', yearlyLabel: 'Yearly', savingsLabel: 'SAVE 33%' },
 }
 
 function parsePrice(value: string | null | undefined, field: string, plan: string): number {
@@ -510,7 +510,7 @@ export function Pricing() {
                     : 'text-slate-500'
                 }`}
               >
-                {toggle.monthlyLabel}
+                {(toggle.monthlyLabel && toggle.monthlyLabel !== 'Monthly') ? toggle.monthlyLabel : '6 Months'}
               </span>
               <button
                 onClick={() => setIsAnnual(!isAnnual)}
